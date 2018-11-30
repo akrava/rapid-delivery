@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ru">
+    {{> head}}
+    <body>
+        <div class="wrapper center">
+            <div class="header">
+                {{> header}}
+            </div>
+            <div class="content">
+                <h1>Список{{^loginedUser.role}} моїх{{/loginedUser.role}} реєстрів</h1>
+                <div class="left block">
+                    {{^searchQuery}}
+                    <p>
+                        {{#registries.0}}
+                            Ви знаходитесь на <b>{{currentPage}}</b> сторінці з 
+                            <b>{{pages.length}}</b> всього.<br>
+                            Нижче в <i>таблиці</i> наведено <b>{{currentCount}}</b> реєстр(-а)(-ів) з 
+                            <b>{{totalCount}}</b> доступного(-их) на даний момент{{^loginedUser.role}} у особистому розпорядженні{{/loginedUser.role}}.
+                        {{/registries.0}}
+                        {{^registries.0}}
+                            На жаль, на даний момент немає{{^loginedUser.role}} моїх{{/loginedUser.role}} реєстрів накладних.
+                        {{/registries.0}}
+                    </p>
+                    {{/searchQuery}}
+                    {{#searchQuery}}
+                    <p>
+                        Результати пошуку{{^loginedUser.role}} моїх{{/loginedUser.role}} реєстрів за запитом 
+                        `<b>{{searchQuery}}</b>` по опису та назві.
+                    </p>
+                    <p>
+                        {{#registries.0}}
+                            Всього знайдено <b>{{totalCount}}</b> реєстр(-а)(-ів) за 
+                            наданим пошуковим запитом{{^loginedUser.role}} у моєму розпорядженні{{/loginedUser.role}}. На даній сторінці показано 
+                            <b>{{currentCount}}</b> реєстр(-а)(-ів).
+                            Ви знаходитесь на <b>{{currentPage}}</b> сторінці результатів
+                            пошуку з <b>{{pages.length}}</b> всього.<br> 
+                        {{/registries.0}}
+                        {{^registries.0}}
+                            За даним пошуковим запитом{{^loginedUser.role}} серед моїх ТТН{{/loginedUser.role}} нічого не знайдено :(
+                        {{/registries.0}}
+                    </p>
+                    {{/searchQuery}}
+                </div>
+                <div class="right block">
+                    <p>Пошук реєстрів:</p>
+                    <form id="search" action="/registries/" method="GET">
+                        <label>За назвою та описом</label>
+                        <input type="search" name="q" id="search-field" placeholder="назва/опис" minlength="3" maxlength="50" {{#searchQuery}}value="{{searchQuery}}"{{/searchQuery}} required>
+                        <input type="submit" value="Пошук">
+                    </form>
+                </div>
+                <p class="clear-both add-link">
+                    <span><a href="/registries/new">Створення реєстру накладних</a></span>
+                </p>
+                <p>
+                    Можна переглянути окрему сторінку кожного реєстру:
+                </p>
+                <div class="pagination-wrapper"> 
+                    {{#prevPage}}<span class="page-nav left"><a href="{{prevPage}}">Попередня сторінка</a></span>{{/prevPage}}
+                    <table class="center styled" id="registries">
+                        <thead>
+                            <tr>
+                                <th>Номер</th>
+                                <th>Назва</th>
+                                {{#loginedUser.role}}<th>Користувач</th>{{/loginedUser.role}}
+                                <th>К-сть ТТН</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#registries}}
+                            <tr>
+                                <td><a target="_blank" href="/registries/{{number}}">{{number}}</a></td>
+                                <td><a target="_blank" href="/registries/{{number}}">{{name}}</a></td>
+                                {{#loginedUser.role}}<td><a target="_blank" href="/users/{{user.login}}" class="ava"><img src="{{user.avaUrl}}" class="ava small">{{user.fullname}}</a></td>{{/loginedUser.role}}
+                                <td class="text-center">{{invoices.length}}</td>
+                            </tr>
+                            {{/registries}}
+                            {{^registries}}
+                                <tr>
+                                    <td colspan="{{#loginedUser.role}}4{{/loginedUser.role}}{{^loginedUser.role}}3{{/loginedUser.role}}" class="text-center">
+                                        <span class="informal">{{#searchQuery}}Нічого не знайдено{{^loginedUser.role}} серед моїх ТТН{{/loginedUser.role}}{{/searchQuery}}{{^searchQuery}}Немає жодного реєстру{{^loginedUser.role}} у особистому розпорядженні{{/loginedUser.role}}{{/searchQuery}}</span>
+                                    </td>
+                                </tr>
+                            {{/registries}}
+                        </tbody>
+                    </table>
+                    {{#nextPage}}<span class="page-nav right"><a href="{{nextPage}}">Наступна сторінка</a></span>{{/nextPage}}
+                </div>
+                {{#pages.1}}
+                    <ul class="center" id="pagination">
+                        {{#pages}}
+                            <li>{{^current}}<a href="{{href}}">{{/current}}{{number}}{{^current}}</a>{{/current}}</li>
+                        {{/pages}}
+                    </ul>
+                {{/pages.1}}
+                <p>
+                    На сторінці реєстру можна дізнатися про дату його створення, власника,
+                    призначення, список накладних та іншу супутню інформацію, а також є можливість
+                    для редагування та видалення. 
+                </p>
+            </div>
+            <div class="footer">
+            {{> footer}}
+            </div>    
+        </div>      
+    </body>
+</html>

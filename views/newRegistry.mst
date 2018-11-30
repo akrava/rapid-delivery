@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+    {{> head}}
+    <body>
+        <div class="wrapper center">
+            <div class="header">
+                {{> header}}
+            </div>
+            <div class="content">
+                <h1>{{#registry}}Редагування реєстру {{number}} - {{name}}{{/registry}}{{^registry}}Створення нового реєстру накладних{{/registry}}</h1>
+                <p>
+                    Усі поля форми, наведеної нижче, є необхідними для заповнення:<br/>
+                </p>
+                <form id="insert" class="default-form center" action="/registries/{{#registry}}update{{/registry}}{{^registry}}add{{/registry}}" method="POST">
+                    {{^standartUser}}
+                    <label>
+                        <span>Користувач:</span>
+                        <select name="userID" class="select-arrow" required>
+                            {{^registry}}<option hidden disabled selected value>виберіть користувача</option>{{/registry}}
+                            {{#users}}
+                                <option {{#selected}}selected{{/selected}} value="{{id}}">{{fullname}}</option>
+                            {{/users}}
+                        </select>
+                    </label>
+                    {{/standartUser}}
+                    {{#standartUser}}
+                        <input type="hidden" name="userID" value="{{loginedUser.id}}">
+                    {{/standartUser}}
+                    <label>
+                        <span>Назва:</span>
+                        <input type="text" minlength="3" maxlength="100" size="12" name="name" {{#registry}}value="{{registry.name}}"{{/registry}} required>
+                    </label>
+                    <label>
+                        <span>Короткий опис:</span>
+                        <input type="text" minlength="3" maxlength="300" size="18" name="description" {{#registry}}value="{{registry.description}}"{{/registry}} required>
+                    </label>
+                    {{#registry}}
+                        <input name="id" type="hidden" value="{{id}}">
+                    {{/registry}}
+                    <div>
+                        <input type="reset" class="center" value="Скинути">
+                        <input type="submit" class="center" value="{{#registry}}Оновити{{/registry}}{{^registry}}Додати{{/registry}}">
+                    </div>
+                </form>
+            </div>
+            <div class="footer">
+            {{> footer}}
+            </div>    
+        </div>
+    </body>
+</html>

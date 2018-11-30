@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+    {{> head}}
+    <body>
+        <div class="wrapper center">
+            <div class="header">
+                {{> header}}
+            </div>
+            <div class="content">
+                {{#registry}}
+                <h1>Реєстр {{number}} - {{name}}</h1>
+                <table class="center styled captioned" id="registry">
+                    <caption>Реєстр #{{number}}</caption>
+                    <tbody>
+                        <tr>
+                            <td>Номер реєстру</td>
+                            <td>{{number}}</td>
+                        </tr>
+                         <tr>
+                            <td>Назва реєстру</td>
+                            <td>{{name}}</td>
+                        </tr>
+                        {{#loginedUser.role}}
+                        <tr>
+                            <td>Автор</td>
+                            <td>{{#user}}<a target="_blank" href="/users/{{login}}" class="ava"><img src="{{avaUrl}}" class="ava small">{{fullname}}</a>{{/user}}</td>
+                        </tr>
+                        {{/loginedUser.role}}
+                        <tr>
+                            <td>Опис</td>
+                            <td>{{description}}</td>
+                        </tr> 
+                        <tr>
+                            <td>Дата створення</td>
+                            <td>{{created}}</td>
+                        </tr>
+                        <tr>
+                            <td>Кількість накладних:</td>
+                            <td>{{invoices.length}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="content-bottom registry">
+                    <p>   
+                        {{#invoices.0}}
+                        Усього знайдено <b>{{invoices.length}}</b> накладних, які знаходяться в цьому реєстрі:
+                        {{/invoices.0}}
+                        {{^invoices.0}}
+                        В цьому реєстрі ще немає жодної накладної.
+                        {{/invoices.0}}
+                    </p>
+                    <ul class="list-inline">
+                        {{#invoices}}
+                            <li><a target="_blank" href="/invoices/{{number}}">{{number}}</a></li>
+                        {{/invoices}}
+                    </ul>
+                </div>
+                <p class="text-center">Дії з реєстром:</p>
+                <div class="actions default-form">
+                    <form class="center update-btn" action="/registries/edit" method="POST">
+                        <input name="id" type="hidden" value="{{id}}">
+                        <div><input type="submit" class="center" value="Редагувати реєстр"></div>
+                    </form>
+                    <form class="center delete-btn" action="/registries/remove" method="POST" onsubmit="return confirm('Дійсно хочете видалити цeй реєстр зі ВСІМА накладними?');">
+                        <input name="id" type="hidden" value="{{id}}">
+                        <div><input type="submit" class="center" value="Видалити реєстр"></div>
+                    </form>
+                </div>
+                {{/registry}}
+            </div>
+            <div class="footer">
+                {{> footer}}
+            </div>    
+        </div>
+    </body>
+</html>

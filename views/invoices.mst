@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ru">
+    {{> head}}
+    <body>
+        <div class="wrapper center">
+            <div class="header">
+                {{> header}}
+            </div>
+            <div class="content">
+                <h1>{{#searchQuery}}Результати пошуку{{/searchQuery}}{{^searchQuery}}Список{{^loginedUser.role}} моїх{{/loginedUser.role}} транспортних накладних{{/searchQuery}}</h1>
+                <div class="left block">
+                    {{#searchQuery}}
+                        <p>
+                            Результати пошуку{{^loginedUser.role}} серед моїх{{/loginedUser.role}} транспортних накладних за запитом 
+                            `<b>{{searchQuery}}</b>` по {{searchType.name}} накладної.
+                        </p>
+                        <p>
+                            {{#invoices.0}}
+                                Всього знайдено <b>{{totalCount}}</b> накладну(-і)(-их) за 
+                                наданим пошуковим запитом{{^loginedUser.role}} серед моїх ТТН{{/loginedUser.role}}. На даній сторінці показано 
+                                <b>{{currentCount}}</b> накладну(-і)(-их).
+                                Ви знаходитесь на <b>{{currentPage}}</b> сторінці результатів
+                                пошуку з <b>{{pages.length}}</b> всього.<br> 
+                            {{/invoices.0}}
+                            {{^invoices.0}}
+                                За даним пошуковим запитом{{^loginedUser.role}} серед моїх ТТН{{/loginedUser.role}} нічого не знайдено :(
+                            {{/invoices.0}}
+                        </p>
+                    {{/searchQuery}}
+                    {{^searchQuery}}
+                    <p>
+                        {{#invoices.0}}
+                            Ви знаходитесь на <b>{{currentPage}}</b> сторінці з 
+                            <b>{{pages.length}}</b> всього.<br>
+                            Нижче в <i>списку</i> наведено <b>{{currentCount}}</b> накладну(-і)(-их) з 
+                            <b>{{totalCount}}</b> доступної(-их) на даний момент{{^loginedUser.role}} у особистому розпорядженні{{/loginedUser.role}}.
+                        {{/invoices.0}}
+                        {{^invoices.0}}
+                            На жаль, на даний момент немає{{^loginedUser.role}} ваших{{/loginedUser.role}} накладних.
+                        {{/invoices.0}}
+                    </p>
+                    {{/searchQuery}}
+                </div>
+                <div class="right block">
+                    <p>Пошук накладної:</p>
+                    <form id="search" action="/invoices/" method="GET">
+                        <label>За:
+                            <select name="t" id="type-search" class="select-arrow" onchange="changePlaceholder()">
+                                <option value="num" {{^searchType}}selected{{/searchType}} {{#searchType.num}}selected{{/searchType.num}}>номером</option>
+                                <option value="description" {{#searchType.desc}}selected{{/searchType.desc}}>описом</option>
+                                <option value="location" {{#searchType.loc}}selected{{/searchType.loc}}>пот. положенням</option>
+                            </select>
+                        </label>
+                        <input type="search" name="q" id="search-field" placeholder="№ квитанції" minlength="3" maxlength="50" {{#searchQuery}}value="{{searchQuery}}"{{/searchQuery}} required>
+                        <input type="submit" value="Пошук">
+                    </form>
+                </div>
+                <p class="clear-both add-link">
+                    <span><a href="/invoices/new">Створення товарно-транспортної накладної</a></span>
+                </p>
+                <p>
+                    Можна переглянути окрему сторінку кожної товарно-транспортної накладної:
+                </p>
+                <div class="pagination-wrapper"> 
+                    {{#prevPage}}<span class="page-nav left"><a href="{{prevPage}}">Попередня сторінка</a></span>{{/prevPage}}
+                    <ul id="invoices">
+                        {{#invoices}}
+                            <li><a target="_blank" href="/invoices/{{number}}"><img src="{{photoPath}}" class="ava small middle">ТТН №{{number}}</a></li>
+                        {{/invoices}}
+                        {{^invoices}}
+                            <span class="informal">{{#searchQuery}}Нічого не знайдено{{^loginedUser.role}} серед моїх ТТН{{/loginedUser.role}}{{/searchQuery}}{{^searchQuery}}В реєстрі немає жодної{{^loginedUser.role}} моєї{{/loginedUser.role}} накладної{{/searchQuery}}</span>
+                        {{/invoices}}
+                    </ul>
+                    {{#nextPage}}<span class="page-nav right"><a href="{{nextPage}}">Наступна сторінка</a></span>{{/nextPage}}
+                </div>
+                {{#pages.1}}
+                    <ul class="center" id="pagination">
+                        {{#pages}}
+                            <li>{{^current}}<a href="{{href}}">{{/current}}{{number}}{{^current}}</a>{{/current}}</li>
+                        {{/pages}}
+                    </ul>
+                {{/pages.1}}
+                <p>
+                    На сторінці накладної можна дізнатися дату відправлення/прибуття, відправника,
+                    одержувача та іншу супутню інфориацію, а також є можливість редагування та видалення.
+                </p>
+            </div>
+            <div class="footer">
+            {{> footer}}
+            </div>    
+        </div>
+        <script type='text/javascript'>
+            function changePlaceholder() {
+                const type = document.getElementById("type-search").value;
+                let placeholder;
+                switch (type) {
+                    case "description": placeholder = "Опис"; break;
+                    case "location":     placeholder = "Місцезнаходження"; break;
+                    default:            placeholder = "№ квитанції"; break;
+                }
+                document.getElementById("search-field").setAttribute("placeholder", placeholder);
+            }
+        </script>        
+    </body>
+</html>

@@ -1,0 +1,7 @@
+<head>
+    <meta charset="utf-8">
+    <title>{{title}}</title>
+    <meta name="description" content="lab3">
+    <meta name="author" content="akrava">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css"/>
+</head>

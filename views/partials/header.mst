@@ -1,0 +1,29 @@
+<div class="user-status">
+    <div>
+        {{#loginedUser}}
+        <a href="/users/me" class="ava{{#role}} star{{/role}}"><img src="{{loginedUser.avaUrl}}" class="ava small">{{loginedUser.fullname}}</a>
+        <form action="/auth/logout" method="POST"><input type="submit" value="Вийти"></form>
+        {{/loginedUser}}
+        {{^loginedUser}}
+        <span>Раді вас бачити, гість!</span>
+        <span><a href="/auth/login">Увійти</a> | <a href="/auth/register">Зареєструватися</a></span>
+        {{/loginedUser}}
+    </div>
+</div>
+<div class="logo center">
+    <a href="/"><img src="/images/logo.png" alt="logo of company"></a>
+    <span><a href="/">Rapid delivery</a></span>
+</div>
+<nav class="center"> 
+    <ul>
+        <li><a {{#indexPage}}class="link-selected"{{/indexPage}} href="/">Головна</a></li>
+        {{#loginedUser}}
+        {{#role}}
+        <li><a {{#usersPage}}class="link-selected"{{/usersPage}} href="/users">Користувачі</a></li>
+        {{/role}}
+        <li><a {{#registriesPage}}class="link-selected"{{/registriesPage}} href="/registries">{{#role}}Реєстри{{/role}}{{^role}}Мої реєстри{{/role}}</a></li>
+        <li><a {{#invoicesPage}}class="link-selected"{{/invoicesPage}} href="/invoices">{{#role}}Транспортні накладні{{/role}}{{^role}}Мої транспортні накладні{{/role}}</a></li>
+         {{/loginedUser}}
+        <li><a {{#aboutPage}}class="link-selected"{{/aboutPage}} href="/about">Про компанію</a></li>
+    </ul>
+</nav>

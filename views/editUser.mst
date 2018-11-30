@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru">
+    {{>head}}
+    <body>
+        <div class="wrapper center">
+            <div class="header">
+                {{>header}}
+            </div>
+            <div class="content">
+                <h1>Редагування акаунту</h1>
+                <p>
+                    Усі поля (окрім біографії) форми, наведеної нижче, є необхідними для заповнення:
+                </p>
+                <p>
+                    Якщо ви не бажаєте оновлювати фото, залиште відповідне поле пустим.<br/>
+                    Якщо ж хочете оновити фото, то при завантажуванні памятайте про обмеження:<br/>
+                    <i>(фото повинно бути формату .jpg, .png та розміром до 3 МБ)</i>
+                </p>
+                {{#user}}
+                <form id="edit-profile" class="default-form center" action="/users/update" enctype="multipart/form-data" method="POST" onsubmit="var arr=document.documentElement.getElementsByTagName('*');for(var i=0;i<arr.length;i++){arr[i].style.cursor='wait';}">
+                    <label>
+                        <span>Повне ім'я:</span>
+                        <input type="text" placeholder="від 3 до 30 символів" minlength="3" maxlength="30" size="16" name="fullname" value="{{fullname}}" required>
+                    </label>
+                    <label>
+                        <span>E-Mail:</span>
+                        <input type="email" placeholder="Введіть email" size="16" name="email" value="{{email}}" required>
+                    </label>
+                    <label>
+                        <span>Номер телефону:</span>
+                        <input type="tel" placeholder="формат +380ххххххххх" pattern="\+380[0-9]{9}" size="16" name="phone" onclick="if(!this.value)this.value='+380'" value="{{phone}}" required>
+                    </label>
+                    <label>
+                        <span>Фото профілю:</span>
+                        <input type="file" name="photo" accept="image/*">
+                    </label>
+                    <label class="textarea-form">
+                        <div>Біографія:</div>
+                        <textarea placeholder="інформація про себе" rows="10" cols="50" maxlength="1000" name="bio">{{bio}}</textarea>
+                    </label>
+                    <label>
+                        <span>Підтвердження паролю:</span>
+                        <input type="password" placeholder="Введіть ваш пароль" minlength="8" maxlength="30" size="16" name="pasw" required>
+                    </label>
+                    <input name="id" type="hidden" value="{{id}}">
+                    <div>
+                        <input type="reset" class="center" value="Скинути">
+                        <input type="submit" class="center" value="Оновити">
+                    </div>
+                </form>
+                {{/user}}
+            </div>
+            <div class="footer">
+                {{> footer}}
+            </div>
+        </div>
+    </body>
+</html>

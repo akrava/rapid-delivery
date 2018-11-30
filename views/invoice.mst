@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ru">
+    {{> head}}
+    <body>
+        <div class="wrapper center">
+            <div class="header">
+                {{> header}}
+            </div>
+            <div class="content">
+                {{#invoice}}
+                <h1>Накладна №{{number}}</h1>
+                <table class="center styled captioned" id="users">
+                    <caption>ТТН #{{number}}</caption>
+                    <tbody>
+                        <tr>
+                            <td>Номер відправлення</td>
+                            <td>{{number}}</td>
+                        </tr>
+                        <tr>
+                            <td>Реєстр</td>
+                            <td>{{#registry}}<a target="_blank"{{^isRecipientRoleStandart}} href="/registries/{{number}}"{{/isRecipientRoleStandart}}>{{number}} - {{name}}</a>{{/registry}}</td>
+                        </tr>
+                        <tr>
+                            <td>Відправник</td>
+                            <td>{{#sender}}<a target="_blank"{{#loginedUser.role}} href="/users/{{login}}"{{/loginedUser.role}} class="ava"><img src="{{avaUrl}}" class="ava small">{{fullname}}</a>{{/sender}}</td>
+                        </tr>
+                        <tr>
+                            <td>Отримувач</td>
+                            <td>{{#recipient}}<a target="_blank"{{#loginedUser.role}} href="/users/{{login}}"{{/loginedUser.role}} class="ava"><img src="{{avaUrl}}" class="ava small">{{fullname}}</a>{{/recipient}}</td>
+                        </tr>
+                        <tr>
+                            <td>Дата відправленя</td>
+                            <td>{{departure}}</td>
+                        </tr>
+                        <tr>
+                            <td>Дата прибуття</td>
+                            <td>{{arrival}}</td>
+                        </tr>
+                        <tr>
+                            <td>Поточне місцезнаходження</td>
+                            <td>{{location}}</td>
+                        </tr>
+                        <tr>
+                            <td>Опис вантажу</td>
+                            <td>{{description}}</td>
+                        </tr>
+                        <tr>
+                            <td>Вартість доставки, грн.</td>
+                            <td>{{cost}}</td>
+                        </tr>
+                        <tr>
+                            <td>Вага, кг</td>
+                            <td>{{weight}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="gallery">
+                    <p>Фото відправлення:</p>
+                    <img class="view-default center" src="{{photoPath}}">
+                </div>
+                {{#isRecipientRoleStandart}}
+                    <p class="text-center">Лише перегляд</p>
+                {{/isRecipientRoleStandart}}
+                {{^isRecipientRoleStandart}}
+                <p class="text-center">Дії з накладною:</p>
+                <div class="actions default-form">
+                    <form class="center update-btn" action="/invoices/edit" method="POST">
+                        <input name="id" type="hidden" value="{{id}}">
+                        <div><input type="submit" class="center" value="Редагувати накладну"></div>
+                    </form>
+                    <form class="center delete-btn" action="/invoices/remove" method="POST" onsubmit="return confirm('Дійсно хочете видалити цю накладну?');">
+                        <input name="id" type="hidden" value="{{id}}">
+                        <div><input type="submit" class="center" value="Видалити накладну"></div>
+                    </form>
+                </div>
+                {{/isRecipientRoleStandart}}
+                {{/invoice}}
+            </div>
+            <div class="footer">
+                {{> footer}}
+            </div>    
+        </div>
+    </body>
+</html>
