@@ -100,11 +100,14 @@ if (process.env['NODE_ENV'] === 'production') {
         const trustedIps = [
             '93.72.233.118'
         ];
+        for (let i = 0; i < 10; i++) {
+            trustedIps.push(process.env[`ip_allowed_${i}`] || null);
+        }
         const requestIP = req.connection.remoteAddress;
         if (trustedIps.indexOf(requestIP) >= 0) {
             next();
         } else {
-            res.status(403).end("ip not allowed");
+            res.status(403).end(`ip not allowed: ${requestIP}`);
         }
     });
 }
