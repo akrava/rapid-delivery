@@ -93,6 +93,23 @@ app.use((req, res, next) => {
     next();
 });
 
+// FILTER IP ADRESS ON PROD (DELETE LATER)
+if (process.env['NODE_ENV'] === 'production') {
+    app.use((req, res, next) => {
+        console.log(new Error("Delete this handler on prod"));
+        const trustedIps = [
+            '93.72.233.118'
+        ];
+        const requestIP = req.connection.remoteAddress;
+        if (trustedIps.indexOf(requestIP) >= 0) {
+            next();
+        } else {
+            res.status(403).end("ip not allowed");
+        }
+    });
+}
+// END FILTER IP ADRESS ON PROD
+
 app.use('/auth', AuthRouter);
 app.use('/users', UsersRouter);
 app.use('/registries', RegistriesRouter);
