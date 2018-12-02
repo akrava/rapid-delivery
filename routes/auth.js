@@ -10,6 +10,7 @@ const router = express.Router();
 router.get('/register', (req, res) => {
     res.render('register', {
         title: "Реєстрація нового користувача",
+        breadcrumbs: [{text: 'Реєстрація'}],
         error: req.query.error ? decodeURIComponent(req.query.error) : false
     });
 });
@@ -52,6 +53,7 @@ router.post('/register', async (req, res) => {
 router.get('/login', async (req, res) => {
     res.render('login', {
         title: "Вхід на сайт",
+        breadcrumbs: [{text: 'Вхід'}],
         error: req.query.error ? decodeURIComponent(req.query.error) : false,
         inform: req.query.inform ? decodeURIComponent(req.query.inform) : false
     });

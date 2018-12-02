@@ -1,0 +1,31 @@
+{{#searchQuery}}
+    <p>
+        Результати пошуку{{^IsAdmin}} серед моїх{{/IsAdmin}} транспортних накладних за запитом 
+        `<b>{{searchQuery}}</b>` по {{searchType}} накладної.
+    </p>
+    <p>
+        {{#invoices.0}}
+            Всього знайдено <b>{{totalCount}}</b> накладну(-і)(-их) за 
+            наданим пошуковим запитом{{^IsAdmin}} серед моїх ТТН{{/IsAdmin}}. На даній сторінці показано 
+            <b>{{invoices.length}}</b> накладну(-і)(-их).
+            Ви знаходитесь на <b>{{currentPage}}</b> сторінці результатів
+            пошуку з <b>{{totalPages}}</b> всього.<br> 
+        {{/invoices.0}}
+        {{^invoices.0}}
+            За даним пошуковим запитом{{^IsAdmin}} серед моїх ТТН{{/IsAdmin}} нічого не знайдено :(
+        {{/invoices.0}}
+    </p>
+{{/searchQuery}}
+{{^searchQuery}}
+    <p>
+        {{#invoices.0}}
+            Ви знаходитесь на <b>{{currentPage}}</b> сторінці з 
+            <b>{{totalPages}}</b> всього.<br>
+            Нижче в <i>списку</i> наведено <b>{{invoices.length}}</b> накладну(-і)(-их) з 
+            <b>{{totalCount}}</b> доступної(-их) на даний момент{{^IsAdmin}} у особистому розпорядженні{{/IsAdmin}}.
+        {{/invoices.0}}
+        {{^invoices.0}}
+            На жаль, на даний момент немає{{^IsAdmin}} ваших{{/IsAdmin}} накладних.
+        {{/invoices.0}}
+    </p>
+{{/searchQuery}}

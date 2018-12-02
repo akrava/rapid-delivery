@@ -19,6 +19,7 @@ router.get('/', Service.checkAdmin, async (req, res) => {
     });
     res.render('users', {
         title: "Користувачі",
+        breadcrumbs: [{text: 'Користувачі'}],
         usersPage: true,
         users
     });
@@ -55,6 +56,7 @@ async function userRenderPage(req, res) {
         });
         return res.render('user', {
             title: `${user.fullname} - обліковий запис користувача`,
+            breadcrumbs: [{text: 'Користувачі', link:"/users/"}, {text: 'Профіль'}],
             user,
             changeInfo: req.user.id.toString() === user.id.toString()
         });
@@ -95,6 +97,7 @@ router.post('/edit', Service.checkAuth, async (req, res) => {
     }
     return res.render('editUser', {
         title: `Редагування профілю`,
+        breadcrumbs: [{text: 'Користувачі', link:"/users/"}, {text: 'Профіль', link:`/users/me`}, {text: 'Редагування профілю'}],
         user,
         chageRole: req.user.role === Service.roleAdmin && user.login !== req.user.login
     });

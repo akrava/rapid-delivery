@@ -2,21 +2,23 @@
 <html lang="ru">
     {{>head}}
     <body>
-        <div class="wrapper center">
-            <div class="header">
-                {{>header}}
-            </div>
-            <div class="content">
+        <header class="navbar">
+            {{> header}}
+        </header>
+        <main class="container mt-4" role="main">
+            <nav aria-label="breadcrumb">
+               {{> breadcrumb}}
+            </nav>
                 <div class="errorPage">
                     <span>Sorry, something went wrong...</span>
-                    <img src="/images/crying-cat.png" class="center">
+                    <img src="/images/crying-cat.png" class="mx-auto">
                 </div>
                 <h1 class="errorPage">{{error.title}}</h1>
-                <p class="errorPage">{{error.message}}</p>
-            </div>
-            <div class="footer">
-                {{> footer}}
-            </div>
-        </div>
+                <p class="errorPage mb-5">{{error.message}}</p>
+        </main>
+        <footer class="footer">
+            {{> footer}}
+        </footer>
+        {{> scripts}}
     </body>
 </html>

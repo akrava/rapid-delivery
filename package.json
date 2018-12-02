@@ -1,25 +1,23 @@
 {
     "name": "rapid-delivery",
     "version": "1.0.0",
-    "description": "rapid-delivery",
+    "description": "Online-service of logistics company",
     "main": "app.js",
     "scripts": {
         "start": "nodemon app.js"
     },
-    "config": {
-        "CLOUDINARY_CLOUD_NAME": "akrava",
-        "CLOUDINARY_API_KEY": "589653819681932",
-        "CLOUDINARY_API_SECRET": "fd2iFPdbGeJ0GQmCVhdBNcq-aik",
-        "SALT_HASH": "5MPjVAkeXCWBDKRWuH63mFZi2n7+VZ5QRZve9H2MxFCAlkjwu3P120S5kmqnsKf4dcQ="
-    },
     "keywords": [
         "rapid-delivery",
+        "logistics company",
         "web-server"
     ],
+    "repository": {
+        "type": "git",
+        "url": "https://a_krava@bitbucket.org/a_krava/webprogbase2.git"
+    },
     "author": "Arkadiy Krava",
     "license": "ISC",
     "dependencies": {
-        "@types/passport-http": "^0.3.6",
         "body-parser": "^1.18.3",
         "busboy-body-parser": "^0.3.2",
         "cloudinary": "^1.11.0",
@@ -33,11 +31,14 @@
         "passport-local": "^1.0.0"
     },
     "devDependencies": {
-        "@types/cookie-parser": "^1.4.1",
-        "@types/express-session": "^1.15.11",
-        "@types/passport": "^0.4.7",
-        "@types/passport-local": "^1.0.33",
         "@types/body-parser": "^1.17.0",
-        "@types/mongoose": "^5.2.19"
+        "@types/cookie-parser": "^1.4.1",
+        "@types/dotenv": "^6.1.0",
+        "@types/express-session": "^1.15.11",
+        "@types/mongoose": "^5.2.19",
+        "@types/passport": "^0.4.7",
+        "@types/passport-http": "^0.3.6",
+        "@types/passport-local": "^1.0.33",
+        "dotenv": "^6.1.0"
     }
 }

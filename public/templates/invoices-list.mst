@@ -1,0 +1,6 @@
+{{#invoices}}
+    <li><a target="_blank" class="link-style" href="/invoices/{{number}}"><img src="{{photoPath}}" height="30" width="30" class="ava small middle mr-1">ТТН №{{number}}</a></li>
+{{/invoices}}
+{{^invoices}}
+    <span class="informal">{{#searchQuery}}Нічого не знайдено{{^IsAdmin}} серед моїх ТТН{{/IsAdmin}}{{/searchQuery}}{{^searchQuery}}В реєстрі немає жодної{{^IsAdmin}} моєї{{/IsAdmin}} накладної{{/searchQuery}}</span>
+{{/invoices}}

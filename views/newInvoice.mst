@@ -2,89 +2,132 @@
 <html lang="ru">
     {{> head}}
     <body>
-        <div class="wrapper center">
-            <div class="header">
-                {{> header}}
-            </div>
-            <div class="content">
-                <h1>{{#invoice}}Редагування накладної №{{invoice.number}}{{/invoice}}{{^invoice}}Створення нової накладної{{/invoice}}</h1>
-                <p>
-                    {{^invoice}}
-                        Усі поля форми, наведеної нижче, є необхідними для заповнення:<br/>
-                        <i>(фото повинно бути формату .jpg, .png та розміром до 3 МБ)</i>
-                    {{/invoice}}
-                    {{#invoice}}
-                        Якщо ви не бажаєте оновлювати фото, залиште відповідне поле пустим.<br/>
-                        Якщо ж хочете оновити фото, то при завантажуванні памятайте про обмеження:<br/>
-                        <i>(фото повинно бути формату .jpg, .png та розміром до 3 МБ)</i>
-                    {{/invoice}}
-                </p>
-                <form id="insert" class="default-form center" action="/invoices/{{^invoice}}add{{/invoice}}{{#invoice}}update{{/invoice}}" enctype="multipart/form-data" method="POST" onsubmit="var arr=document.documentElement.getElementsByTagName('*');for(var i=0;i<arr.length;i++){arr[i].style.cursor='wait';}">
-                    <label>
-                        <span>Реєстр:</span>
-                        <select name="registryID" class="select-arrow" required>
-                            {{^invoice}}<option hidden disabled selected value>виберіть реєстр</option>{{/invoice}}
-                            {{#standartUser}}
-                                {{#loginedUser.registries}}   
-                                    <option {{#selectedRegistry}}selected{{/selectedRegistry}} value="{{id}}">№{{number}} - {{name}}</option>
-                                {{/loginedUser.registries}}
-                            {{/standartUser}}
-                            {{^standartUser}}
-                                {{#users}}    
-                                    <optgroup label="{{fullname}}">
-                                        {{#registries}}
-                                            <option {{#selectedRegistry}}selected{{/selectedRegistry}} value="{{id}}">№{{number}} - {{name}}</option>
-                                        {{/registries}}
-                                    </optgroup>
-                                {{/users}}
-                            {{/standartUser}}
-                        </select>
-                    </label>
-                    <label>
-                        <span>Одержувач:</span>
-                        <select name="recipientID" class="select-arrow" required>
-                            {{^invoice}}<option hidden disabled selected value>виберіть користувача</option>{{/invoice}}
-                            {{#users}}
-                                <option {{#selected}}selected{{/selected}} value="{{id}}">{{fullname}}</option>
+        <header class="navbar">
+            {{> header}}
+        </header>
+        <main class="container mt-4" role="main">
+            <nav aria-label="breadcrumb">
+               {{> breadcrumb}}
+            </nav>
+            <h1>{{#invoice}}Редагування накладної №{{invoice.number}}{{/invoice}}{{^invoice}}Створення нової накладної{{/invoice}}</h1>
+            <p>
+                {{^invoice}}
+                    Усі поля форми, наведеної нижче, є необхідними для заповнення:
+                {{/invoice}}
+                {{#invoice}}
+                    Якщо ви не бажаєте оновлювати фото, залиште відповідне поле пустим.
+                {{/invoice}}
+            </p>
+            <form id="insert" class="form-default mx-auto mb-4 p-4 needs-validation" action="/invoices/{{^invoice}}add{{/invoice}}{{#invoice}}update{{/invoice}}" enctype="multipart/form-data" method="POST" novalidate>
+                 <div class="form-group form-inline ">
+                    <label for="registry_field">Реєстр:</label>
+                    <select name="registryID" class="form-control mx-sm-3 custom-select" id="registry_field" required>
+                        {{^invoice}}<option hidden disabled selected value>виберіть реєстр</option>{{/invoice}}
+                        {{#standartUser}}
+                            {{#loginedUser.registries}}   
+                                <option {{#selectedRegistry}}selected{{/selectedRegistry}} value="{{id}}">№{{number}} - {{name}}</option>
+                            {{/loginedUser.registries}}
+                        {{/standartUser}}
+                        {{^standartUser}}
+                            {{#users}}    
+                                <optgroup label="{{fullname}}">
+                                    {{#registries}}
+                                        <option {{#selectedRegistry}}selected{{/selectedRegistry}} value="{{id}}">№{{number}} - {{name}}</option>
+                                    {{/registries}}
+                                </optgroup>
                             {{/users}}
-                        </select>
-                    </label>
-                    <label>
-                        <span>Короткий опис відправлення:</span>
-                        <input type="text" minlength="3" maxlength="300" size="16" name="description" {{#invoice}}value="{{invoice.description}}"{{/invoice}} required>
-                    </label>
-                    <label>
-                        <span>Дата відправки:</span>
-                        <input type="date" name="departure" {{#invoice}}value="{{invoice.departure}}"{{/invoice}} required>
-                    </label>
-                    <label>
-                        <span>Місто відділеня:</span>
-                        <input type="text" minlength="3" maxlength="50" size="12" name="location" {{#invoice}}value="{{invoice.location}}"{{/invoice}} required>
-                    </label>
-                    <label>
-                        <span>Вага, кг:</span>
-                        <input type="number" name="weight" step="0.001" min="0" {{#invoice}}value="{{invoice.weight}}"{{/invoice}} required>
-                    </label>
-                    <label>
-                        <span>Оголошена вартість, грн:</span>
-                        <input type="number" name="cost" step="0.01" min="0" {{#invoice}}value="{{invoice.cost}}"{{/invoice}} required>
-                    </label>
-                    <label>
-                        <span>Фото відправлення:</span>
-                        <input type="file" name="photo" accept="image/*" {{^invoice}}required{{/invoice}}>
-                    </label>
-                     {{#invoice}}
-                        <input name="id" type="hidden" value="{{id}}">
-                    {{/invoice}}
-                    <div>
-                        <input type="reset" class="center" value="Скинути">
-                        <input type="submit" class="center" value="{{#invoice}}Оновити{{/invoice}}{{^invoice}}Додати{{/invoice}}">
+                        {{/standartUser}}
+                    </select>
+                    <div class="invalid-feedback">
+                        Виберіть реєстр
                     </div>
-                </form>
-            </div>
-            <div class="footer">
+                </div>
+                <div class="form-group form-inline ">
+                    <label for="recipient_field">Одержувач:</label>
+                    <select name="recipientID" class="form-control mx-sm-3 custom-select" id="recipient_field" required>
+                        {{^invoice}}<option hidden disabled selected value>виберіть користувача</option>{{/invoice}}
+                        {{#users}}
+                            <option {{#selected}}selected{{/selected}} value="{{id}}">{{fullname}}</option>
+                        {{/users}}
+                    </select>
+                    <div class="invalid-feedback">
+                        Виберіть одержувача
+                    </div>
+                </div>
+                <div class="form-group form-inline ">
+                    <label for="description_field">Короткий опис відправлення:</label>
+                    <input type="text" minlength="3" maxlength="300" class="form-control mx-sm-3" placeholder="Короткий опис відправлення" name="description" id="description_field" aria-describedby="description_helpBlock" {{#invoice}}value="{{invoice.description}}"{{/invoice}} required>
+                    <small id="description_helpBlock" class="form-text text-muted">
+                        Довжину від 3 до 300 символів включно
+                    </small>
+                    <div class="invalid-feedback">
+                        Введіть корректний опис посилки
+                    </div>
+                </div>
+                <div class="form-group form-inline ">
+                    <label for="departure_field">Дата відправки:</label>
+                    <input type="date" class="form-control mx-sm-3" name="departure" id="departure_field" {{#invoice}}value="{{invoice.departure}}"{{/invoice}} required>
+                    <div class="invalid-feedback">
+                        Введіть корректний опис посилки
+                    </div>
+                </div>
+                <div class="form-group form-inline ">
+                    <label for="location_field">Місто відділеня:</label>
+                    <input type="text" minlength="3" maxlength="50" class="form-control mx-sm-3" placeholder="Місто відділеня" name="location" id="location_field" aria-describedby="location_helpBlock" {{#invoice}}value="{{invoice.location}}"{{/invoice}} required>
+                    <small id="location_helpBlock" class="form-text text-muted">
+                        Місто повинно мати довжину від 3 до 50 символів включно
+                    </small>
+                    <div class="invalid-feedback">
+                        Введіть корректно місто відділення
+                    </div>
+                </div>
+                <div class="form-group form-inline ">
+                    <label for="weight_field">Вага, кг:</label>
+                    <input type="number" step="0.001" min="0" class="form-control mx-sm-3" placeholder="Вага" name="weight" id="weight_field" aria-describedby="weight_helpBlock" {{#invoice}}value="{{invoice.weight}}"{{/invoice}} required>
+                    <small id="weight_helpBlock" class="form-text text-muted">
+                        Вага повинна бути більше нуля та задана із макс. кроком 0.001
+                    </small>
+                    <div class="invalid-feedback">
+                        Введіть правильну вагу посилки
+                    </div>
+                </div>
+                <div class="form-group form-inline ">
+                    <label for="cost_field">Оголошена вартість, грн:</label>
+                    <input type="number" name="cost" step="0.01" min="0" class="form-control mx-sm-3" placeholder="Оголошена вартість" id="cost_field" aria-describedby="cost_helpBlock" {{#invoice}}value="{{invoice.cost}}"{{/invoice}} required>
+                    <small id="cost_helpBlock" class="form-text text-muted">
+                       Більше нуля та задана із макс. кроком 0.01
+                    </small>
+                    <div class="invalid-feedback">
+                        Введіть корректну вартість
+                    </div>
+                </div>
+                <div class="form-group form-inline">
+                    <label for="photo_field">Фото відправлення:</label>
+                    <div class="custom-file w-auto mx-sm-3">
+                        <input type="file" class="custom-file-input"  accept="image/*" name="photo" id="photo_field" {{^invoice}}required{{/invoice}}>
+                        <label class="custom-file-label small" id="file-label" style="justify-content: left;" for="customFile">Виберіть фото</label>
+                    </div>
+                    <small id="phone_helpBlock" class="form-text text-muted">
+                        Фото повинно бути формату .jpg, .png та розміром до 3 МБ
+                    </small>
+                    <div class="invalid-feedback">
+                        Виберіть фото
+                    </div>
+                </div>
+                {{#invoice}}
+                    <input name="id" type="hidden" value="{{id}}">
+                {{/invoice}}
+                <div class="col d-md-inline-flex">
+                    <button class="btn btn-primary ml-auto mr-4" type="submit">{{#invoice}}Оновити{{/invoice}}{{^invoice}}Додати{{/invoice}}</button>
+                    <button class="btn btn-secondary mr-auto" type="reset">Скинути</button>
+                </div>
+            </form>
+        </main>
+        <footer class="footer">
             {{> footer}}
-            </div>    
-        </div>
+        </footer>
+        <script defer src="/javascripts/form-validation.js"></script>
+        <script defer src="/javascripts/photo-input.js"></script>
+        {{> scripts}}
     </body>
 </html>

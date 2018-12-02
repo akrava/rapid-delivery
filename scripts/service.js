@@ -6,7 +6,7 @@ module.exports = {
         res.status(code).render('special/errorPage', { title: title, error: {
             title: title,
             message: message || null
-        }});
+        }, breadcrumbs: [{text: `error ${code}`}]});
     },
 
     toFormatedString: function () {

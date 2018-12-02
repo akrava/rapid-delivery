@@ -8,27 +8,34 @@ const express = require('express'),
     config = require('./../config');
 
 const router = express.Router();
-const basicAuthenticate = passport.authenticate('basic', {session: false});
+
+function authenticate(req, res, next) {
+    if (!req.user) { 
+        const basicAuthMiddleware = passport.authenticate('basic', { session: false });
+        return basicAuthMiddleware(req, res, next); 
+    }
+    next();
+};
 
 router.get('/', (req, res) => {
     res.send({links:[createLink("docs", "GET", "/developer/v1")]});
 });
 
-router.get('/me', basicAuthenticate, (req, res) => {
+router.get('/me', authenticate, (req, res) => {
     let user = req.user;
     user = cleanSensetiveUserInfo(user);
     res.send(user);
 });
 
 // Invoices
-router.get('/invoices', basicAuthenticate, async (req, res) => {
+router.get('/invoices', authenticate, async (req, res) => {
     const user = req.user;
     const limitString = req.query.limit;
     const pageString = req.query.page;
     const searchQueryString = req.query.query ? req.query.query.trim() : null;
     const searchTypeString = req.query.type;
     const authorLoginString = req.query.author ? req.query.author.trim() : null;
-    const minQueryLength = 3;
+    const minQueryLength = 1;
     const maxQueryLength = 50;
     let limit = Number.parseInt(limitString);
     if (!Number.isInteger(limit)) limit = null;
@@ -89,7 +96,7 @@ router.get('/invoices', basicAuthenticate, async (req, res) => {
     res.send(responseObject);         
 });
 
-router.get('/invoices/:number(\\d+)', basicAuthenticate, async (req, res) => {
+router.get('/invoices/:number(\\d+)', authenticate, async (req, res) => {
     const user = req.user;
     const numberString = req.params.number;
     const number = Number.parseInt(numberString);
@@ -135,7 +142,7 @@ router.get('/invoices/:number(\\d+)', basicAuthenticate, async (req, res) => {
     });
 });
 
-router.post('/invoices', basicAuthenticate, async (req, res) => {
+router.post('/invoices', authenticate, async (req, res) => {
     if (!req.body) return sendError(res, 400, `Bad request: No data was send in JSON format`);
     const registryNumStr = req.body.registryNum;
     const registryNum = Number.parseInt(registryNumStr);
@@ -184,7 +191,7 @@ router.post('/invoices', basicAuthenticate, async (req, res) => {
     });
 });
 
-router.put('/invoices/:number(\\d+)', basicAuthenticate, async(req, res) => {
+router.put('/invoices/:number(\\d+)', authenticate, async(req, res) => {
     const user = req.user;
     const numberString = req.params.number;
     const number = Number.parseInt(numberString) || null;
@@ -253,7 +260,7 @@ router.put('/invoices/:number(\\d+)', basicAuthenticate, async(req, res) => {
     });
 });
 
-router.delete('/invoices/:number(\\d+)', basicAuthenticate, async(req, res) => {
+router.delete('/invoices/:number(\\d+)', authenticate, async(req, res) => {
     const user = req.user;
     const numberString = req.params.number;
     const number = Number.parseInt(numberString);
@@ -273,7 +280,7 @@ router.delete('/invoices/:number(\\d+)', basicAuthenticate, async(req, res) => {
 });
 
 // Registries
-router.get('/registries', basicAuthenticate, async (req, res) => {
+router.get('/registries', authenticate, async (req, res) => {
     const user = req.user;
     const limitString = req.query.limit;
     const pageString = req.query.page;
@@ -333,7 +340,7 @@ router.get('/registries', basicAuthenticate, async (req, res) => {
     res.send(responseObject);         
 });
 
-router.get('/registries/:number(\\d+)', basicAuthenticate, async (req, res) => {
+router.get('/registries/:number(\\d+)', authenticate, async (req, res) => {
     const user = req.user;
     const numberString = req.params.number;
     const number = Number.parseInt(numberString);
@@ -365,7 +372,7 @@ router.get('/registries/:number(\\d+)', basicAuthenticate, async (req, res) => {
     }
 });
 
-router.post('/registries', basicAuthenticate, async (req, res) => {
+router.post('/registries', authenticate, async (req, res) => {
     if (!req.body) return sendError(res, 400, `Bad request: No data was send in JSON format`);
     const userLogin = req.body.userLogin;
     const name = req.body.name ? req.body.name.trim() : null;
@@ -398,7 +405,7 @@ router.post('/registries', basicAuthenticate, async (req, res) => {
     });
 });
 
-router.put('/registries/:number(\\d+)', basicAuthenticate, async(req, res) => {
+router.put('/registries/:number(\\d+)', authenticate, async(req, res) => {
     if (!req.body) return sendError(res, 400, `Bad request: No data was send in JSON format`);
     const numberString = req.params.number;
     const number = Number.parseInt(numberString) || null;
@@ -446,7 +453,7 @@ router.put('/registries/:number(\\d+)', basicAuthenticate, async(req, res) => {
     });
 });
 
-router.delete('/registries/:number(\\d+)', basicAuthenticate, async(req, res) => {
+router.delete('/registries/:number(\\d+)', authenticate, async(req, res) => {
     const numberString = req.params.number;
     const number = Number.parseInt(numberString);
     try {
@@ -465,7 +472,7 @@ router.delete('/registries/:number(\\d+)', basicAuthenticate, async(req, res) =>
 });
 
 // Users
-router.get('/users', basicAuthenticate, async (req, res) => {
+router.get('/users', authenticate, async (req, res) => {
     if (req.user.role !== Service.roleAdmin) {
         return sendError(res, 403, `Forbidden`);
     }
@@ -495,7 +502,7 @@ router.get('/users', basicAuthenticate, async (req, res) => {
     res.send(responseObject);         
 });
 
-router.get('/users/:login(\[A-Za-z_0-9]+)', basicAuthenticate, async (req, res) => {
+router.get('/users/:login(\[A-Za-z_0-9]+)', authenticate, async (req, res) => {
     if (req.user.role !== Service.roleAdmin) {
         return sendError(res, 403, `Forbidden`);
     }
@@ -567,7 +574,7 @@ router.post('/users', async (req, res) => {
     });
 });
 
-router.put('/users/:login(\[A-Za-z_0-9]+)', basicAuthenticate, async(req, res) => {
+router.put('/users/:login(\[A-Za-z_0-9]+)', authenticate, async(req, res) => {
     if (!req.body) return sendError(res, 400, `Bad request: No data was send in JSON format`);
     const loginString = req.params.login;
     if (loginString  && !loginString.trim()) return sendError(res, 400, `Requested login is empty`, {login: loginString});
@@ -631,7 +638,7 @@ router.put('/users/:login(\[A-Za-z_0-9]+)', basicAuthenticate, async(req, res) =
     res.send({data: userModel});
 });
 
-router.delete('/users/:login(\[A-Za-z_0-9]+)', basicAuthenticate, async(req, res) => {
+router.delete('/users/:login(\[A-Za-z_0-9]+)', authenticate, async(req, res) => {
     const loginString = req.params.login;
     if (loginString  && !loginString.trim()) return sendError(res, 400, `Requested login is empty`, {login: loginString});
     try {

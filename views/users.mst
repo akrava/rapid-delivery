@@ -2,55 +2,57 @@
 <html lang="ru">
     {{> head}}
     <body>
-        <div class="wrapper center">
-            <div class="header">
-                {{> header}}
-            </div>
-            <div class="content">
-                <h1>Cписок користувачів</h1>
-                <p>Нижче в <i>таблиці</i> наведені всі користувачі даного онлайн-сервісу.</p>
-                <p>Також можна переглянути персональну сторінку кожного з користувачів.</p>
-                <table class="center styled" id="users">
-                    <thead>
+        <header class="navbar">
+            {{> header}}
+        </header>
+        <main class="container mt-4" role="main">
+            <nav aria-label="breadcrumb">
+               {{> breadcrumb}}
+            </nav>
+            <h1>Cписок користувачів</h1>
+            <p>Нижче в <i>таблиці</i> наведені всі користувачі даного онлайн-сервісу.</p>
+            <p>Також можна переглянути персональну сторінку кожного з користувачів.</p>
+            <div class="table-responsive p-3"><table class="mx-auto mb-4 styled mr-3" id="users">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Login</th>
+                        <th rowspan="2">Повне ім'я</th>
+                        <th colspan="2" class="reset-th head">Кількість</th>
+                        <th rowspan="2">Дата реєстрації</th>
+                    </tr>
+                    <tr>
+                        <th class="reset-th small">Реєстрів</th>
+                        <th class="reset-th small">Вхідних<br>накладних</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#users}}
+                    <tr>
+                        <td><a target="_blank" class="link-style text-nowrap" href="/users/{{login}}">{{login}}{{#role}}<i class="far fa-star ml-1"></i>{{/role}}</a></td>
+                        <td><a target="_blank" class="link-style text-nowrap" href="/users/{{login}}">{{fullname}}</a></td>
+                        <td class="text-center">{{registries.length}}</td>
+                        <td class="text-center">{{upcomingInvoices.length}}</td>
+                        <td class="text-nowrap">{{registeredAt}}</td>
+                    </tr>
+                    {{/users}}
+                    {{^users}}
                         <tr>
-                            <th rowspan="2">Login</th>
-                            <th rowspan="2">Повне ім'я</th>
-                            <th colspan="2" class="reset-th head">Кількість</th>
-                            <th rowspan="2">Дата реєстрації</th>
+                            <td colspan="5">
+                                <span class="informal">В реєстрі немає жодного користувача</span>
+                            </td>
                         </tr>
-                        <tr>
-                            <th class="reset-th small">Реєстрів</th>
-                            <th class="reset-th small">Вхідних<br>накладних</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{#users}}
-                        <tr>
-                            <td><a target="_blank" {{#role}}class="star"{{/role}} href="/users/{{login}}">{{login}}</a></td>
-                            <td><a target="_blank" href="/users/{{login}}">{{fullname}}</a></td>
-                            <td class="text-center">{{registries.length}}</td>
-                            <td class="text-center">{{upcomingInvoices.length}}</td>
-                            <td>{{registeredAt}}</td>
-                        </tr>
-                        {{/users}}
-                        {{^users}}
-                            <tr>
-                                <td colspan="5">
-                                    <span class="informal">В реєстрі немає жодного користувача</span>
-                                </td>
-                            </tr>
-                        {{/users}}
-                    </tbody>
-                </table>
-                <p>
-                    Кожна сторінка користувача містить в собі інформацію про нього. Таким чином
-                    можна побачити фотокартку, повне ім'я, дату реєстрації та біографію кожного 
-                    учасника.
-                </p>
-            </div>
-            <div class="footer">
+                    {{/users}}
+                </tbody>
+            </table></div>
+            <p>
+                Кожна сторінка користувача містить в собі інформацію про нього. Таким чином
+                можна побачити фотокартку, повне ім'я, дату реєстрації та біографію кожного 
+                учасника.
+            </p>
+        </main>
+        <footer class="footer">
             {{> footer}}
-            </div>    
-        </div>
+        </footer>
+        {{> scripts}}
     </body>
 </html>

@@ -2,17 +2,19 @@
 <html lang="ru">
     {{>head}}
     <body>
-        <div class="wrapper center">
-            <div class="header">
-                {{>header}}
-            </div>
-            <div class="content">
-                <h1>{{info.title}}</h1>
-                <p>{{info.message}}</p>
-            </div>
-            <div class="footer">
-                {{> footer}}
-            </div>
-        </div>
+        <header class="navbar">
+            {{> header}}
+        </header>
+        <main class="container mt-4" role="main">
+            <nav aria-label="breadcrumb">
+               {{> breadcrumb}}
+            </nav>
+            <h1>{{info.title}}</h1>
+            <p class="mb-5">{{info.message}}</p>
+        </main>
+        <footer class="footer">
+            {{> footer}}
+        </footer>
+        {{> scripts}}
     </body>
 </html>

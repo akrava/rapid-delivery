@@ -64,14 +64,15 @@ router.get('/', Service.checkAuth, async (req, res) => {
     }
     res.render('invoices', {
         title: searchQuery ? `Результати пошуку накладних за '${searchQuery}'` : "Транспортні накладні",
+        breadcrumbs: [{text: `Накладні`}],
         invoicesPage: true,
         invoices: invoices.slice(firstInvoiceIndex, lastInvoiceIndexExclusive),
         currentPage,
         totalCount,
         currentCount: lastInvoiceIndexExclusive - firstInvoiceIndex,
         pages,
-        prevPage: currentPage - 1 > 0 ? pages[currentPage - 2].href : null,
-        nextPage: currentPage !== totalPages ? pages[currentPage].href : null,
+        prevPage: currentPage - 1 > 0 ? currentPage - 1 : null,
+        nextPage: currentPage !== totalPages ? currentPage + 1 : null,
         searchQuery,
         searchType
     });            
@@ -100,6 +101,7 @@ router.get('/:number(\\d+)', Service.checkAuth, async (req, res) => {
     }
     res.render('invoice', {
         title: `ТТН №${invoice.number}`,
+        breadcrumbs: [{text: `Накладні`, link: "/invoices"}, {text: `Накладна №${invoice.number}`}],
         invoice,
         isRecipientRoleStandart: invoice.recipient._id.toString() === user.id.toString() && user.role === Service.roleStandart
     });
@@ -120,10 +122,11 @@ router.get('/new', Service.checkAuth, async (req, res) => {
         return res.render('special/infoPage', {title: "Створення ТТН", info: {
             title: `Накладна не може бути створена`,
             message: "Створіть реєстр, щоби мати можливість створювати ТТН"
-        }});
+        }, breadcrumbs: [{text: `Накладні`, link: "/invoices"}, {text: `Створення`}]});
     }
     res.render('newInvoice', {
         title: "Створення накладної",
+        breadcrumbs: [{text: `Накладні`, link: "/invoices"},  {text: `Створення`}],
         users: user.role === Service.roleStandart ? users.filter(x => user.id.toString() !== x.id.toString()) : users,
         standartUser: user.role === Service.roleStandart
     });
@@ -163,6 +166,7 @@ router.post('/edit', Service.checkAuth, checkRightsForInvoice, async (req, res) 
     invoice.departure = new Date(invoice.departure).toValueHtmlString();
     res.render('newInvoice', {
         title: `Редагування накладної ${invoice.number}`,
+        breadcrumbs: [{text: `Накладні`, link: "/invoices"},  {text: `Редагування`}],
         users: user.role === Service.roleStandart ? users.filter(x => user.id.toString() !== x.id.toString()) : users,
         invoice,
         standartUser: user.role === Service.roleStandart
@@ -281,7 +285,7 @@ router.post('/remove', Service.checkAuth, checkRightsForInvoice, async (req, res
     return res.render('special/infoPage', {title: "ТТН була видалена", info: {
         title: `Накладна #${invoice.number} була успішно видалена`,
         message: "Тепер можете повернутись до реєстру накладних"
-    }});
+    }, breadcrumbs: [{text: `Накладні`, link: "/invoices"}, {text: `Видалено`}]});
 });
 
 async function checkRightsForInvoice(req, res, next) {

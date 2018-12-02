@@ -50,6 +50,7 @@ router.get('/', Service.checkAuth, async (req, res) => {
     }
     res.render('registries', {
         title: searchQuery ? `Результати пошуку реєстрів за '${searchQuery}'` : "Реєстри",
+        breadcrumbs: [{text: 'Реєстри'}],
         registriesPage: true,
         registries: registries.slice(firstInvoiceIndex, lastInvoiceIndexExclusive),
         currentPage,
@@ -81,6 +82,7 @@ router.get('/:number(\\d+)', Service.checkAuth, async (req, res) => {
         registry.created = new Date(registry.created).toFormatedString();
         res.render('registry', {
             title: `Реєстр ${registry.number} - ${registry.name}`,
+            breadcrumbs: [{text: 'Реєстри', link: "/registries"}, {text: `${registry.number} - ${registry.name}`}],
             registry
         });         
     } else {
@@ -100,6 +102,7 @@ router.get('/new', Service.checkAuth, async (req, res) => {
     }
     res.render('newRegistry', {
         title: "Створення реєстру",
+        breadcrumbs: [{text: 'Реєстри', link: "/registries"}, {text: `Створеня`}],
         users,
         standartUser: userLogined.role === Service.roleStandart
     });
@@ -152,6 +155,7 @@ router.post('/edit', Service.checkAuth, checkRightsForRegistry, async (req, res)
     });
     res.render('newRegistry', {
         title: `Редагування реєстру ${registry.number} - ${registry.name}`,
+        breadcrumbs: [{text: 'Реєстри', link: "/registries"}, {text: `Редагування`}],
         registry,
         users,
         standartUser: user.role === Service.roleStandart
@@ -212,7 +216,7 @@ router.post('/remove', Service.checkAuth, checkRightsForRegistry, async (req, re
     return res.render('special/infoPage', {title: "Реєстр та накладні були видалені", info: {
         title: `Реєстр ${registry.number} - ${registry.name} та ${registry.invoices.length} накладних були успішно видалені`,
         message: `${invoices}Тепер можете повернутись до списку реєстрів`
-    }});
+    }, breadcrumbs: [{text: `Реєстри`, link: "/registries"}, {text: `Видалено`}]});
 });
 
 async function checkRightsForRegistry(req, res, next) {

@@ -2,54 +2,56 @@
 <html lang="ru">
     {{> head}}
     <body>
-        <div class="wrapper center">
-            <div class="header">
-                {{> header}}
-            </div>
-            <div class="content">
-                <h1>REST API documentation v1</h1>   
-                {{#classes}}
-                <h2 class="api">{{title}}</h2>
-                {{#resources}}
-                    <table class="center styled captioned api-table">
-                        <caption>{{title}}</caption>
-                        <tbody>
-                            <tr>
-                                <td>URL</td>
-                                <td>/api/v1{{url}}</td>
-                            </tr>
-                            <tr>
-                                <td>Method</td>
-                                <td>{{method}}</td>
-                            </tr>
-                            <tr>
-                                <td>Authentication</td>
-                                <td>{{{auth}}}</td>
-                            </tr>
-                            <tr>
-                                <td>URL Params</td>
-                                <td>{{{params}}}</td>
-                            </tr>
-                            <tr>
-                                <td>Data Params</td>
-                                <td>{{{data}}}</td>
-                            </tr>
-                            <tr>
-                                <td>Success Response</td>
-                                <td>{{{success}}}</td>
-                            </tr>
-                            <tr>
-                                <td>Error Response</td>
-                                <td>{{{error}}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                {{/resources}}
-                {{/classes}}
-            </div>
-            <div class="footer">
-                {{> footer}}
-            </div>    
-        </div>
+        <header class="navbar">
+            {{> header}}
+        </header>
+        <main class="container mt-4" role="main">
+            <nav aria-label="breadcrumb">
+               {{> breadcrumb}}
+            </nav>
+            <h1>REST API documentation v1</h1>   
+            {{#classes}}
+            <h2 class="api">{{title}}</h2>
+            {{#resources}}
+                <table class="mx-auto styled captioned api-table table-responsive mb-3">
+                    <caption>{{title}}</caption>
+                    <tbody>
+                        <tr>
+                            <td>URL</td>
+                            <td>/api/v1{{url}}</td>
+                        </tr>
+                        <tr>
+                            <td>Method</td>
+                            <td>{{method}}</td>
+                        </tr>
+                        <tr>
+                            <td>Authentication</td>
+                            <td>{{{auth}}}</td>
+                        </tr>
+                        <tr>
+                            <td>URL Params</td>
+                            <td>{{{params}}}</td>
+                        </tr>
+                        <tr>
+                            <td>Data Params</td>
+                            <td>{{{data}}}</td>
+                        </tr>
+                        <tr>
+                            <td>Success Response</td>
+                            <td>{{{success}}}</td>
+                        </tr>
+                        <tr>
+                            <td>Error Response</td>
+                            <td>{{{error}}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            {{/resources}}
+            {{/classes}}
+        </main>
+        <footer class="footer">
+            {{> footer}}
+        </footer>
+        {{> scripts}}
     </body>
 </html>

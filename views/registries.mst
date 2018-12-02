@@ -2,13 +2,16 @@
 <html lang="ru">
     {{> head}}
     <body>
-        <div class="wrapper center">
-            <div class="header">
-                {{> header}}
-            </div>
-            <div class="content">
-                <h1>Список{{^loginedUser.role}} моїх{{/loginedUser.role}} реєстрів</h1>
-                <div class="left block">
+        <header class="navbar">
+            {{> header}}
+        </header>
+        <main class="container mt-4" role="main">
+            <nav aria-label="breadcrumb">
+               {{> breadcrumb}}
+            </nav>
+            <h1>Список{{^loginedUser.role}} моїх{{/loginedUser.role}} реєстрів</h1>
+            <div class="row flex-xl-row px-3">
+                <div class="col-xl-8">
                     {{^searchQuery}}
                     <p>
                         {{#registries.0}}
@@ -41,67 +44,84 @@
                     </p>
                     {{/searchQuery}}
                 </div>
-                <div class="right block">
-                    <p>Пошук реєстрів:</p>
-                    <form id="search" action="/registries/" method="GET">
-                        <label>За назвою та описом</label>
-                        <input type="search" name="q" id="search-field" placeholder="назва/опис" minlength="3" maxlength="50" {{#searchQuery}}value="{{searchQuery}}"{{/searchQuery}} required>
-                        <input type="submit" value="Пошук">
+                <div class="col-xl-4 search-block py-2">
+                    <p class="text-center mb-0">Пошук реєстрів:</p>
+                    <form id="search" class="form-inline mb-1" action="/registries/" method="GET">
+                        <label class="text-center d-block w-100 pb-1 small">За назвою та описом</label>
+                        <input class="form-control form-control-sm  mr-2 ml-auto"  name="q" id="search-field" type="text" placeholder="назва/опис" minlength="3" maxlength="50" aria-label="Пошук" {{#searchQuery}}value="{{searchQuery}}"{{/searchQuery}} required>
+                        <button class="btn btn-outline-primary btn-sm mr-auto ml-sm-0 ml-auto mt-sm-0 mt-2" type="submit">Пошук</button>
                     </form>
                 </div>
-                <p class="clear-both add-link">
-                    <span><a href="/registries/new">Створення реєстру накладних</a></span>
-                </p>
-                <p>
-                    Можна переглянути окрему сторінку кожного реєстру:
-                </p>
-                <div class="pagination-wrapper"> 
-                    {{#prevPage}}<span class="page-nav left"><a href="{{prevPage}}">Попередня сторінка</a></span>{{/prevPage}}
-                    <table class="center styled" id="registries">
-                        <thead>
-                            <tr>
-                                <th>Номер</th>
-                                <th>Назва</th>
-                                {{#loginedUser.role}}<th>Користувач</th>{{/loginedUser.role}}
-                                <th>К-сть ТТН</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{#registries}}
-                            <tr>
-                                <td><a target="_blank" href="/registries/{{number}}">{{number}}</a></td>
-                                <td><a target="_blank" href="/registries/{{number}}">{{name}}</a></td>
-                                {{#loginedUser.role}}<td><a target="_blank" href="/users/{{user.login}}" class="ava"><img src="{{user.avaUrl}}" class="ava small">{{user.fullname}}</a></td>{{/loginedUser.role}}
-                                <td class="text-center">{{invoices.length}}</td>
-                            </tr>
-                            {{/registries}}
-                            {{^registries}}
-                                <tr>
-                                    <td colspan="{{#loginedUser.role}}4{{/loginedUser.role}}{{^loginedUser.role}}3{{/loginedUser.role}}" class="text-center">
-                                        <span class="informal">{{#searchQuery}}Нічого не знайдено{{^loginedUser.role}} серед моїх ТТН{{/loginedUser.role}}{{/searchQuery}}{{^searchQuery}}Немає жодного реєстру{{^loginedUser.role}} у особистому розпорядженні{{/loginedUser.role}}{{/searchQuery}}</span>
-                                    </td>
-                                </tr>
-                            {{/registries}}
-                        </tbody>
-                    </table>
-                    {{#nextPage}}<span class="page-nav right"><a href="{{nextPage}}">Наступна сторінка</a></span>{{/nextPage}}
-                </div>
-                {{#pages.1}}
-                    <ul class="center" id="pagination">
-                        {{#pages}}
-                            <li>{{^current}}<a href="{{href}}">{{/current}}{{number}}{{^current}}</a>{{/current}}</li>
-                        {{/pages}}
-                    </ul>
-                {{/pages.1}}
-                <p>
-                    На сторінці реєстру можна дізнатися про дату його створення, власника,
-                    призначення, список накладних та іншу супутню інформацію, а також є можливість
-                    для редагування та видалення. 
-                </p>
             </div>
-            <div class="footer">
+            <div class="d-flex p-3">
+                <a href="/registries/new" class="btn btn-primary mx-auto " type="button">Створення реєстру накладних</a>
+            </div>
+            <p>
+                Можна переглянути окрему сторінку кожного реєстру:
+            </p>
+            <div class="pagination-wrapper"> 
+                <div class="table-responsive p-3"><table class="mx-auto mb-2 styled" id="registries">
+                    <thead>
+                        <tr>
+                            <th>Номер</th>
+                            <th>Назва</th>
+                            {{#loginedUser.role}}<th>Користувач</th>{{/loginedUser.role}}
+                            <th>К-сть ТТН</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#registries}}
+                        <tr>
+                            <td><a target="_blank" class="link-style text-nowrap" href="/registries/{{number}}">{{number}}</a></td>
+                            <td><a target="_blank" class="link-style text-nowrap" href="/registries/{{number}}">{{name}}</a></td>
+                            {{#loginedUser.role}}<td><a target="_blank" class="link-style text-nowrap" href="/users/{{user.login}}" class="ava"><img src="{{user.avaUrl}}" class="ava small align-middle" height="30" width="30">{{user.fullname}}</a></td>{{/loginedUser.role}}
+                            <td class="text-center text-nowrap">{{invoices.length}}</td>
+                        </tr>
+                        {{/registries}}
+                        {{^registries}}
+                            <tr>
+                                <td colspan="{{#loginedUser.role}}4{{/loginedUser.role}}{{^loginedUser.role}}3{{/loginedUser.role}}" class="text-center">
+                                    <span class="informal">{{#searchQuery}}Нічого не знайдено{{^loginedUser.role}} серед моїх ТТН{{/loginedUser.role}}{{/searchQuery}}{{^searchQuery}}Немає жодного реєстру{{^loginedUser.role}} у особистому розпорядженні{{/loginedUser.role}}{{/searchQuery}}</span>
+                                </td>
+                            </tr>
+                        {{/registries}}
+                    </tbody>
+                </table></div>
+            </div>
+            {{#pages.1}}
+            <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {{^prevPage}} disabled{{/prevPage}}">
+                    <a class="page-link" href="{{prevPage}}"><span aria-hidden="true">&laquo;</span><span class="sr-only">Previous</span></a>
+                </li>
+                {{#pages}}
+                    {{^current}}
+                    <li class="page-item"><a class="page-link" href="{{href}}">{{number}}</a></li>
+                    {{/current}}
+                    {{#current}}
+                    <li class="page-item active">
+                        <span class="page-link">
+                            {{number}}
+                            <span class="sr-only">(current)</span>
+                        </span>
+                    </li>
+                    {{/current}}
+                {{/pages}}
+                <li class="page-item {{^nextPage}} disabled{{/nextPage}}">
+                    <a class="page-link" href="{{nextPage}}"><span aria-hidden="true">&raquo;</span><span class="sr-only">Next</span></a>
+                </li>
+            </ul>
+            </nav>
+            {{/pages.1}}
+            <p>
+                На сторінці реєстру можна дізнатися про дату його створення, власника,
+                призначення, список накладних та іншу супутню інформацію, а також є можливість
+                для редагування та видалення. 
+            </p>
+        </main>
+        <footer class="footer">
             {{> footer}}
-            </div>    
-        </div>      
+        </footer>   
+        {{> scripts}}   
     </body>
 </html>

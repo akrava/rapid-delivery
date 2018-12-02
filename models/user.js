@@ -140,7 +140,7 @@ class User {
 
     async deleteAvatarFromStorage() {
         if (this.avaUrl === '/images/userpic.png') return;
-        if (!this.photoPath.startsWith('https://res.cloudinary.com/akrava/raw/upload/')) return;
+        if (!this.avaUrl.startsWith('https://res.cloudinary.com/akrava/raw/upload/')) return;
         if (!this.avaUrl || this.avaUrl.lastIndexOf('/') < 0) {
             throw new Error("File path was not found");
         }

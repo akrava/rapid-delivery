@@ -1,29 +1,59 @@
-<div class="user-status">
-    <div>
-        {{#loginedUser}}
-        <a href="/users/me" class="ava{{#role}} star{{/role}}"><img src="{{loginedUser.avaUrl}}" class="ava small">{{loginedUser.fullname}}</a>
-        <form action="/auth/logout" method="POST"><input type="submit" value="Вийти"></form>
-        {{/loginedUser}}
-        {{^loginedUser}}
-        <span>Раді вас бачити, гість!</span>
-        <span><a href="/auth/login">Увійти</a> | <a href="/auth/register">Зареєструватися</a></span>
-        {{/loginedUser}}
+<!-- Nav Start !-->
+<nav class="navbar navbar-expand-{{#loginedUser}}lg{{/loginedUser}}{{^loginedUser}}md{{/loginedUser}} navbar-light fixed-top bg-light">
+    <a class="navbar-brand mx-auto ml-{{#loginedUser}}lg{{/loginedUser}}{{^loginedUser}}md{{/loginedUser}}-0 mr-{{#loginedUser}}lg{{/loginedUser}}{{^loginedUser}}md{{/loginedUser}}-3" href="/">
+        <img src="/images/logo.png" height="50" class="d-inline-block align-top" alt="">
+        Rapid delivery
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item{{#indexPage}} active{{/indexPage}}">
+                <a class="nav-link text-nowrap" href="/">Головна{{#indexPage}} <span class="sr-only">(current)</span>{{/indexPage}}</a>
+            </li>
+            {{#loginedUser}}
+            {{#role}}
+            <li class="nav-item{{#usersPage}} active{{/usersPage}}">
+                <a class="nav-link text-nowrap" href="/users">Користувачі{{#usersPage}} <span class="sr-only">(current)</span>{{/usersPage}}</a>
+            </li>
+            {{/role}}
+            <li class="nav-item{{#registriesPage}} active{{/registriesPage}}">
+                <a class="nav-link text-nowrap" href="/registries">{{#role}}Реєстри{{/role}}{{^role}}Мої реєстри{{/role}}{{#registriesPage}} <span class="sr-only">(current)</span>{{/registriesPage}}</a>
+            </li>
+            <li class="nav-item{{#invoicesPage}} active{{/invoicesPage}}">
+                <a class="nav-link text-nowrap" href="/invoices">{{#role}}Транспортні накладні{{/role}}{{^role}}Мої транспортні накладні{{/role}}{{#invoicesPage}} <span class="sr-only">(current)</span>{{/invoicesPage}}</a>
+            </li>
+            {{/loginedUser}}
+            <li class="nav-item{{#aboutPage}} active{{/aboutPage}}">
+                <a class="nav-link text-nowrap" href="/about">Про компанію{{#aboutPage}} <span class="sr-only">(current)</span>{{/aboutPage}}</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav navbar-right">
+            {{^loginedUser}}
+            <div class="container center-block text-center">
+                <div class="row">
+                    <div class="col d-md-inline-flex">
+                        <a role="button" href="/auth/login" class="btn btn-primary btn-sm">Увійти</a>
+                        <a role="button" href="/auth/register" class="btn btn-outline-primary ml-3 btn-sm">Зареєструватися</a>
+                    </div>
+                </div>
+            </div>
+            {{/loginedUser}}
+            {{#loginedUser}}
+            <li class="nav-item dropdown align-middle">
+                <a class="nav-link dropdown-toggle text-nowrap align-middle" href="" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img src="{{loginedUser.avaUrl}}" height="22" width="22" class="ava small align-middle">
+                    {{loginedUser.fullname}}{{#role}}<i class="far fa-star ml-1"></i>{{/role}}
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">
+                    <a class="dropdown-item" href="/users/me">Мій профіль</a>
+                    <div class="dropdown-divider"></div>
+                    <form action="/auth/logout" method="POST"><button class="dropdown-item pointer text-danger" type="submit"><i class="fas fa-sign-out-alt mr-1"></i>Вийти</button></form>
+                </div>
+            </li>
+            {{/loginedUser}}
+        </ul>
     </div>
-</div>
-<div class="logo center">
-    <a href="/"><img src="/images/logo.png" alt="logo of company"></a>
-    <span><a href="/">Rapid delivery</a></span>
-</div>
-<nav class="center"> 
-    <ul>
-        <li><a {{#indexPage}}class="link-selected"{{/indexPage}} href="/">Головна</a></li>
-        {{#loginedUser}}
-        {{#role}}
-        <li><a {{#usersPage}}class="link-selected"{{/usersPage}} href="/users">Користувачі</a></li>
-        {{/role}}
-        <li><a {{#registriesPage}}class="link-selected"{{/registriesPage}} href="/registries">{{#role}}Реєстри{{/role}}{{^role}}Мої реєстри{{/role}}</a></li>
-        <li><a {{#invoicesPage}}class="link-selected"{{/invoicesPage}} href="/invoices">{{#role}}Транспортні накладні{{/role}}{{^role}}Мої транспортні накладні{{/role}}</a></li>
-         {{/loginedUser}}
-        <li><a {{#aboutPage}}class="link-selected"{{/aboutPage}} href="/about">Про компанію</a></li>
-    </ul>
 </nav>
+<!-- Nav End !-->
