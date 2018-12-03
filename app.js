@@ -94,7 +94,8 @@ app.use((req, res, next) => {
 });
 
 // FILTER IP ADRESS ON PROD (DELETE LATER)
-if (process.env['NODE_ENV'] === 'production') {
+app.enable('trust proxy');
+if (process.env['NODE_ENV'] === 'production'|| true) {
     app.use((req, res, next) => {
         console.log(new Error("Delete this handler on prod"));
         const trustedIps = [
@@ -103,7 +104,7 @@ if (process.env['NODE_ENV'] === 'production') {
         for (let i = 0; i < 10; i++) {
             trustedIps.push(process.env[`ip_allowed_${i}`] || null);
         }
-        const requestIP = req.connection.remoteAddress;
+        const requestIP = req.connection.remoteAddress.slice(req.connection.remoteAddress.indexOf('ffff:') + 5);
         if (trustedIps.indexOf(requestIP) >= 0) {
             next();
         } else {
