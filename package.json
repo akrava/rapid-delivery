@@ -5,8 +5,9 @@
     "main": "app.js",
     "scripts": {
         "clean": "rimraf dist",
-        "prestart": "npm run clean",
+        "prestart": "echo \"npm run clean\"",
         "start": "npm run build && node app.js",
+        "heroku-postbuild": "npm run build",
         "build_ENABLE_THIS_ON_PROD": "webpack --mode production",
         "build": "webpack --mode development",
         "dev": "npm run clean && npm run build && npm-run-all --parallel watch:server watch:build",
