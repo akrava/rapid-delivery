@@ -6,10 +6,10 @@
     "scripts": {
         "clean": "rimraf dist",
         "prestart": "echo \"npm run clean\"",
-        "start": "npm run build && node app.js",
+        "start": "echo \"npm run build\" && node app.js",
         "heroku-postbuild": "npm run build",
         "build_ENABLE_THIS_ON_PROD": "webpack --mode production",
-        "build": "webpack --mode development",
+        "build": "webpack --mode development --progress",
         "dev": "npm run clean && npm run build && npm-run-all --parallel watch:server watch:build",
         "watch:build": "webpack --watch --mode development",
         "watch:server": "nodemon app.js"
