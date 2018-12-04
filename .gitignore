@@ -75,3 +75,6 @@ typings/
 # Other
 .vscode/
 .idea/
+
+# webpack dist
+dist/

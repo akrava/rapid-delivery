@@ -72,7 +72,7 @@ passport.use(new LocalStrategy({ usernameField: 'login' }, verifiyUserFunction))
 passport.use(new BasicStrategy(verifiyUserFunction));
 
 async function verifiyUserFunction(username, password, done) {
-    let user = null;
+    const user = null;
     try {
         user = await User.getByLogin(username);
     } catch (e) {
@@ -87,32 +87,16 @@ async function verifiyUserFunction(username, password, done) {
     }
 }
 
+app.use(express.static('dist'));
+app.get('*', (req,res) =>{
+    res.sendFile(path.join(__dirname + '/dist/index.html'));
+});
+
 // https://stackoverflow.com/questions/20912283/passport-js-passing-user-req-user-to-template-implicitly
 app.use((req, res, next) => {
     res.locals.loginedUser = req.user;
     next();
 });
-
-// FILTER IP ADRESS ON PROD (DELETE LATER)
-app.enable('trust proxy');
-if (process.env['NODE_ENV'] === 'production'|| true) {
-    app.use((req, res, next) => {
-        console.log(new Error("Delete this handler on prod"));
-        const trustedIps = [
-            '93.72.233.118'
-        ];
-        for (let i = 0; i < 10; i++) {
-            trustedIps.push(process.env[`ip_allowed_${i}`] || null);
-        }
-        const requestIP = req.connection.remoteAddress.slice(req.connection.remoteAddress.indexOf('ffff:') + 5);
-        if (trustedIps.indexOf(requestIP) >= 0) {
-            next();
-        } else {
-            res.status(403).end(`ip not allowed: ${requestIP}`);
-        }
-    });
-}
-// END FILTER IP ADRESS ON PROD
 
 app.use('/auth', AuthRouter);
 app.use('/users', UsersRouter);
