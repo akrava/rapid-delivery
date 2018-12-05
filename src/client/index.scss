@@ -76,6 +76,7 @@ nav li.nav-item:not(.active) a.nav-link:hover {
 
 nav li.nav-item a.nav-link {
     transition: 0.3s ease;
+    transition-property: background-color;
 }
 
 .credits {

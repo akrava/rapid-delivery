@@ -72,7 +72,7 @@ passport.use(new LocalStrategy({ usernameField: 'login' }, verifiyUserFunction))
 passport.use(new BasicStrategy(verifiyUserFunction));
 
 async function verifiyUserFunction(username, password, done) {
-    const user = null;
+    let user = null;
     try {
         user = await User.getByLogin(username);
     } catch (e) {

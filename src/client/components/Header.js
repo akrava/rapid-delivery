@@ -1,46 +1,31 @@
 import React, { Component } from "react";
 import PropTypes from 'prop-types';
-
-const NavBarRightUser = () => {
-    return (
-        <ul className="navbar-nav navbar-right">
-            <div className="container center-block text-center">
-                <div className="row">
-                    <div className="col d-md-inline-flex">
-                        <a role="button" href="/auth/login" className="btn btn-primary btn-sm">Увійти</a>
-                        <a role="button" href="/auth/register" className="btn btn-outline-primary ml-3 btn-sm">Зареєструватися</a>
-                    </div>
-                </div>
-            </div>
-        </ul>
-    );
-};
+import { Link } from 'react-router-dom';
+import UserNavBarRight from "./header/UserNavBarRight";
 
 const links = [
     {
         link: "/",
-        text: "Головна",
-        current: true
+        text: "Головна"
     },
     {
         link: "/about",
-        text: "Про компанію",
-        current: false
+        text: "Про компанію"
     }
 ];
 
-class Link extends Component {
+class LinkEl extends Component {
     render() {
         const { link, text, current } = this.props.data;
         return (
             <li className={"nav-item" + (current ? " active" : "")}>
-                <a className="nav-link text-nowrap" href={link}>{text} {current ? <span className="sr-only">(current)</span> : null }</a>
+                <Link className="nav-link text-nowrap" to={link}>{text} {current ? <span className="sr-only">(current)</span> : null }</Link>
             </li>
         );
     }
 }
 
-Link.propTypes = {
+LinkEl.propTypes = {
     data: PropTypes.shape({
         link: PropTypes.string.isRequired, 
         text: PropTypes.string.isRequired,
@@ -51,17 +36,20 @@ Link.propTypes = {
 class MenuLinks extends Component {
     static get propTypes() {
         return {
-            data: PropTypes.array.isRequired
+            data: PropTypes.array.isRequired,
+            locationPath: PropTypes.string.isRequired
         };
     }
 
     renderLinks() {
-        const { data } = this.props;
+        const { data, locationPath } = this.props;
         let linksTemplate = null;
     
         if (data.length) {
             linksTemplate = data.map(function(item) {
-                return <Link key={item.link} data={item}/>;
+                if (item.link === locationPath) item.current = true;
+                else item.current = false;
+                return <LinkEl key={item.link} data={item}/>;
             });
         } else {
             linksTemplate = <p>Something starnge</p>;
@@ -82,26 +70,45 @@ class MenuLinks extends Component {
 }
 
 class Header extends Component {
-  render() {
-    return (
-        <header className="navbar">
-            <nav className="navbar navbar-expand-md navbar-light fixed-top bg-light">
-                <a className="navbar-brand mx-auto ml-md-0 mr-md-3" href="/">
-                    <img src="/images/logo.png" height="50" className="d-inline-block align-top" alt=""/>
-                    Rapid delivery
-                </a>
-                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className="collapse navbar-collapse" id="navbarCollapse">
-                    <MenuLinks data={links} />
-                    <NavBarRightUser />
-                </div>
-            </nav>
-        </header>
-    );
-  }
+    constructor(props) {
+        super(props);
+        this.onTest = this.onTest.bind(this);
+    }
+
+    onTest(e) {
+        e.preventDefault();
+        const login = this.props.login;
+        console.log(login);
+        login('test', 'dfdfdf');
+    }
+
+    render() {
+        const { user, locationPath } = this.props;
+        return (
+            <header className="navbar">
+                <nav className="navbar navbar-expand-md navbar-light fixed-top bg-light">
+                    <Link className="navbar-brand mx-auto ml-md-0 mr-md-3" to="/">
+                        <img src="/images/logo.png" height="50" className="d-inline-block align-top" alt=""/>
+                        Rapid delivery
+                    </Link>
+                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
+                    <div className="collapse navbar-collapse" id="navbarCollapse">
+                        <button role="button" onClick={this.onTest} className="btn btn-primary btn-sm">sfghs</button>
+                        <MenuLinks data={links} locationPath={locationPath} />
+                        <UserNavBarRight user={user} />
+                    </div>
+                </nav>
+            </header>
+        );
+    }
 }
 
+Header.propTypes = {
+    user: PropTypes.object.isRequired,
+    locationPath: PropTypes.string.isRequired,
+    login: PropTypes.func.isRequired
+};
 
 export default Header;
