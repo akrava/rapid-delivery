@@ -8,6 +8,7 @@ const express = require('express'),
     passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
     BasicStrategy = require('passport-http').BasicStrategy,
+    passportJWT = require('passport-jwt'),
     path = require('path'),
     config = require('./config'),
     Service = require('./scripts/service'),
@@ -25,6 +26,8 @@ const templatesPath = path.join(__dirname, 'views');
 
 const databaseUrl = config.DatabaseUrl;
 const connectionsOptions = { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false };
+const JWTStrategy = passportJWT.Strategy;
+const ExtractJWT = passportJWT.ExtractJwt;
 
 app.use(express.static('public'));
 app.use(bodyParser({ limit: '3mb' }));
@@ -70,6 +73,26 @@ passport.deserializeUser(async (id, done) => {
 
 passport.use(new LocalStrategy({ usernameField: 'login' }, verifiyUserFunction));
 passport.use(new BasicStrategy(verifiyUserFunction));
+passport.use(new JWTStrategy({
+        jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+        secretOrKey: config.SecretSession
+    }, getUserFromToken
+));
+
+async function getUserFromToken(jwtPayload, cb) {
+    if (!jwtPayload || !jwtPayload.id) return cb(new Error("Couldn't get id from tocken"), null);
+    let user = null;
+    try {
+        user = await User.getById(jwtPayload.id);
+    } catch (e) {
+        return cb(e, null);
+    }
+    if (!user) {
+        cb(null, false);
+    } else {
+        cb(null, user);
+    }
+}
 
 async function verifiyUserFunction(username, password, done) {
     let user = null;

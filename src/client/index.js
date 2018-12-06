@@ -1,10 +1,12 @@
+import '@fortawesome/fontawesome-free/js/all';
 import 'bootstrap';
+import '@babel/polyfill';
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import createBrowserHistory from "history/createBrowserHistory";
-import App from  './containers/App';
+import App from  './components/App';
 import store from './configs/configureReduxStore';
 
 const history = createBrowserHistory();

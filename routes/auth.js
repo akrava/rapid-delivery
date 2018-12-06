@@ -1,5 +1,6 @@
 const express = require('express'),
     passport = require('passport'),
+    jwt = require('jsonwebtoken'),
     url = require('url'),
     config = require('./../config'),
     User = require('./../models/user'),
@@ -59,16 +60,38 @@ router.get('/login', async (req, res) => {
     });
 });
 
-router.post('/login', 
-    passport.authenticate('local', {
-        successRedirect: '/',
-        failureRedirect: `/auth/login/${url.format({query: {error: encodeURIComponent('Неправильний логін або пароль')}})}`,
-    })
-);
+router.post('/login', (req, res) => {
+    passport.authenticate('local', { session: false }, (err, user) => {
+        if (user === false) {
+            return res.status(401).send({
+                message: `Username or password doesn't match`
+            });
+        } else if (err || !user) {
+            return res.status(400).send({
+                message: `Something is not right: ${err}`
+            });
+        }
+        req.login(user, { session: false }, (err) => {
+            if (err) { return res.send(err); }
+            // generate a signed json web token with the contents of user object
+            const token = jwt.sign({user_id: user.id}, config.SecretSession);
+            cleanSensetiveUserInfo(user);
+            return res.json({ user, token });
+        }); 
+    })(req, res);
+});
 
 router.post('/logout', Service.checkAuth, (req, res) => {
     req.logout();   
     res.redirect('/');
 });
+
+function cleanSensetiveUserInfo(user) {
+    delete user.id;
+    delete user.password;
+    delete user.registries;
+    delete user.upcomingInvoices;
+    delete user.isDisabled;
+}
 
 module.exports = router;

@@ -9,6 +9,9 @@ module.exports = {
       path.join(__dirname, './src/client/index.scss')
     ]
   },
+  output: {
+    publicPath: '/',
+  },
   devtool: "sourcemap",
   module: {
     rules: [
