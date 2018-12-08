@@ -7,30 +7,30 @@ class MenuLinks extends Component {
     LoginedUserLinks(role) {
         const linkUsers = (
             <li className="nav-item">
-                <NavLink className="nav-link text-nowrap" activeClassName="active" to='/users'>Користувачі</NavLink>
+                <NavLink className="nav-link text-nowrap pl-2 pl-md-auto" activeClassName="active" to='/users'>Користувачі</NavLink>
             </li>
         );
         const linkEntities = (admin) => {
             return (
                 <React.Fragment>
                     <li className="nav-item">
-                        <NavLink className="nav-link text-nowrap" activeClassName="active" to='/registries'>{ admin ? "Реєстри" : "Мої реєстри" }</NavLink>
+                        <NavLink className="nav-link text-nowrap pl-2 pl-md-auto" activeClassName="active" to='/registries'>{ admin ? "Реєстри" : "Мої реєстри" }</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className="nav-link text-nowrap" activeClassName="active" to='/invoices'>{ admin ? "Транспортні накладні" : "Мої транспортні накладні" }</NavLink>
+                        <NavLink className="nav-link text-nowrap pl-2 pl-md-auto" activeClassName="active" to='/invoices'>{ admin ? "Транспортні накладні" : "Мої транспортні накладні" }</NavLink>
                     </li>
                 </React.Fragment>
             );
         };
         const linkPanel = (
             <li className="nav-item">
-                <NavLink className="nav-link text-nowrap" activeClassName="active" to='/hmm'>Hmmm</NavLink>
+                <NavLink className="nav-link text-nowrap pl-2 pl-md-auto" activeClassName="active" to='/hmm'>Hmmm</NavLink>
             </li>
         );
         if (role < 0) return null;
         return ( 
             <React.Fragment>
-                { isAdmin(role) ? linkUsers : null }
+                { isAdmin(role) && linkUsers }
                 { isStaffUser(role) ? linkPanel : linkEntities(isAdmin(role)) }
             </React.Fragment>
         );
@@ -43,13 +43,13 @@ class MenuLinks extends Component {
             role = this.props.user.userObject.role;
         }
         return (
-            <ul className="navbar-nav mr-auto">
+            <ul className="navbar-nav mr-auto my-2 my-md-0">
                 <li className="nav-item">
-                    <NavLink className="nav-link text-nowrap" activeClassName="active" to='/' exact={true}>Головна</NavLink>
+                    <NavLink className="nav-link text-nowrap pl-2 pl-md-auto" activeClassName="active" to='/' exact={true}>Головна</NavLink>
                 </li>
                 {this.LoginedUserLinks(role)}
                 <li className="nav-item">
-                    <NavLink className="nav-link text-nowrap" activeClassName="active" to='/about'>Про компанію</NavLink>
+                    <NavLink className="nav-link text-nowrap pl-2 pl-md-auto" activeClassName="active" to='/about'>Про компанію</NavLink>
                 </li>
             </ul>
         );

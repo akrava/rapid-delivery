@@ -43,6 +43,20 @@ nav li.nav-item a.nav-link {
     color: #961000e6 !important;
 }
 
+#navbarCollapse.loading::after {
+    color: #980909;
+    line-height: 0;
+    width: 0;
+    position: relative;
+    right: 68%;
+    top: 19px;
+    font-size: 0.925rem;
+    height: 0;
+    line-height: 0;
+    content: 'Обробка...';
+    text-shadow: 0 0 7px #db3333;
+}
+
 nav button.text-danger:hover {
     color: #dc3545 !important;
 }

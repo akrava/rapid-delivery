@@ -11,8 +11,8 @@ const router = express.Router();
 
 function authenticate(req, res, next) {
     if (!req.user) { 
-        const basicAuthMiddleware = passport.authenticate('basic', { session: false });
-        return basicAuthMiddleware(req, res, next); 
+        const jwtAuthMiddleware = passport.authenticate('jwt', { session: false });
+        return jwtAuthMiddleware(req, res, next); 
     }
     next();
 };

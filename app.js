@@ -110,6 +110,13 @@ async function verifiyUserFunction(username, password, done) {
     }
 }
 
+app.use('/auth', AuthRouter);
+app.use('/users', UsersRouter);
+app.use('/registries', RegistriesRouter);
+app.use('/invoices', InvoicesRouter);
+app.use('/api/v1', ApiRoutes);
+app.use('/developer/v1', DeveloperRoutes);
+
 app.use(express.static('dist'));
 app.get('*', (req,res) =>{
     res.sendFile(path.join(__dirname + '/dist/index.html'));
@@ -121,12 +128,6 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/auth', AuthRouter);
-app.use('/users', UsersRouter);
-app.use('/registries', RegistriesRouter);
-app.use('/invoices', InvoicesRouter);
-app.use('/api/v1', ApiRoutes);
-app.use('/developer/v1', DeveloperRoutes);
 
 app.get('/index', (req, res) => {
     res.redirect('/');

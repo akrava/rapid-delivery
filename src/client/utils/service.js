@@ -13,3 +13,9 @@ export function isOrganization(role) {
 export function isStaffUser(role) {
     return role === 2;
 }
+
+export function authorizationHeaders(jwt) {
+    return {
+        headers: { Authorization: `Bearer ${jwt}` }
+    }; 
+}

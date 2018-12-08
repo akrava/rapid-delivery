@@ -5,11 +5,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import createBrowserHistory from "history/createBrowserHistory";
 import App from  './components/App';
 import store from './configs/configureReduxStore';
-
-const history = createBrowserHistory();
+import history from './configs/configureRouterHistory';
 
 const root = (
   <Provider store={store}>

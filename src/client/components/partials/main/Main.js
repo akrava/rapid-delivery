@@ -3,7 +3,7 @@ import { Switch, Route } from "react-router-dom";
 //import { IndexRoute } from 'react-router'
 // import PropTypes from 'prop-types';
 import HomePage from '../../index/HomePage';
-import LoginPage from '../../login/LoginPage';
+import LoginPage from '../../../containers/login/LoginPage';
 import AboutPage from '../../about/AboutPage';
 import PageNotFound from '../../special/PageNotFound';
 import Breadcrumbs from './../../../containers/partials/main/Breadcrumbs';

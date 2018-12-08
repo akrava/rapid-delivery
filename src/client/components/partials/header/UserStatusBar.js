@@ -22,7 +22,7 @@ class UserStatusBar extends Component {
         return (
             <li className="nav-item dropdown align-middle">
                 <a className="nav-link dropdown-toggle text-nowrap align-middle pointer" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img src={ avaUrl } height="22" width="22" className="ava small align-middle"/>
+                    <img src={ avaUrl } height="22" width="22" className="ava small align-middle mr-1"/>
                     { fullname }{ isAdmin(role) && <i className="far fa-star ml-1"></i> }
                 </a>
                 <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">

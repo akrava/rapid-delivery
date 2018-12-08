@@ -74,7 +74,7 @@ router.post('/login', (req, res) => {
         req.login(user, { session: false }, (err) => {
             if (err) { return res.send(err); }
             // generate a signed json web token with the contents of user object
-            const token = jwt.sign({user_id: user.id}, config.SecretSession);
+            const token = jwt.sign({id: user.id}, config.SecretSession);
             cleanSensetiveUserInfo(user);
             return res.json({ user, token });
         }); 

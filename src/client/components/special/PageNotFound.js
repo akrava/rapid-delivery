@@ -6,7 +6,7 @@ class PageNotFound extends Component {
             <React.Fragment>
                 <div className="errorPage">
                     <span>Sorry, something went wrong...</span>
-                    <img src="/images/crying-cat.png" className="mx-auto"/>
+                    <img src="/images/crying-cat.png" height={266} className="mx-auto"/>
                 </div>
                 <h1 className="errorPage">404: Page not found</h1>
                 <p className="errorPage mb-5">hmmm</p>
