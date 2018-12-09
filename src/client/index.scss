@@ -57,6 +57,27 @@ nav li.nav-item a.nav-link {
     text-shadow: 0 0 7px #db3333;
 }
 
+@media (min-width: 576px) {
+    form.form-default div.form-inline label {
+        min-width: 28%;
+        justify-content: left !important;
+    }
+}
+
+@media (min-width: 768px) {
+    form.form-default div.form-inline label {
+        min-width: 25% !important;
+        justify-content: left !important;
+    }
+}
+
+@media (min-width: 992px) {
+    form.form-default div.form-inline label {
+        min-width: 18% !important;
+        justify-content: left !important;
+    }
+}
+
 nav button.text-danger:hover {
     color: #dc3545 !important;
 }

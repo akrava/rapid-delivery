@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 class PageNotFound extends Component {
     render() {
@@ -9,7 +10,7 @@ class PageNotFound extends Component {
                     <img src="/images/crying-cat.png" height={266} className="mx-auto"/>
                 </div>
                 <h1 className="errorPage">404: Page not found</h1>
-                <p className="errorPage mb-5">hmmm</p>
+                <p className="errorPage mb-5">Перейдіть на <Link to="/" className="link-style">головну</Link> сторінку</p>
             </React.Fragment>
         );
     }

@@ -16,7 +16,10 @@ class Input extends Component {
             pattern,
             required,
             formInline,
-            valueOnChage
+            valueOnChage,
+            valueOnClick,
+            valueOnFocus,
+            refAction
         } = this.props;
         return (
             <React.Fragment>
@@ -31,6 +34,9 @@ class Input extends Component {
                     pattern={pattern || null} 
                     name={name} 
                     onChange={valueOnChage || null}
+                    onClick={valueOnClick || null}
+                    onFocus={valueOnFocus || null}
+                    ref={refAction || null}
                     aria-describedby={`${name}_helpBlock`} 
                     required={required}
                 />
@@ -61,7 +67,10 @@ Input.propTypes = {
     pattern: PropTypes.string,
     required: PropTypes.bool,
     formInline: PropTypes.bool,
-    valueOnChage: PropTypes.func
+    valueOnChage: PropTypes.func,
+    valueOnClick: PropTypes.func,
+    valueOnFocus: PropTypes.func,
+    refAction: PropTypes.object
 };
 
 export default Input;

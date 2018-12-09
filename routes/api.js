@@ -502,6 +502,22 @@ router.get('/users', authenticate, async (req, res) => {
     res.send(responseObject);         
 });
 
+router.head('/users/:login(\[A-Za-z_0-9]+)', async (req, res) => {
+    const loginString = req.params.login;
+    if (loginString  && !loginString.trim()) return res.status(400).end();
+    let userObj = null;
+    try {
+        userObj = await User.getByLogin(loginString);
+    } catch (err) {
+        return res.status(500).end();
+    }
+    if (userObj) {
+        return res.status(400).end();    
+    } else {
+        return res.status(200).end();
+    }
+});
+
 router.get('/users/:login(\[A-Za-z_0-9]+)', authenticate, async (req, res) => {
     if (req.user.role !== Service.roleAdmin) {
         return sendError(res, 403, `Forbidden`);

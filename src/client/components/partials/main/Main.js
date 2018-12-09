@@ -4,9 +4,11 @@ import { Switch, Route } from "react-router-dom";
 // import PropTypes from 'prop-types';
 import HomePage from '../../index/HomePage';
 import LoginPage from '../../../containers/login/LoginPage';
+import RegisterPage from './../../../containers/register/RegisterPage';
 import AboutPage from '../../about/AboutPage';
 import PageNotFound from '../../special/PageNotFound';
 import Breadcrumbs from './../../../containers/partials/main/Breadcrumbs';
+
 
 class Main extends Component {
   render() {
@@ -19,7 +21,7 @@ class Main extends Component {
                 <Route path='/invoices/:invoice' component={HomePage}/>
                 <Route path='/registries/:registry' component={HomePage}/>
                 <Route path='/login' component={LoginPage} />
-                <Route path='/register' component={LoginPage}/>
+                <Route path='/register' component={RegisterPage}/>
                 <Route component={PageNotFound}/>
             </Switch>
         </main>

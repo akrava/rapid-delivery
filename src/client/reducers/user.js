@@ -3,6 +3,9 @@ import {
     USER_AUTHENTICATE_SUCCESS,
     USER_AUTHENTICATE_FAILURE,
     USER_LOGOUT,
+    USER_REGISTER_USERNAME_REQUEST,
+    USER_REGISTER_USERNAME_SUCCESS,
+    USER_REGISTER_USERNAME_FAILURE,
     defaultPayload
 } from './../actions/user';
 
@@ -24,6 +27,14 @@ function userReducer(state = initialState, action) {
                 userObject: data.userObject,
                 error: data.error, 
                 success: data.success, 
+            };
+        }
+        case USER_REGISTER_USERNAME_REQUEST:
+        case USER_REGISTER_USERNAME_FAILURE:
+        case USER_REGISTER_USERNAME_SUCCESS: {
+            return {
+                ...state, 
+                registration: data.registration, 
             };
         }
         default: {

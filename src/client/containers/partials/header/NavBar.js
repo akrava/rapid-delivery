@@ -8,9 +8,7 @@ import UserStatusBar from './../../../components/partials/header/UserStatusBar';
 
 class NavBar extends Component {
     componentDidMount() {
-        console.log("INIT@");
-        this.props.initialLogin();
-        
+        this.props.initialLogin();     
     }
 
     static mapStateToProps(store) {

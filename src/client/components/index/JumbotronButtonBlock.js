@@ -6,7 +6,6 @@ import { isAdmin, isStaffUser } from './../../utils/service';
 class JumbotronButtonsBlock extends Component {
     getGreetingTextAndLinks() {
         let role = -1;
-        console.log(this.props);
         const { isLogined } = this.props.user;
         if (isLogined) {
             if (isAdmin(role)) {

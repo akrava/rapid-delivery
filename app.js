@@ -13,9 +13,9 @@ const express = require('express'),
     config = require('./config'),
     Service = require('./scripts/service'),
     AuthRouter = require('./routes/auth'),
-    UsersRouter = require('./routes/users'),
-    RegistriesRouter = require('./routes/registries'),
-    InvoicesRouter = require('./routes/invoices'),
+    // UsersRouter = require('./routes/users'),
+    // RegistriesRouter = require('./routes/registries'),
+    // InvoicesRouter = require('./routes/invoices'),
     ApiRoutes = require('./routes/api'),
     DeveloperRoutes = require('./routes/developer'),
     User = require('./models/user');
@@ -111,9 +111,9 @@ async function verifiyUserFunction(username, password, done) {
 }
 
 app.use('/auth', AuthRouter);
-app.use('/users', UsersRouter);
-app.use('/registries', RegistriesRouter);
-app.use('/invoices', InvoicesRouter);
+// app.use('/users', UsersRouter);
+// app.use('/registries', RegistriesRouter);
+// app.use('/invoices', InvoicesRouter);
 app.use('/api/v1', ApiRoutes);
 app.use('/developer/v1', DeveloperRoutes);
 
