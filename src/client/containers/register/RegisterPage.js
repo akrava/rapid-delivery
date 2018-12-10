@@ -48,24 +48,6 @@ class RegisterPage extends Component {
         }
     }
 
-    showMessage() {
-        const user = this.props.user;
-        if (!user.isFetching && !((user.error && user.error.message) 
-            || (user.success && user.success.message))) {
-            return false;
-        }
-        const type_text = user.isFetching ? "primary" : user.error ? "danger" : "success";
-        const message = user.isFetching ? "Обробка" : user.error ? user.error.message : user.success.message;
-        return (
-            <div className={"alert alert-" + type_text + " alert-dismissible fade show w-100 w-lg-40  mx-auto text-center"} role="alert">
-                <span className={(user.error.message || user.success.message)  && "d-none"}><span className="fas fa-spinner mr-1"></span></span>
-                <span className={(user.success.message ||  user.isFetching) && "d-none"}><span className="fas fa-exclamation-triangle mr-1"></span></span>
-                <span className={(user.error.message || user.isFetching) && "d-none"}><span className="far fa-check-circle mr-1"></span></span>
-                {message}
-            </div>
-        );
-    }
-
     componentDidMount() {
         onMountedForm();
     }
@@ -122,7 +104,7 @@ class RegisterPage extends Component {
         };  
     }
 
-    render() {
+    render() { console.log(this.props.user.registration.isFetching);
         return (
             <React.Fragment>
                 <h1>Реєстрація нового користувача</h1>
@@ -220,7 +202,7 @@ class RegisterPage extends Component {
                         </small>
                     </div>
                     <div className="col d-md-inline-flex">
-                        <button className="btn btn-primary ml-auto mr-4" type="submit">Зареєструватися</button>
+                        <button className="btn btn-primary ml-auto mr-4" type="submit" disabled={this.props.user.registration.isFetching}>Зареєструватися</button>
                         <button className="btn btn-secondary mr-auto" type="reset">Скинути</button>
                     </div>
                 </form>

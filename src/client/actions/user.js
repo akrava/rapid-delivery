@@ -10,6 +10,7 @@ export const USER_REGISTER_USERNAME_FAILURE = 'USER_REGISTER_USERNAME_FAILURE';
 export const USER_REGISTER_USERNAME_SUCCESS = 'USER_REGISTER_USERNAME_SUCCESS';
 import { authorizationHeaders, formDataToJson } from './../utils/service';
 import { CURRENT_PATH_REDIRECT } from './redirect';
+import { showMessage, typesMessages } from './showMessage';
 
 export const defaultPayload = {
     isFetching: false,
@@ -47,6 +48,7 @@ export function authenticate(login, password) {
             if (!response.ok) throw new Error(`Неправильний логін або пароль`);
             respBody = await response.json();
         } catch (e) {
+            showMessage("Неправильний логін або пароль", typesMessages.error)(dispatch);
             return dispatch({
                 type: USER_AUTHENTICATE_FAILURE,
                 payload: { ...defaultPayload, error: { message: e.message, statusCode: response.status } }
@@ -142,6 +144,7 @@ export function register(formData) {
             });
             if (!response.ok || response.status !== 201) throw new Error(`Сталася помилка під час реєстрації`);
         } catch (e) {
+            showMessage("Некоректні данні. Перевірте правильність", typesMessages.error)(dispatch);
             return dispatch({
                 type: USER_REGISTER_FAILURE,
                 payload: { ...defaultPayload, registration: { error: e.message || "error ocurred" } }
@@ -158,6 +161,7 @@ export function register(formData) {
                 path: '/login'
             }
         });
+        showMessage("Успішно зареєстровано", typesMessages.success)(dispatch);
     }; 
 }
 
@@ -165,7 +169,7 @@ export function checkUsername(username) {
     return async function(dispatch) { 
         dispatch({ 
             type: USER_REGISTER_USERNAME_REQUEST,
-            payload: { ...defaultPayload, registration: { username: {  isFetching: true } } }
+            payload: { ...defaultPayload, registration: { username: {  isFetching: true },  isFetching: false } }
         });
         let response;
         try {
@@ -176,12 +180,12 @@ export function checkUsername(username) {
         } catch (e) {
             return dispatch({
                 type: USER_REGISTER_USERNAME_FAILURE,
-                payload: { ...defaultPayload, registration: { username: { error: e.message || "error ocurred" } } }
+                payload: { ...defaultPayload, registration: { username: { error: e.message || "error ocurred" },  isFetching: false  } }
             });
         }
         dispatch({
             type: USER_REGISTER_USERNAME_SUCCESS,
-            payload: { ...defaultPayload, registration: { username: { success: "Доступне" } } },
+            payload: { ...defaultPayload, registration: { username: { success: "Доступне" },  isFetching: false  } },
         });
     }; 
 }

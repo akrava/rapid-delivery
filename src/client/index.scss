@@ -78,6 +78,37 @@ nav li.nav-item a.nav-link {
     }
 }
 
+div.system-notify {
+    position: fixed;
+    top: 4.543rem;
+    left: 0;
+    margin-left: 5% !important;
+    box-shadow: 0px 0px 9px;
+}
+
+div.system-notify.w-90 {
+    width: 90%;
+}
+
+@media (min-width: 992px) {
+    div.system-notify {
+        left: 50%;
+        margin-left: -20% !important; 
+    }
+}
+
+div.popup-animation.active {
+    opacity: 1;
+}
+
+div.popup-animation.hidden {
+    opacity: 0;
+}
+
+div.popup-animation {
+    transition: opacity 0.5s ease-in-out;
+}
+
 nav button.text-danger:hover {
     color: #dc3545 !important;
 }

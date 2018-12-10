@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { logout, getUserFromJWT } from './../../../actions/user';
 import MenuLinks from './../../../components/partials/header/MenuLinks';
 import UserStatusBar from './../../../components/partials/header/UserStatusBar';
+import MessagePopup from './../../../components/partials/header/MessagePopup';
 
 class NavBar extends Component {
     componentDidMount() {
@@ -12,7 +13,7 @@ class NavBar extends Component {
     }
 
     static mapStateToProps(store) {
-        return { user: store.user };
+        return { user: store.user, systemMessages: store.systemMessages };
     }
 
     static mapDispatchToProps(dispatch) {
@@ -25,16 +26,20 @@ class NavBar extends Component {
     render() {
         const { user, logout } = this.props;
         return (
-            <div className="collapse navbar-collapse" id="navbarCollapse">
-                <MenuLinks user={user} />
-                <UserStatusBar user={user} logout={logout} />
-            </div>
+            <React.Fragment>
+                <div className="collapse navbar-collapse" id="navbarCollapse">
+                    <MenuLinks user={user} />
+                    <UserStatusBar user={user} logout={logout} />
+                </div>
+                <MessagePopup systemMessages={this.props.systemMessages} />
+            </React.Fragment>
         );
     }
 };
 
 NavBar.propTypes = {
     user: PropTypes.object.isRequired,
+    systemMessages: PropTypes.object.isRequired,
     logout: PropTypes.func.isRequired,
     initialLogin: PropTypes.func.isRequired
 };
