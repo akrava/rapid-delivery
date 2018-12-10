@@ -6,9 +6,11 @@ import HomePage from '../../index/HomePage';
 import LoginPage from '../../../containers/login/LoginPage';
 import RegisterPage from './../../../containers/register/RegisterPage';
 import AboutPage from '../../about/AboutPage';
+import UsersPage from './../../users/UsersPage';
 import PageNotFound from '../../special/PageNotFound';
 import Breadcrumbs from './../../../containers/partials/main/Breadcrumbs';
-
+import AuthenticatedComponent from './../../../containers/special/AuthenticatedComponent';
+import { isAdmin } from './../../../utils/service';
 
 class Main extends Component {
   render() {
@@ -18,6 +20,7 @@ class Main extends Component {
             <Switch>
                 <Route exact path='/' component={HomePage}/>
                 <Route path='/about' component={AboutPage}/>
+                <Route exact path='/users' component={AuthenticatedComponent(UsersPage, [isAdmin])}/>
                 <Route path='/invoices/:invoice' component={HomePage}/>
                 <Route path='/registries/:registry' component={HomePage}/>
                 <Route path='/login' component={LoginPage} />

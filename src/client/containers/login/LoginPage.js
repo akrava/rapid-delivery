@@ -31,7 +31,7 @@ class LoginPage extends Component {
     }
 
     formOnSubmit(e) {
-        if (onSubmitFormValidation(e)) {
+        if (onSubmitFormValidation(e) && !this.props.user.isFetching) {
             this.props.login(this.state.username, this.state.password);
             e.preventDefault();
         }       

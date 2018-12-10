@@ -11,9 +11,6 @@ class Header extends Component {
                         <img src="/images/logo.png" height="50" className="d-inline-block align-top mr-1" alt=""/>
                         Rapid delivery
                     </Link>
-                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
-                    </button>
                     <NavBar />
                 </nav>
             </header>

@@ -53,7 +53,7 @@ class RegisterPage extends Component {
     }
 
     formOnSubmit(e) {
-        if (onSubmitFormValidation(e)) {
+        if (onSubmitFormValidation(e) && !this.props.user.registration.isFetching) {
             e.preventDefault();
             const form = document.getElementById("register");
             const formData = new FormData(form);
@@ -104,7 +104,7 @@ class RegisterPage extends Component {
         };  
     }
 
-    render() { console.log(this.props.user.registration.isFetching);
+    render() {
         return (
             <React.Fragment>
                 <h1>Реєстрація нового користувача</h1>

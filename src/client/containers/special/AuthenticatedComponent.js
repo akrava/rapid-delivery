@@ -1,46 +1,28 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { CURRENT_PATH_REDIRECT } from './../../actions/redirect';
 import Forbidden from './../../components/special/Forbidden';
+import NotAuthorized from './../../components/special/NotAuthorized';
 
-
-export default function requireAuthentication(Component, rolesHaveAcess, redirectUnlessLogined = false) {
+export default function requireAuthentication(Component, rolesHaveAcess) {
     class AuthenticatedComponent extends React.Component {
-        componentDidMount() {
-            this.checkAuth(this.props.user);
-        }
-        
-        getDerivedStateFromProps(nextProps) {
-            this.checkAuth(nextProps.user);
-        }
-        
-        checkAuth(user) {
-            if (!user.isLogined && redirectUnlessLogined) {
-                this.props.dispatch({
-                    type: CURRENT_PATH_REDIRECT,
-                    payload: {
-                        method: 'replace',
-                        path: '/login'
-                    }
-                });
+        showComponent(user) {
+            if (!user.isLogined) {
+                return <NotAuthorized />;
+            } else if (user.isLogined && user.userObject) {
+                if (rolesHaveAcess.some(roleCheckFunc => roleCheckFunc(user.userObject.role))) {
+                    return <Component {...this.props} />;
+                } else {
+                    return <Forbidden />;
+                }
             }
-        }
-
-        willShowComponent(user) {
-            if (user.isLogined && user.userObject) {
-                return rolesHaveAcess.some(role => role === user.userObject.role);
-            }
-            return false;
+            return <NotAuthorized />;
         }
 
         render() {
             return (
                 <div>
-                    {this.willShowComponent(this.props.user) === true
-                        ? <Component {...this.props} />
-                        : <Forbidden />
-                    }
+                    {this.showComponent(this.props.user)}
                 </div>
             );
         }

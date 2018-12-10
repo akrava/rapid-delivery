@@ -37,7 +37,7 @@ module.exports = {
         next();
     }, 
     
-    roleAdmin: 1,
+    roleAdmin: 3,
 
     roleStandart: 0,
     
