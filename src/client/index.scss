@@ -126,6 +126,18 @@ table#users td {
     white-space: nowrap;
 }
 
+#file-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 10px;
+    padding-left: 7px;
+}
+
+#file-label::after {
+    font-size: 12.8px !important;
+}
+
 table#users th.reset-th.head {
     width: 150px;
 }
@@ -630,6 +642,19 @@ h2.api:first-of-type {
 
 .user-info span:not(.def) {
     font: 15px monospace;
+}
+
+@media (min-width: 576px) {
+    form textarea {
+        width: 225px !important;
+        color: #000 !important;
+    }
+}
+
+@media (min-width: 576px) {
+    form div.custom-file {
+        width: auto !important;
+    }
 }
 
 /* .user-info span::after {

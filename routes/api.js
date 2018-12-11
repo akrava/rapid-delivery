@@ -615,11 +615,22 @@ router.put('/users/:login(\[A-Za-z_0-9]+)', authenticate, async(req, res) => {
     const password = req.body.pasw;
     if (password && (password.length < 8 || password.length > 30)) return sendError(res, 400, 'Invalid password length', {info: "from 8 to 30 length should be"});
     let role = req.body.role || null;
-    if (role && role !== 0 && role !== 1) return sendError(res, 400, 'Invalid role', {role});
+    if (role && role < 0 && role > 3) return sendError(res, 400, 'Invalid role', {role});
+    const photo = req.files ? req.files.photo : null;
+    // https://regex101.com/codegen?language=javascript
+    const fileRegExPattern = /(\.[a-zA-Z]+)/g;
+    if ((photo && (photo.truncated || !photo.mimetype.startsWith(`image/`)))) {
+        return Service.sendErrorPage(res, 400, `Bad request - invalid post data`);
+    }
+    let photoExt = null;
+    if (photo) {
+        photoExt = photo.name.lastIndexOf('.') < 0 ? "" : photo.name.substr(photo.name.lastIndexOf('.'));
+        if (!photoExt.match(fileRegExPattern)) return sendError(res, 400, `File extenrion is invalid`);
+    }
     let user = null;
     if (req.user.role === Service.roleAdmin) {
         if (req.user.id.toString() !== userObj.id.toString()) {
-            if (fullname || email || phone || avaUrl || bio || password) {
+            if (fullname || email || phone || avaUrl || bio || password || photo) {
                 return sendError(res, 403, 'Forbidden');
             } else {
                 user = new User(userObj.id.toString(), null, null, role, userObj.fullname,
@@ -637,14 +648,21 @@ router.put('/users/:login(\[A-Za-z_0-9]+)', authenticate, async(req, res) => {
         }
     }
     const hashedPasw = password ? Service.sha512(password, config.SaltHash) : null;
+    if (req.user.id.toString() === userObj.id.toString() && hashedPasw !== userObj.password) {
+        return sendError(res, 406, `Password doesn't match`);
+    }
     if (!user) {
-        user = new User(userObj.id.toString(), null, hashedPasw || userObj.password, 
+        user = new User(userObj.id.toString(), null, userObj.password, 
             userObj.role, fullname || userObj.fullname, email || userObj.email, phone || userObj.phone,
             null, avaUrl || userObj.avaUrl, bio || userObj.bio, userObj.isDisabled);
     }
     let userModel = null;
     try {
         await User.update(user);
+        if (photo) {
+            await user.deleteAvatarFromStorage();
+            await user.loadAvatarToStorage(photo.data);
+        }
         userModel = await User.getById(userObj.id.toString());
         if (!userModel) throw new Error("Error while updating");
     } catch (err) {

@@ -14,6 +14,11 @@ import {
     ANOTHER_USER_FAILURE,
     ANOTHER_USER_REQUEST,
     ANOTHER_USER_SUCCESS,
+    ANOTHER_USER_CHANGE_ROLE_FAILURE,
+    ANOTHER_USER_CHANGE_ROLE_SUCCESS,
+    USER_CHANGE_PROFILE_FAILURE,
+    USER_CHANGE_PROFILE_REQUEST,
+    USER_CHANGE_PROFILE_SUCCESS,
     defaultPayload
 } from './../actions/user';
 
@@ -62,6 +67,8 @@ function userReducer(state = initialState, action) {
                 registration: data.registration, 
             };
         }
+        case ANOTHER_USER_CHANGE_ROLE_FAILURE:
+        case ANOTHER_USER_CHANGE_ROLE_SUCCESS:
         case ANOTHER_USER_FAILURE:
         case ANOTHER_USER_REQUEST:
         case ANOTHER_USER_SUCCESS: {
@@ -69,6 +76,20 @@ function userReducer(state = initialState, action) {
                 ...state, 
                 requestedUserObject: data.requestedUserObject,
                 requestedUserIsFetching: data.requestedUserIsFetching, 
+            };
+        }
+        case USER_CHANGE_PROFILE_SUCCESS: {
+            return {
+                ...state, 
+                isFetching: data.isFetching,
+                userObject: data.userObject
+            };
+        }
+        case USER_CHANGE_PROFILE_FAILURE:
+        case USER_CHANGE_PROFILE_REQUEST: {
+            return {
+                ...state, 
+                isFetching: data.isFetching
             };
         }
         default: {

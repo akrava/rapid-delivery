@@ -12,6 +12,7 @@ import Breadcrumbs from './../../../containers/partials/main/Breadcrumbs';
 import AuthenticatedComponent from './../../../containers/special/AuthenticatedComponent';
 import MyUserPage from './../../../containers/user/MyUserPage';
 import UserPage from './../../../containers/user/UserPage';
+import EditUserPage from './../../../containers/user/EditUserPage';
 import { isAdmin } from './../../../utils/service';
 
 class Main extends Component {
@@ -21,14 +22,15 @@ class Main extends Component {
             <Breadcrumbs />
             <Switch>
                 <Route exact path='/' component={HomePage}/>
-                <Route path='/about' component={AboutPage}/>
-                <Route exact path='/users' component={AuthenticatedComponent(UsersPage, [isAdmin])}/>
-                <Route path='/users/me' component={AuthenticatedComponent(MyUserPage, false)}/>
-                <Route path='/users/:username([A-Za-z_0-9]{5,20})' component={AuthenticatedComponent(UserPage, [isAdmin])}/>
-                <Route path='/invoices/:invoice' component={HomePage}/>
-                <Route path='/registries/:registry' component={HomePage}/>
-                <Route path='/login' component={LoginPage} />
-                <Route path='/register' component={RegisterPage}/>
+                    <Route path='/about' component={AboutPage}/>
+                    <Route exact path='/users' component={AuthenticatedComponent(UsersPage, [isAdmin])}/>
+                        <Route exact path='/users/me' component={AuthenticatedComponent(MyUserPage, false)}/>
+                            <Route path='/users/me/edit' component={AuthenticatedComponent(EditUserPage, false)} />
+                        <Route path='/users/:username([A-Za-z_0-9]{5,20})' component={AuthenticatedComponent(UserPage, [isAdmin])}/>
+                    <Route path='/invoices/:invoice' component={HomePage}/>
+                    <Route path='/registries/:registry' component={HomePage}/>
+                    <Route path='/login' component={LoginPage} />
+                    <Route path='/register' component={RegisterPage}/>
                 <Route component={PageNotFound}/>
             </Switch>
         </main>

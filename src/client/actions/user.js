@@ -1,19 +1,26 @@
-export const USER_AUTHENTICATE_REQUEST      = 'USER_AUTHENTICATE_REQUEST';
-export const USER_AUTHENTICATE_SUCCESS      = 'USER_AUTHENTICATE_SUCCESS';
-export const USER_AUTHENTICATE_FAILURE      = 'USER_AUTHENTICATE_FAILURE';
-export const USER_LOGOUT                    = 'USER_LOGOUT';
-export const USER_REGISTER_REQUEST          = 'USER_REGISTER_REQUEST';
-export const USER_REGISTER_SUCCESS          = 'USER_REGISTER_SUCCESS';
-export const USER_REGISTER_FAILURE          = 'USER_REGISTER_FAILURE';
-export const USER_REGISTER_USERNAME_REQUEST = 'USER_REGISTER_USERNAME_REQUEST';
-export const USER_REGISTER_USERNAME_FAILURE = 'USER_REGISTER_USERNAME_FAILURE';
-export const USER_REGISTER_USERNAME_SUCCESS = 'USER_REGISTER_USERNAME_SUCCESS';
-export const USER_UPDATE_REQUEST            = 'USER_UPDATE_REQUEST';
-export const USER_UPDATE_SUCCESS            = 'USER_UPDATE_SUCCESS';
-export const USER_UPDATE_FAILURE            = 'USER_UPDATE_FAILURE';
-export const ANOTHER_USER_REQUEST           = 'ANOTHER_USER_REQUEST';
-export const ANOTHER_USER_SUCCESS           = 'ANOTHER_USER_SUCCESS';
-export const ANOTHER_USER_FAILURE           = 'ANOTHER_USER_FAILURE';
+export const USER_AUTHENTICATE_REQUEST        = 'USER_AUTHENTICATE_REQUEST';
+export const USER_AUTHENTICATE_SUCCESS        = 'USER_AUTHENTICATE_SUCCESS';
+export const USER_AUTHENTICATE_FAILURE        = 'USER_AUTHENTICATE_FAILURE';
+export const USER_LOGOUT                      = 'USER_LOGOUT';
+export const USER_REGISTER_REQUEST            = 'USER_REGISTER_REQUEST';
+export const USER_REGISTER_SUCCESS            = 'USER_REGISTER_SUCCESS';
+export const USER_REGISTER_FAILURE            = 'USER_REGISTER_FAILURE';
+export const USER_REGISTER_USERNAME_REQUEST   = 'USER_REGISTER_USERNAME_REQUEST';
+export const USER_REGISTER_USERNAME_FAILURE   = 'USER_REGISTER_USERNAME_FAILURE';
+export const USER_REGISTER_USERNAME_SUCCESS   = 'USER_REGISTER_USERNAME_SUCCESS';
+export const USER_UPDATE_REQUEST              = 'USER_UPDATE_REQUEST';
+export const USER_UPDATE_SUCCESS              = 'USER_UPDATE_SUCCESS';
+export const USER_UPDATE_FAILURE              = 'USER_UPDATE_FAILURE';
+export const USER_CHANGE_PROFILE_REQUEST      = 'USER_CHANGE_PROFILE_REQUEST';
+export const USER_CHANGE_PROFILE_SUCCESS      = 'USER_CHANGE_PROFILE_SUCCESS';
+export const USER_CHANGE_PROFILE_FAILURE      = 'USER_CHANGE_PROFILE_FAILURE';
+export const ANOTHER_USER_REQUEST             = 'ANOTHER_USER_REQUEST';
+export const ANOTHER_USER_SUCCESS             = 'ANOTHER_USER_SUCCESS';
+export const ANOTHER_USER_FAILURE             = 'ANOTHER_USER_FAILURE';
+export const ANOTHER_USER_CHANGE_ROLE_SUCCESS = 'ANOTHER_USER_SUCCESS';
+export const ANOTHER_USER_CHANGE_ROLE_FAILURE = 'ANOTHER_USER_FAILURE';
+
+
 import { authorizationHeaders, formDataToJson } from './../utils/service';
 import { CURRENT_PATH_REDIRECT } from './redirect';
 import { showMessage, typesMessages } from './showMessage';
@@ -274,5 +281,93 @@ export function getInfoAboutUser(username) {
             type: ANOTHER_USER_SUCCESS,
             payload: { ...defaultPayload, requestedUserObject: userObject },
         });  
+    };
+}
+
+export function changeUserRole(username, role) {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt === null) {
+        return {
+            type: 'JWT_NOT_FOUND',
+            payload: {}
+        };
+    }
+    return async function(dispatch) { 
+        const reqOptions = authorizationHeaders(jwt);
+        reqOptions.method = 'PUT';
+        reqOptions.headers['Content-Type'] = 'application/json';
+        reqOptions.body = JSON.stringify({ role });
+        console.log(reqOptions);
+        let response, respBody;
+        try {
+            response = await fetch(`/api/v1/users/${encodeURIComponent(username)}`, reqOptions);
+            if (!response.ok) throw new Error(response.statusText);
+            respBody = await response.json();
+        } catch (e) {
+            showMessage(`Невдалося змінити роль ${e.message}`, typesMessages.error)(dispatch);
+            return dispatch({
+                type: ANOTHER_USER_CHANGE_ROLE_FAILURE,
+                payload: { ...defaultPayload, requestedUserIsFetching: false }
+            });
+        }
+        const userObject = respBody.data;
+        showMessage(`Роль було змінено успішно`, typesMessages.success)(dispatch);
+        dispatch({
+            type: ANOTHER_USER_CHANGE_ROLE_SUCCESS,
+            payload: { ...defaultPayload, requestedUserObject: userObject },
+        });  
+    };
+}
+
+export function changeMyPersonalInfo(username, formData) {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt === null) {
+        return {
+            type: 'JWT_NOT_FOUND',
+            payload: {}
+        };
+    }
+    return async function(dispatch) {
+        dispatch({ 
+            type: USER_CHANGE_PROFILE_REQUEST,
+            payload: { ...defaultPayload, isFetching: true }
+        });
+        const reqOptions = authorizationHeaders(jwt);
+        reqOptions.method = 'PUT';
+        reqOptions.body = formData;
+        console.log(reqOptions);
+        let response, respBody;
+        try {
+            response = await fetch(`/api/v1/users/${encodeURIComponent(username)}`, reqOptions);
+            if (response.status === 406) {
+                showMessage(`Пароль введено невірно`, typesMessages.error)(dispatch);
+                return dispatch({
+                    type: USER_CHANGE_PROFILE_FAILURE,
+                    payload: { ...defaultPayload, isFetching: false }
+                });
+            }
+            if (!response.ok) throw new Error(response.statusText);
+            respBody = await response.json();
+        } catch (e) {
+            showMessage(`Невдалося оновити профіль ${e.message}`, typesMessages.error)(dispatch);
+            return dispatch({
+                type: USER_CHANGE_PROFILE_FAILURE,
+                payload: { ...defaultPayload, isFetching: false }
+            });
+        }
+        const userObject = respBody.data;
+        console.log("use obj", userObject);
+        showMessage(`Профіль було успішно онвлено`, typesMessages.success)(dispatch);
+        dispatch({
+            type: USER_CHANGE_PROFILE_SUCCESS,
+            payload: { ...defaultPayload, userObject: userObject },
+        });
+        dispatch({
+            type: CURRENT_PATH_REDIRECT,
+            payload: {
+                method: 'push', 
+                path: '/users/me'
+            }
+        });
     };
 }

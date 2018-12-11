@@ -7,10 +7,15 @@ import ModalDialog from './../../components/partials/modals/ModalDialog';
 
 
 class UserProfile extends Component {
-    viewIcon(role) {
+    viewIconAdmin(role) {
         if (isAdmin(role)) {
             return <span className="def"><i className="far fa-star ml-3"></i></span>;
-        } else if (isStaffUser(role)) {
+        }
+        return false;
+    }
+
+    viewIconStaff(role) {
+        if (isStaffUser(role)) {
             return <span className="def"><i className="fas fa-user-cog ml-3"></i></span>;
         }
         return false;
@@ -56,14 +61,23 @@ class UserProfile extends Component {
             </form>
         );
     }
+
+    calculateAllInvoices(registries) {
+        let totalInvoices = 0;
+        registries.forEach(x => {
+            totalInvoices += x.invoices.length;
+        });
+        return totalInvoices;
+    }
     
     render() {
         const user = this.props.user;
+        user.totalInvoices = this.calculateAllInvoices(user.registries);
         return (
             <React.Fragment>
                 <div className="user-info text-center">
                     <img src={user.avaUrl} alt="user photo"/>
-                    <h1 className="mb-4">{user.fullname}{this.viewIcon(user.role)}</h1>
+                    <h1 className="mb-4">{user.fullname}<span className="def">{this.viewIconAdmin(user.role)}</span><span className="def">{this.viewIconStaff(user.role)}</span></h1>
                     <p><Link to="#" className="link-style">{user.login}</Link> <span>{toFormatedString(user.registered)}</span></p>
                     <p>Телефон: <b>{user.phone}</b>, email: <b>{user.email}</b></p>
                     <div>
