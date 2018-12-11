@@ -89,9 +89,12 @@ router.post('/logout', Service.checkAuth, (req, res) => {
 function cleanSensetiveUserInfo(user) {
     delete user.id;
     delete user.password;
-    delete user.registries;
-    delete user.upcomingInvoices;
     delete user.isDisabled;
+    user.upcomingInvoices.forEach(x => {
+        delete x.id;
+        delete x.recipient;
+    });
+    user.registries.forEach(x => delete x.id);
 }
 
 module.exports = router;

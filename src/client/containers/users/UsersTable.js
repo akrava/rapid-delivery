@@ -34,7 +34,13 @@ class UsersTable extends Component {
     }
 
     componentDidMount() {
-        this.props.getAllUsers();
+        if (!this.props.users.isFetching) {
+            let page;
+            if (this.props.users.usersObject && this.props.users.usersObject.page) {
+                page = this.props.users.usersObject.page;
+            }
+            this.props.getAllUsers(page);
+        }
     }
 
     userRow(users) {
@@ -83,9 +89,29 @@ class UsersTable extends Component {
         }
     }
 
+    textInfo(users) {
+        if (users && Array.isArray(users.data)) {
+            if (users.data.length > 0) {
+                return (
+                    <p>
+                        Ви знаходитесь на <b>{users.page}</b> сторінці з 
+                        <b> {users.totalPages}</b> всього.<br/>
+                        Нижче в <i>таблиці</i> наведено <b>{users.data.length}</b> користувач(-а)(-ів) з 
+                        <b> {users.totalCount}</b> доступного(-их) на даний момент.
+                    </p>
+                );
+            } else {
+                return <p>На жаль, на даний момент немає користувачів.</p>;
+            }
+        } else {
+            return <p>Завантаження...</p>;
+        }
+    }
+
     render() {
         return (
             <React.Fragment>
+                {this.textInfo(this.props.users ? this.props.users.usersObject : null)}
                 <div className="table-responsive p-3">
                     <table className="mx-auto mb-4 styled mr-3" id="users">
                         <thead>

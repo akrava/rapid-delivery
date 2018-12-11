@@ -5,6 +5,10 @@ import {
     defaultPayload    
 } from './../actions/users';
 
+import {
+    USER_LOGOUT,
+} from './../actions/user';
+
 const initialState = {
     ...defaultPayload
 };
@@ -22,11 +26,15 @@ function usersReducer(state = initialState, action) {
             };
         }
         case USERS_GET_ALL_REQUEST: {
-            console.log(state);
             return {
                 ...state, 
                 usersObject: state.usersObject,
                 isFetching: data.isFetching
+            };
+        }
+        case USER_LOGOUT: {
+            return {
+                ...defaultPayload
             };
         }
         default: {

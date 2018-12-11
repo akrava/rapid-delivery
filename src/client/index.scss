@@ -98,15 +98,41 @@ div.system-notify.w-90 {
 }
 
 div.popup-animation.active {
+    z-index: 2;
     opacity: 1;
 }
 
 div.popup-animation.hidden {
+    z-index: -1 !important;
     opacity: 0;
 }
 
 div.popup-animation {
     transition: opacity 0.5s ease-in-out;
+}
+
+.navbar-collapse {
+    z-index: 1;
+}
+
+table#users {
+    table-layout: fixed;
+    width: 650px;
+}
+
+table#users td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+table#users th.reset-th.head {
+    width: 150px;
+}
+
+#users a.link-style.text-nowrap {
+    width: 30px;
+    text-overflow: ellipsis;
 }
 
 nav button.text-danger:hover {
@@ -602,7 +628,7 @@ h2.api:first-of-type {
     margin-right: 30px;
 }
 
-.user-info span {
+.user-info span:not(.def) {
     font: 15px monospace;
 }
 

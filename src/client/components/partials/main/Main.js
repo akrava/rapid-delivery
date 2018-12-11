@@ -10,6 +10,8 @@ import UsersPage from './../../users/UsersPage';
 import PageNotFound from '../../special/PageNotFound';
 import Breadcrumbs from './../../../containers/partials/main/Breadcrumbs';
 import AuthenticatedComponent from './../../../containers/special/AuthenticatedComponent';
+import MyUserPage from './../../../containers/user/MyUserPage';
+import UserPage from './../../../containers/user/UserPage';
 import { isAdmin } from './../../../utils/service';
 
 class Main extends Component {
@@ -21,6 +23,8 @@ class Main extends Component {
                 <Route exact path='/' component={HomePage}/>
                 <Route path='/about' component={AboutPage}/>
                 <Route exact path='/users' component={AuthenticatedComponent(UsersPage, [isAdmin])}/>
+                <Route path='/users/me' component={AuthenticatedComponent(MyUserPage, false)}/>
+                <Route path='/users/:username([A-Za-z_0-9]{5,20})' component={AuthenticatedComponent(UserPage, [isAdmin])}/>
                 <Route path='/invoices/:invoice' component={HomePage}/>
                 <Route path='/registries/:registry' component={HomePage}/>
                 <Route path='/login' component={LoginPage} />

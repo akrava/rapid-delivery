@@ -7,17 +7,17 @@ class MenuLinks extends Component {
     LoginedUserLinks(role) {
         const linkUsers = (
             <li className="nav-item">
-                <NavLink className="nav-link text-nowrap pl-2 pl-md-auto" activeClassName="active" to='/users'>Користувачі</NavLink>
+                <NavLink className="nav-link text-nowrap pl-2 pl-md-auto" activeClassName="active" to='/users' exact>Користувачі</NavLink>
             </li>
         );
         const linkEntities = (admin) => {
             return (
                 <React.Fragment>
                     <li className="nav-item">
-                        <NavLink className="nav-link text-nowrap pl-2 pl-md-auto" activeClassName="active" to='/registries'>{ admin ? "Реєстри" : "Мої реєстри" }</NavLink>
+                        <NavLink className="nav-link text-nowrap pl-2 pl-md-auto" activeClassName="active" to='/registries' exact>{ admin ? "Реєстри" : "Мої реєстри" }</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className="nav-link text-nowrap pl-2 pl-md-auto" activeClassName="active" to='/invoices'>{ admin ? "Транспортні накладні" : "Мої транспортні накладні" }</NavLink>
+                        <NavLink className="nav-link text-nowrap pl-2 pl-md-auto" activeClassName="active" to='/invoices' exact>{ admin ? "Транспортні накладні" : "Мої транспортні накладні" }</NavLink>
                     </li>
                 </React.Fragment>
             );

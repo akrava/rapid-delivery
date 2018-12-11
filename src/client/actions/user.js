@@ -8,6 +8,12 @@ export const USER_REGISTER_FAILURE          = 'USER_REGISTER_FAILURE';
 export const USER_REGISTER_USERNAME_REQUEST = 'USER_REGISTER_USERNAME_REQUEST';
 export const USER_REGISTER_USERNAME_FAILURE = 'USER_REGISTER_USERNAME_FAILURE';
 export const USER_REGISTER_USERNAME_SUCCESS = 'USER_REGISTER_USERNAME_SUCCESS';
+export const USER_UPDATE_REQUEST            = 'USER_UPDATE_REQUEST';
+export const USER_UPDATE_SUCCESS            = 'USER_UPDATE_SUCCESS';
+export const USER_UPDATE_FAILURE            = 'USER_UPDATE_FAILURE';
+export const ANOTHER_USER_REQUEST           = 'ANOTHER_USER_REQUEST';
+export const ANOTHER_USER_SUCCESS           = 'ANOTHER_USER_SUCCESS';
+export const ANOTHER_USER_FAILURE           = 'ANOTHER_USER_FAILURE';
 import { authorizationHeaders, formDataToJson } from './../utils/service';
 import { CURRENT_PATH_REDIRECT } from './redirect';
 import { showMessage, typesMessages } from './showMessage';
@@ -16,6 +22,8 @@ export const defaultPayload = {
     isFetching: false,
     isLogined: false,
     userObject: null,
+    requestedUserObject: null,
+    requestedUserIsFetching: false,
     error: { 
         message: false, 
         statusCode: false
@@ -188,4 +196,83 @@ export function checkUsername(username) {
             payload: { ...defaultPayload, registration: { username: { success: "Доступне" },  isFetching: false  } },
         });
     }; 
+}
+
+export function updateInfoAboutMe() {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt === null) {
+        return {
+            type: 'JWT_NOT_FOUND',
+            payload: {}
+        };
+    }
+    return async function(dispatch) { 
+        dispatch({ 
+            type: USER_UPDATE_REQUEST,
+            payload: { ...defaultPayload, isFetching: true }
+        });
+        const reqOptions = authorizationHeaders(jwt);
+        reqOptions.method = 'GET';
+        let response, respBody;
+        try {
+            response = await fetch("/api/v1/me", reqOptions);
+            if (!response.ok) throw new Error(`Сталася помилка під час авторизації`);
+            respBody = await response.json();
+        } catch (e) {
+            showMessage("Невдалося отримати інфориацію", typesMessages.error)(dispatch);
+            return dispatch({
+                type: USER_UPDATE_FAILURE,
+                payload: { ...defaultPayload, error: { statusCode: response.status } }
+            });
+        }
+        const userObject = respBody;
+        dispatch({
+            type: USER_UPDATE_SUCCESS,
+            payload: { ...defaultPayload, userObject, isLogined: true },
+        });  
+    };
+}
+
+export function getInfoAboutUser(username) {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt === null) {
+        return {
+            type: 'JWT_NOT_FOUND',
+            payload: {}
+        };
+    }
+    return async function(dispatch) { 
+        dispatch({ 
+            type: ANOTHER_USER_REQUEST,
+            payload: { ...defaultPayload, requestedUserIsFetching: true }
+        });
+        const reqOptions = authorizationHeaders(jwt);
+        reqOptions.method = 'GET';
+        let response, respBody;
+        try {
+            response = await fetch(`/api/v1/users/${encodeURIComponent(username)}`, reqOptions);
+            if (response.status === 404) {
+                return dispatch({
+                    type: CURRENT_PATH_REDIRECT,
+                    payload: {
+                        method: 'replace', 
+                        path: '/notFound'
+                    }
+                }); 
+            }
+            if (!response.ok) throw new Error(`Сталася помилка під час авторизації`);
+            respBody = await response.json();
+        } catch (e) {
+            showMessage("Невдалося отримати інформацію", typesMessages.error)(dispatch);
+            return dispatch({
+                type: ANOTHER_USER_FAILURE,
+                payload: { ...defaultPayload, requestedUserIsFetching: false }
+            });
+        }
+        const userObject = respBody.data;
+        dispatch({
+            type: ANOTHER_USER_SUCCESS,
+            payload: { ...defaultPayload, requestedUserObject: userObject },
+        });  
+    };
 }

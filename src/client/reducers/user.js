@@ -9,6 +9,11 @@ import {
     USER_REGISTER_FAILURE,
     USER_REGISTER_REQUEST,
     USER_REGISTER_SUCCESS,
+    USER_UPDATE_FAILURE,
+    USER_UPDATE_SUCCESS,
+    ANOTHER_USER_FAILURE,
+    ANOTHER_USER_REQUEST,
+    ANOTHER_USER_SUCCESS,
     defaultPayload
 } from './../actions/user';
 
@@ -19,6 +24,8 @@ const initialState = {
 function userReducer(state = initialState, action) {
     const data = action.payload;
     switch (action.type) {
+        case USER_UPDATE_FAILURE:
+        case USER_UPDATE_SUCCESS:
         case USER_AUTHENTICATE_REQUEST:
         case USER_AUTHENTICATE_FAILURE: 
         case USER_AUTHENTICATE_SUCCESS:
@@ -53,6 +60,15 @@ function userReducer(state = initialState, action) {
             return {
                 ...state, 
                 registration: data.registration, 
+            };
+        }
+        case ANOTHER_USER_FAILURE:
+        case ANOTHER_USER_REQUEST:
+        case ANOTHER_USER_SUCCESS: {
+            return {
+                ...state, 
+                requestedUserObject: data.requestedUserObject,
+                requestedUserIsFetching: data.requestedUserIsFetching, 
             };
         }
         default: {
