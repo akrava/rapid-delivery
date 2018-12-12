@@ -29,9 +29,6 @@ class UserPage extends Component {
     }
 
     render() { 
-        if (!this.props.isFetching && this.props.user && this.props.currentUser) { 
-            console.log(this.props.currentUser.login === this.props.user.login, this.props.currentUser.login, this.props.user.login);
-        }
         return <div> {!this.props.isFetching && this.props.user && this.props.currentUser && <UserProfile functionCallback={this.handleChangeRole} isMyProfile={this.props.currentUser.login === this.props.user.login} user={this.props.user} />}</div>;
     }
 }

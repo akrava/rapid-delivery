@@ -43,7 +43,7 @@ class UserProfile extends Component {
         );
     }
 
-    changeRole(user) { console.log("hoba", user.role, "sfdsdf");
+    changeRole(user) {
         return (
             <form className="mx-auto change-role" onSubmit={this.props.functionCallback} action="/users/changeRole" method="POST">
                 <input name="username" type="hidden" value={user.login} />
