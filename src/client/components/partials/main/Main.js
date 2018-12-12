@@ -13,7 +13,8 @@ import AuthenticatedComponent from './../../../containers/special/AuthenticatedC
 import MyUserPage from './../../../containers/user/MyUserPage';
 import UserPage from './../../../containers/user/UserPage';
 import EditUserPage from './../../../containers/user/EditUserPage';
-import { isAdmin } from './../../../utils/service';
+import RegistriesTable from './../../../containers/registries/RegistriesTable';
+import { isAdmin, isDefaultUser } from './../../../utils/service';
 
 class Main extends Component {
   render() {
@@ -27,8 +28,9 @@ class Main extends Component {
                         <Route exact path='/users/me' component={AuthenticatedComponent(MyUserPage, false)}/>
                             <Route path='/users/me/edit' component={AuthenticatedComponent(EditUserPage, false)} />
                         <Route path='/users/:username([A-Za-z_0-9]{5,20})' component={AuthenticatedComponent(UserPage, [isAdmin])}/>
+                    <Route exact path='/registries/' component={AuthenticatedComponent(RegistriesTable, [isAdmin, isDefaultUser])}/>
+                        <Route path='/registries/:registry' component={HomePage}/>
                     <Route path='/invoices/:invoice' component={HomePage}/>
-                    <Route path='/registries/:registry' component={HomePage}/>
                     <Route path='/login' component={LoginPage} />
                     <Route path='/register' component={RegisterPage}/>
                 <Route component={PageNotFound}/>

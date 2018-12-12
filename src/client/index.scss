@@ -115,12 +115,21 @@ div.popup-animation {
     z-index: 1;
 }
 
+table#registries {
+    table-layout: fixed;
+    width: 600px;
+}
+
+table#registries.shorter {
+    width: 400px;
+}
+
 table#users {
     table-layout: fixed;
     width: 650px;
 }
 
-table#users td {
+table#users td, table#registries td {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -149,6 +158,14 @@ table#users th.reset-th.head {
 
 nav button.text-danger:hover {
     color: #dc3545 !important;
+}
+
+#registries tr th:last-of-type {
+    width: 106px;
+}
+
+#registries tr th:first-of-type {
+    width: 70px; 
 }
 
 h1, h2, h3, h4 {

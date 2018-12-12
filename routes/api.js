@@ -286,7 +286,6 @@ router.get('/registries', authenticate, async (req, res) => {
     const pageString = req.query.page;
     const searchQueryString = req.query.query ? req.query.query.trim() : null;
     const authorLoginString = req.query.author ? req.query.author.trim() : null;
-    const minQueryLength = 3;
     const maxQueryLength = 50;
     let limit = Number.parseInt(limitString);
     if (!Number.isInteger(limit)) limit = null;
@@ -310,7 +309,7 @@ router.get('/registries', authenticate, async (req, res) => {
         registries = registries.filter(x => user.id.toString() === x.user._id.toString());
     }
     if (searchQueryString) {
-        if (searchQueryString.length > maxQueryLength || searchQueryString.length < minQueryLength) {
+        if (searchQueryString.length > maxQueryLength) {
             return sendError(res, 400, `Bad search request: search query too long or short`, {query: searchQueryString});
         }
         registries = registries.filter(x => {
@@ -320,7 +319,7 @@ router.get('/registries', authenticate, async (req, res) => {
         });
     }
     registries.forEach(x => {
-        x.user = x.user.login;
+        x.user = { login: x.user.login, avaUrl: x.user.avaUrl, fullname: x.user.fullname };
         delete x.id;
         x.invoices = x.invoices.map(x => x.number);
         x.links = [
