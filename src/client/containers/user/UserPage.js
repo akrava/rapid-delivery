@@ -29,7 +29,7 @@ class UserPage extends Component {
     }
 
     render() { 
-        return <div> {!this.props.isFetching && this.props.user && this.props.currentUser && <UserProfile functionCallback={this.handleChangeRole} isMyProfile={this.props.currentUser.login === this.props.user.login} user={this.props.user} />}</div>;
+        return <div> {this.props.user && this.props.currentUser && <UserProfile isFetching={this.props.isFetching} functionCallback={this.handleChangeRole} isMyProfile={this.props.currentUser.login === this.props.user.login} user={this.props.user} />}</div>;
     }
 }
 

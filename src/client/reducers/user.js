@@ -16,6 +16,7 @@ import {
     ANOTHER_USER_SUCCESS,
     ANOTHER_USER_CHANGE_ROLE_FAILURE,
     ANOTHER_USER_CHANGE_ROLE_SUCCESS,
+    ANOTHER_USER_CHANGE_ROLE_REQUEST,
     USER_CHANGE_PROFILE_FAILURE,
     USER_CHANGE_PROFILE_REQUEST,
     USER_CHANGE_PROFILE_SUCCESS,
@@ -75,6 +76,13 @@ function userReducer(state = initialState, action) {
             return {
                 ...state, 
                 requestedUserObject: data.requestedUserObject,
+                requestedUserIsFetching: data.requestedUserIsFetching, 
+            };
+        }
+        case ANOTHER_USER_CHANGE_ROLE_REQUEST:{
+            return {
+                ...state, 
+                requestedUserObject: state.requestedUserObject,
                 requestedUserIsFetching: data.requestedUserIsFetching, 
             };
         }

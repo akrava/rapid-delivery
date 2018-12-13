@@ -54,10 +54,10 @@ class UserProfile extends Component {
                             <option value="2">Сортувальник</option>
                             <option value="3">Адмін</option>
                         </select>
-                        <button className="btn btn-primary btn-sm mx-auto mt-sm-0 mt-2" data-toggle="modal" data-target="#changeRoleModal" type="button">Зберегти</button>
+                        <button className="btn btn-primary btn-sm mx-auto mt-sm-0 mt-2" data-toggle="modal" data-target="#modalDialog" type="button">Зберегти</button>
                     </div>
                 </div>
-                <ModalDialog titleModal="Збереження змін" actionModal="Змінити" textModal="Ви впевнені, що хочете змінити роль?" />
+                <ModalDialog isFetching={this.props.isFetching} titleModal="Збереження змін" actionModal="Змінити" textModal="Ви впевнені, що хочете змінити роль?" />
             </form>
         );
     }
@@ -113,7 +113,8 @@ class UserProfile extends Component {
 UserProfile.propTypes = {
     user: PropTypes.object.isRequired,
     isMyProfile: PropTypes.bool.isRequired,
-    functionCallback: PropTypes.func
+    functionCallback: PropTypes.func,
+    isFetching: PropTypes.bool
 };
 
 export default UserProfile;

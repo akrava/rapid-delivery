@@ -18,8 +18,9 @@ export const USER_CHANGE_PROFILE_FAILURE      = 'USER_CHANGE_PROFILE_FAILURE';
 export const ANOTHER_USER_REQUEST             = 'ANOTHER_USER_REQUEST';
 export const ANOTHER_USER_SUCCESS             = 'ANOTHER_USER_SUCCESS';
 export const ANOTHER_USER_FAILURE             = 'ANOTHER_USER_FAILURE';
-export const ANOTHER_USER_CHANGE_ROLE_SUCCESS = 'ANOTHER_USER_SUCCESS';
-export const ANOTHER_USER_CHANGE_ROLE_FAILURE = 'ANOTHER_USER_FAILURE';
+export const ANOTHER_USER_CHANGE_ROLE_REQUEST = 'ANOTHER_USER_CHANGE_ROLE_REQUEST';
+export const ANOTHER_USER_CHANGE_ROLE_SUCCESS = 'ANOTHER_USER_CHANGE_ROLE_SUCCESS';
+export const ANOTHER_USER_CHANGE_ROLE_FAILURE = 'ANOTHER_USER_CHANGE_ROLE_FAILURE';
 
 import User from './../model/user';
 import { CURRENT_PATH_REDIRECT } from './redirect';
@@ -257,6 +258,10 @@ export function changeUserRole(username, role) {
         };
     }
     return async function(dispatch) { 
+        dispatch({ 
+            type: ANOTHER_USER_CHANGE_ROLE_REQUEST,
+            payload: { ...defaultPayload, requestedUserIsFetching: true }
+        });
         const response = await User.updateByLogin(jwt, username, role, true);
         if (response.error !== null) {
             showMessage(`Невдалося змінити роль ${response.error.message}`, typesMessages.error)(dispatch);

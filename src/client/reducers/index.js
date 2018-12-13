@@ -4,11 +4,13 @@ import invoicesReducer from './invoices';
 import messageReducer from './showMessages';
 import usersReducer from './users';
 import registriesReducer from './registries'; 
+import registryReducer from './registry';
 
 const rootReducer = combineReducers({
     user: userReducer,
     users: usersReducer,
     registries: registriesReducer,
+    registry: registryReducer,
     invoices: invoicesReducer,
     systemMessages: messageReducer
 });

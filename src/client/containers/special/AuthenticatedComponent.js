@@ -5,7 +5,7 @@ import Forbidden from './../../components/special/Forbidden';
 import NotAuthorized from './../../components/special/NotAuthorized';
 import { updateInfoAboutMe } from './../../actions/user';
 
-export default function requireAuthentication(Component, rolesHaveAcess) {
+export default function requireAuthentication(Component, rolesHaveAcess, customCallback = null) {
     class AuthenticatedComponent extends React.Component {
         constructor(props) {
             super(props);
@@ -17,7 +17,13 @@ export default function requireAuthentication(Component, rolesHaveAcess) {
             if (!user.isLogined) {
                 return <NotAuthorized />;
             } else if (user.isLogined && user.userObject) {
-                if (rolesHaveAcess === false || rolesHaveAcess.some(roleCheckFunc => roleCheckFunc(user.userObject.role))) {
+                if (customCallback !== null) {
+                    if (customCallback(user.userObject, this.props)) {
+                        return <Component {...this.props} />;
+                    } else {
+                        return <Forbidden />;
+                    }
+                } else if (rolesHaveAcess === false || rolesHaveAcess.some(roleCheckFunc => roleCheckFunc(user.userObject.role))) {
                     return <Component {...this.props} />;
                 } else {
                     return <Forbidden />;

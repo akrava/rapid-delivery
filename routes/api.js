@@ -361,7 +361,7 @@ router.get('/registries/:number(\\d+)', authenticate, async (req, res) => {
             createLink("delete self", "DELETE", `${req.baseUrl}/registries/${registry.number}`),
             createLink("author", "GET", `${req.baseUrl}/users/${registry.user.login}`)
         ];
-        registry.user = registry.user.login;
+        registry.user = { login: registry.user.login, avaUrl: registry.user.avaUrl, fullname: registry.user.fullname };
         res.send({
             data: registry,
             links
