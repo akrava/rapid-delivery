@@ -65,6 +65,9 @@ class EditUserPage extends Component {
         const this_obj = this;
         return function(e) {
             const obj = {};
+            if (typeof e.currentTarget.value === "undefined") {
+                return;
+            }
             obj[field] = e.currentTarget.value;
             this_obj.setState(obj);
         };

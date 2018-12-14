@@ -5,6 +5,12 @@ import {
     REGISTRY_DELETE_FAILURE,
     REGISTRY_DELETE_REQUEST,
     REGISTRY_DELETE_SUCCESS,
+    REGISTRY_CREATE_FAILURE,
+    REGISTRY_CREATE_REQUEST,
+    REGISTRY_CREATE_SUCCESS,
+    REGISTRY_UPDATE_FAILURE,
+    REGISTRY_UPDATE_REQUEST,
+    REGISTRY_UPDATE_SUCCESS,
     defaultPayload    
 } from './../actions/registry';
 
@@ -47,6 +53,19 @@ function registryReducer(state = initialState, action) {
         case USER_LOGOUT: {
             return {
                 ...defaultPayload
+            };
+        }
+        case REGISTRY_UPDATE_FAILURE:
+        case REGISTRY_UPDATE_REQUEST:
+        case REGISTRY_UPDATE_SUCCESS:
+        case REGISTRY_CREATE_FAILURE:
+        case REGISTRY_CREATE_REQUEST:
+        case REGISTRY_CREATE_SUCCESS: {
+            return {
+                ...state, 
+                registryObject: data.registryObject,
+                isFetching: data.isFetching,
+                error: data.error
             };
         }
         default: {

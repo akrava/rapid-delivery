@@ -23,6 +23,17 @@ class Input extends Component {
         );
     }
 
+    selectInput(props) {
+        return (
+            <select name={props.name} defaultValue={props.value || "default-type"} className="form-control mx-sm-3 custom-select" id={`${props.name}_field`} required>
+                {props.optionNotSelectedText && <option hidden disabled value="default-type">{props.optionNotSelectedText}</option>}
+                {props.options && props.options.map(option => {
+                    return <option key={option.selectValue} value={option.selectValue}>{option.name}</option>;
+                })}
+            </select>
+        );
+    }
+
     renderInput(type, props) {
         switch(type) {
             case 'textarea': {
@@ -30,6 +41,9 @@ class Input extends Component {
             }
             case 'file': {
                 return this.fileInput(props);
+            }
+            case 'select': {
+                return this.selectInput(props);
             }
             default: {
                 return this.defaultInput(props);

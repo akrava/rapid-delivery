@@ -38,7 +38,7 @@ class RegistriesTable extends Component {
                 page = this.props.registries.registriesObject.page;
             }
             this.props.getAllRegistries(page, this.props.registries.searchField);
-            this.setState({searchQuery: this.props.registries.searchField});
+            this.setState({searchQuery: this.props.registries.searchField || ''});
         }
     }
 
@@ -71,7 +71,7 @@ class RegistriesTable extends Component {
 
     showRowsOfRegistries() {
         const user = this.props.user.userObject;
-        const searchField = this.state.searchQuery;
+        const searchField = this.state.searchQuery || '';
         const isAdmin = checkAdminRole(user.role);
         if (this.props.registries.registriesObject === null && !this.props.registries.error) {
             return this.singleRowInfo("Завантаження даних", isAdmin);
@@ -166,7 +166,7 @@ class RegistriesTable extends Component {
     }
 
     onSearchFieldChange(e) {
-        this.setState({ searchQuery: e.currentTarget.value });
+        this.setState({ searchQuery: e.currentTarget.value || ''});
         this.props.getAllRegistries(1, e.currentTarget.value || null);
     }
 
@@ -207,7 +207,7 @@ class RegistriesTable extends Component {
                 </div>
             </div>
             <div className="d-flex p-3">
-                <Link to="/registries/new" className="btn btn-primary mx-auto " type="button">Створення реєстру накладних</Link>
+                <Link to="/registries/new" className="btn btn-primary mx-auto" type="button">Створення реєстру накладних</Link>
             </div>
             <p>
                 Можна переглянути окрему сторінку кожного реєстру:

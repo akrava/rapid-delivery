@@ -107,7 +107,7 @@ class RegistryPage extends Component {
             <p className="text-center mt-3">Дії з реєстром:</p>
             <div className="actions default-form mb-3">    
                 <form className="mx-auto form-inline pt-3 update-btn" action="/registries/edit" method="POST">
-                    <Link className="mx-auto" to={`/registries/edit/${registry.number}`}><button className="btn btn-primary btn-sm mx-auto">Редагувати реєстр</button></Link>
+                    <Link className="mx-auto" to={`/registries/${registry.number}/edit`}><button className="btn btn-primary btn-sm mx-auto">Редагувати реєстр</button></Link>
                 </form>
                 <form className="mx-auto form-inline mt-2 pb-3 update-btn" onSubmit={this.onDeleteRegistry}>
                     <button className="btn btn-danger btn-sm mx-auto"  data-toggle="modal" data-target="#modalDialog" type="button">Видалити реєстр</button>

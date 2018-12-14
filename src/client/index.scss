@@ -57,6 +57,10 @@ nav li.nav-item a.nav-link {
     text-shadow: 0 0 7px #db3333;
 }
 
+.form-default select, .form-default select:focus {
+    color: #000;
+}
+
 @media (min-width: 576px) {
     form.form-default div.form-inline label {
         min-width: 28%;
@@ -102,17 +106,29 @@ div.popup-animation.active {
     opacity: 1;
 }
 
-div.popup-animation.hidden {
+div.popup-animation.hidden, div.popup-animation.hidden > div {
     z-index: -1 !important;
     opacity: 0;
 }
 
+div.popup-animation > div {
+    transition: all 0.5s cubic-bezier(1,0,0,1); 
+}
+
+div.popup-animation.hidden > div {
+   margin-top: -150px !important; 
+}
+
 div.popup-animation {
-    transition: opacity 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out; 
 }
 
 .navbar-collapse {
     z-index: 1;
+}
+
+table#registry {
+    width: 600px;
 }
 
 table#registries {
@@ -666,6 +682,10 @@ h2.api:first-of-type {
         width: 225px !important;
         color: #000 !important;
     }
+
+    #insert select {
+        min-width: 222px;
+    }   
 }
 
 @media (min-width: 576px) {

@@ -376,7 +376,7 @@ router.post('/registries', authenticate, async (req, res) => {
     const userLogin = req.body.userLogin;
     const name = req.body.name ? req.body.name.trim() : null;
     const description = req.body.description ? req.body.description.trim() : null;
-    if (!description || !name) {
+    if (!description || !name || description.length < 3 || name.length < 3 || description.length > 100 || name.length > 50) {
         return sendError(res, 400, `Bad request - invalid post data`);
     }
     const registry = new Registry(-1, name, -1, description, Date.now());
@@ -420,6 +420,11 @@ router.put('/registries/:number(\\d+)', authenticate, async(req, res) => {
     const userLogin = req.body.userLogin || null;
     const name = req.body.name ? req.body.name.trim() : null;
     const description = req.body.description ? req.body.description.trim() : null;
+    if (description && (description.length < 3 || description.length > 100)) {
+        return sendError(res, 400, `Bad request - invalid description data`);
+    } else if (name && (name.length < 3 || name.length > 50)) {
+        return sendError(res, 400, `Bad request - invalid name data`);
+    }
     if (!description && !name && !userLogin) {
         return sendError(res, 400, `Bad request - invalid post data`);
     }
@@ -723,6 +728,15 @@ async function filterArrayByAuthor(res, authorLoginString, array, cb) {
 }
 
 function pagination(req, limit, array, requestedPage, responseObject, links) {
+    if (limit === -1) {
+        responseObject.data = array;
+        responseObject.limit = -1;
+        responseObject.page = 0;
+        responseObject.totalCount = array.length;
+        responseObject.totalPages = 0;
+        responseObject.links = links;
+        return;
+    }
     const elementsPerPage = limit && limit > 0 ? limit : 4;
     const totalCount = array.length;
     const totalPages = Math.ceil(totalCount / elementsPerPage);

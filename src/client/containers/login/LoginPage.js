@@ -37,12 +37,12 @@ class LoginPage extends Component {
         }       
     }
 
-    handleUsernameChange(e) { 
-        this.setState({ username: e.currentTarget.value });
+    handleUsernameChange(e) {
+        this.setState({ username: e.currentTarget.value || ''});
     }
 
     handlePasswordChange(e) { 
-        this.setState({ password: e.currentTarget.value });
+        this.setState({ password: e.currentTarget.value || ''});
     }
 
     render() {

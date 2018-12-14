@@ -22,7 +22,7 @@ class MessagePopup extends Component {
 
     getIcon(type) {
         switch(type) {
-            case typesMessages.error:    return <this.IconDanger />; 
+            case typesMessages.error:   return <this.IconDanger />; 
             case typesMessages.success: return <this.IconSuccess />; 
             case typesMessages.info:    return <this.IconInfo />;  
         }

@@ -16,6 +16,8 @@ import EditUserPage from './../../../containers/user/EditUserPage';
 import RegistriesTable from './../../../containers/registries/RegistriesTable';
 import { isAdmin, isDefaultUser } from './../../../utils/service';
 import RegistryPage from './../../../containers/registry/RegistryPage';
+import EditRegistry from './../../../containers/registry/EditRegistry';
+import NewRegistry from './../../../containers/registry/NewRegistry';
 
 class Main extends Component {
   render() {
@@ -30,7 +32,9 @@ class Main extends Component {
                             <Route path='/users/me/edit' component={AuthenticatedComponent(EditUserPage, false)} />
                         <Route path='/users/:username([A-Za-z_0-9]{5,20})' component={AuthenticatedComponent(UserPage, [isAdmin])}/>
                     <Route exact path='/registries/' component={AuthenticatedComponent(RegistriesTable, [isAdmin, isDefaultUser])}/>
-                        <Route path='/registries/:number' component={AuthenticatedComponent(RegistryPage, [isAdmin, isDefaultUser])}/>
+                        <Route exact path='/registries/:number(\d{5})' component={AuthenticatedComponent(RegistryPage, [isAdmin, isDefaultUser])}/>
+                            <Route path='/registries/:number(\d{5})/edit' component={AuthenticatedComponent(EditRegistry, [isAdmin, isDefaultUser])}/>
+                        <Route path='/registries/new' component={AuthenticatedComponent(NewRegistry, [isAdmin, isDefaultUser])}/>
                     <Route path='/invoices/:invoice' component={HomePage}/>
                     <Route path='/login' component={LoginPage} />
                     <Route path='/register' component={RegisterPage}/>

@@ -62,7 +62,7 @@ class RegisterPage extends Component {
     }
 
     loginInput(e){
-        this.setState({login: e.currentTarget.value});
+        this.setState({login: e.currentTarget.value || ''});
         if (e.currentTarget.value && /[A-Za-z_0-9]{5,20}$/.test(e.currentTarget.value) && !this.props.user.registration.username.isFetching) {
             this.props.checkUsername(e.currentTarget.value);
         }
@@ -75,7 +75,7 @@ class RegisterPage extends Component {
     }
 
     confirmPaswInput(e) {
-        this.setState({confirm_pasw: e.currentTarget.value});
+        this.setState({confirm_pasw: e.currentTarget.value || ''});
         if (this.state.pasw !== e.currentTarget.value) {
             e.currentTarget.setCustomValidity("Passwords don't match");
         } else {
@@ -84,7 +84,7 @@ class RegisterPage extends Component {
     }
 
     paswInput(e) {
-        this.setState({ pasw: e.currentTarget.value });
+        this.setState({ pasw: e.currentTarget.value || ''});
         if (this.state.confirm_pasw !== '') {
             const pasw_confirm_input = document.getElementById("confirm_pasw_field");
             if (this.state.confirm_pasw !== e.currentTarget.value) {
@@ -99,6 +99,9 @@ class RegisterPage extends Component {
         const this_obj = this;
         return function(e) {
             const obj = {};
+            if (typeof e.currentTarget.value === "undefined") {
+                return;
+            }
             obj[field] = e.currentTarget.value;
             this_obj.setState(obj);
         };  
