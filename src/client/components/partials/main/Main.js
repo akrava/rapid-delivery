@@ -18,7 +18,7 @@ import { isAdmin, isDefaultUser } from './../../../utils/service';
 import RegistryPage from './../../../containers/registry/RegistryPage';
 import EditRegistry from './../../../containers/registry/EditRegistry';
 import NewRegistry from './../../../containers/registry/NewRegistry';
-import InvoicesTable from './../../../containers/invoices/InvoiceTable';
+import InvoicesTable from '../../../containers/invoices/InvoicesTable';
 
 class Main extends Component {
   render() {

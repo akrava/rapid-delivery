@@ -86,7 +86,7 @@ class RegistriesTable extends Component {
                 }
             } else {
                 if (searchField.trim()) {
-                    return this.singleRowInfo("Нічого не знайдено серед моїх ТТН", false);
+                    return this.singleRowInfo("Нічого не знайдено серед моїх реєстрів", false);
                 } else {
                     return this.singleRowInfo("Немає жодного мого реєстру", false);
                 }
@@ -178,7 +178,7 @@ class RegistriesTable extends Component {
     searchFormOnSubmit(e) {
         e.preventDefault();
         e.stopPropagation();
-        this.props.getAllRegistries(this.getCurrentPage(), this.state.searchQuery);
+        this.props.getAllRegistries(1, this.state.searchQuery);
     }
 
     render() {
@@ -207,7 +207,7 @@ class RegistriesTable extends Component {
                 </div>
             </div>
             <div className="d-flex p-3">
-                <Link to="/registries/new" className="btn btn-primary mx-auto" type="button">Створення реєстру накладних</Link>
+                <Link to="/registries/new" className="btn btn-primary mx-auto" role="button">Створення реєстру накладних</Link>
             </div>
             <p>
                 Можна переглянути окрему сторінку кожного реєстру:

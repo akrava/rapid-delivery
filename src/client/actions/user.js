@@ -301,7 +301,7 @@ export function changeMyPersonalInfo(username, formData) {
             });
         }
         if (response.error !== null) {
-            showMessage(`Невдалося оновити профіль ${response.error.message}`, typesMessages.error)(dispatch);
+            showMessage(`Перевірте корректність введених даних`, typesMessages.error)(dispatch);
             return dispatch({
                 type: USER_CHANGE_PROFILE_FAILURE,
                 payload: { ...defaultPayload, isFetching: false }

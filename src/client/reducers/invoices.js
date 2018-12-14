@@ -21,7 +21,7 @@ function invoicesReducer(state = initialState, action) {
         case INVOICES_GET_ALL_SUCCESS: {
             return {
                 ...state, 
-                invoicesObject: data.registriesObject,
+                invoicesObject: data.invoicesObject,
                 isFetching: data.isFetching,
                 error: data.error,
                 searchField: data.searchField,

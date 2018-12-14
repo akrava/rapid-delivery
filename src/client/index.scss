@@ -329,6 +329,16 @@ img.ava.small {
     color: #d43807 !important;
     font-weight: bold;
 }
+
+select#type-search {
+    height: calc(1.6125rem + 2px);
+    padding: 3px;
+    padding-right: 25px;
+}
+
+select#type-search::placeholder {
+    margin-top: -1px;
+}
   
 .navbar-toggle {
     margin-top: 0.5rem;
