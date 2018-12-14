@@ -6,8 +6,8 @@
     "scripts": {
         "clean": "rm -rf ./dist",
         "start": "node app.js",
-        "heroku-postbuild": "npm run build",
-        "build_ENABLE_THIS_ON_PROD": "webpack --mode production",
+        "heroku-postbuild": "npm run build:prod",
+        "build:prod": "npm run clean && webpack --mode production",
         "build": "npm run clean && webpack --mode development --progress",
         "dev": "npm run build && npm-run-all --parallel watch:server watch:build",
         "watch:build": "webpack --watch --mode development",

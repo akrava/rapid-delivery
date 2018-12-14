@@ -18,6 +18,7 @@ import { isAdmin, isDefaultUser } from './../../../utils/service';
 import RegistryPage from './../../../containers/registry/RegistryPage';
 import EditRegistry from './../../../containers/registry/EditRegistry';
 import NewRegistry from './../../../containers/registry/NewRegistry';
+import InvoicesTable from './../../../containers/invoices/InvoiceTable';
 
 class Main extends Component {
   render() {
@@ -35,7 +36,8 @@ class Main extends Component {
                         <Route exact path='/registries/:number(\d{5})' component={AuthenticatedComponent(RegistryPage, [isAdmin, isDefaultUser])}/>
                             <Route path='/registries/:number(\d{5})/edit' component={AuthenticatedComponent(EditRegistry, [isAdmin, isDefaultUser])}/>
                         <Route path='/registries/new' component={AuthenticatedComponent(NewRegistry, [isAdmin, isDefaultUser])}/>
-                    <Route path='/invoices/:invoice' component={HomePage}/>
+                    <Route exact path='/invoices/' component={AuthenticatedComponent(InvoicesTable, [isAdmin, isDefaultUser])}/>
+                        <Route path='/invoices/:invoice(\d{6})' component={HomePage}/>
                     <Route path='/login' component={LoginPage} />
                     <Route path='/register' component={RegisterPage}/>
                 <Route component={PageNotFound}/>

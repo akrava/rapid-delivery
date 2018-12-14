@@ -64,37 +64,39 @@ class RegistryPage extends Component {
         return (
             <React.Fragment>
             <h1>Реєстр {registry.number} - {registry.name}</h1>
-            <table className="mx-auto styled captioned py-2" id="registry">
-                <caption>Реєстр #{registry.number}</caption>
-                <tbody>
-                    <tr>
-                        <td>Номер реєстру</td>
-                        <td>{registry.number}</td>
-                    </tr>
+            <div className="table-responsive p-3">
+                <table className="mx-auto styled captioned py-2" id="registry">
+                    <caption>Реєстр #{registry.number}</caption>
+                    <tbody>
                         <tr>
-                        <td>Назва реєстру</td>
-                        <td>{registry.name}</td>
-                    </tr>
-                    {isAdmin(user.role) &&
-                        <tr>
-                            <td>Автор</td>
-                            <td><Link className="link-style ava" to={`/users/${registry.user.login}`}><img src={registry.user.avaUrl} height="30" width="30" className="ava small mr-1" />{registry.user.fullname}</Link></td>
+                            <td>Номер реєстру</td>
+                            <td>{registry.number}</td>
                         </tr>
-                    }
-                    <tr>
-                        <td>Опис</td>
-                        <td>{registry.description}</td>
-                    </tr> 
-                    <tr>
-                        <td>Дата створення</td>
-                        <td>{toFormatedString(registry.created)}</td>
-                    </tr>
-                    <tr>
-                        <td>Кількість накладних:</td>
-                        <td>{registry.invoices.length}</td>
-                    </tr>
-                </tbody>
-            </table>
+                            <tr>
+                            <td>Назва реєстру</td>
+                            <td>{registry.name}</td>
+                        </tr>
+                        {isAdmin(user.role) &&
+                            <tr>
+                                <td>Автор</td>
+                                <td><Link className="link-style ava" to={`/users/${registry.user.login}`}><img src={registry.user.avaUrl} height="30" width="30" className="ava small mr-1" />{registry.user.fullname}</Link></td>
+                            </tr>
+                        }
+                        <tr>
+                            <td>Опис</td>
+                            <td>{registry.description}</td>
+                        </tr> 
+                        <tr>
+                            <td>Дата створення</td>
+                            <td>{toFormatedString(registry.created)}</td>
+                        </tr>
+                        <tr>
+                            <td>Кількість накладних:</td>
+                            <td>{registry.invoices.length}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <div className="content-bottom registry">
                 {registry.invoices.length > 0 
                     ? <p> Усього знайдено <b>{registry.invoices.length}</b> накладних, які знаходяться в цьому реєстрі:</p>
