@@ -39,7 +39,6 @@ class EditRegistry extends Component {
         if (user.login === registry.user.login || isAdmin(user.role)) {
             return true;
         }
-        console.log("too bad"); debugger;
         return false;
     }
 

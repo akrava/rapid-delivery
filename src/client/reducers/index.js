@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import userReducer from './user';
 import invoicesReducer from './invoices';
+import invoiceReducer from './invoice';
 import messageReducer from './showMessages';
 import usersReducer from './users';
 import registriesReducer from './registries'; 
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
     registries: registriesReducer,
     registry: registryReducer,
     invoices: invoicesReducer,
+    invoice: invoiceReducer,
     systemMessages: messageReducer
 });
 

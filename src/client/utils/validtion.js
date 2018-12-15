@@ -17,9 +17,20 @@ export function onMountedForm() {
         Array.from(arrayGrops).forEach(function(x) {
             const inputs = x.getElementsByTagName('input');
             Array.from(inputs).forEach(function(y) {
-                y.addEventListener('change', function _listener() {
+                let event = 'change';
+                if (y.hasAttribute("type") && y.getAttribute("type") === "number") {
+                    event = 'input';
+                }
+                y.addEventListener(event, function _listener() {
                     x.classList.add("was-validated");
-                    y.removeEventListener('change', _listener, false);
+                    y.removeEventListener(event, _listener, false);
+                }, false);
+            });
+            const selects = x.getElementsByTagName('select');
+            Array.from(selects).forEach(function(y) {
+                y.addEventListener('input', function _listener() {
+                    x.classList.add("was-validated");
+                    y.removeEventListener('input', _listener, false);
                 }, false);
             });
         });

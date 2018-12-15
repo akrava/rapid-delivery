@@ -204,7 +204,7 @@ class RegisterPage extends Component {
                             Пароль повинен бути довжиною від 8 до 30 символів
                         </small>
                     </div>
-                    <div className="col d-md-inline-flex">
+                    <div className="col d-inline-flex">
                         <button className="btn btn-primary ml-auto mr-4" type="submit" disabled={this.props.user.registration.isFetching}>Зареєструватися</button>
                         <button className="btn btn-secondary mr-auto" type="reset">Скинути</button>
                     </div>

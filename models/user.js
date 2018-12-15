@@ -146,11 +146,11 @@ class User {
         }
         const public_idIndex = this.avaUrl.lastIndexOf('/') + 1;
         const public_id = this.avaUrl.substr(public_idIndex);  
-        await new Promise((resolve, reject) => {
+        await new Promise((resolve, reject) => {  /* eslint-disable-line */
             cloudinary.v2.uploader.destroy(public_id, {resource_type: 'raw'},
                 async (error, result) => {
-                    if (error) reject(new Error (error));
-                    if (result.result !== "ok") reject(new Error("Couldn't delete image"));
+                    if (error) console.error(error); // reject(new Error (error));
+                    if (result.result !== "ok") console.error(error); // reject(new Error("Couldn't delete image"));
                     resolve();
                 });
         });

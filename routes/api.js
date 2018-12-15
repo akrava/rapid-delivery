@@ -125,17 +125,17 @@ router.get('/invoices/:number(\\d+)', authenticate, async (req, res) => {
         links = [];
         links.push(createLink("recipient", "GET", `${req.baseUrl}/me`));
     } else if (user.role === Service.roleStandart && sender._id.toString() === user.id.toString()) {
-        invoice.registry = invoice.registry.number;
+        invoice.registry = { number: invoice.registry.number, name: invoice.registry.name };
         links.push(createLink("sender", "GET", `${req.baseUrl}/me`));
         links.push(createLink("registry", "GET", `${req.baseUrl}/registries/${invoice.registry}`));
     } else {
-        invoice.registry = invoice.registry.number;
+        invoice.registry = { number: invoice.registry.number, name: invoice.registry.name };
         links.push(createLink("sender", "GET", `${req.baseUrl}/users/${sender.login}`));
         links.push(createLink("registry", "GET", `${req.baseUrl}/registries/${invoice.registry}`));
         links.push(createLink("recipient", "GET", `${req.baseUrl}/users/${invoice.recipient.login}`));
     }
-    invoice.sender = sender.login;
-    invoice.recipient = invoice.recipient.login;
+    invoice.sender = { login: sender.login, avaUrl: sender.avaUrl, fullname: sender.fullname };
+    invoice.recipient = { login: invoice.recipient.login, avaUrl: invoice.recipient.avaUrl, fullname: invoice.recipient.fullname };
     res.send({
         data: invoice,
         links
@@ -158,17 +158,27 @@ router.post('/invoices', authenticate, async (req, res) => {
     const location = req.body.location ? req.body.location.trim() : null;
     const weight = Number.parseFloat(req.body.weight);
     const cost = Number.parseFloat(req.body.cost);
-    const photoUrl = req.body.photoUrl ? req.body.photoUrl.trim() : null;
     const daysDelivery = 4;
     if (!(description && Object.prototype.toString.call(departure) === "[object Date]" 
-        && !isNaN(departure.getTime()) && location && weight > 0 && cost > 0 && photoUrl)) {
+        && !isNaN(departure.getTime()) && location && weight > 0 && cost > 0)) {
             return sendError(res, 400, `Bad request - invalid post data`);
+    }
+    const photo = req.files ? req.files.photo : null;
+    // https://regex101.com/codegen?language=javascript
+    const fileRegExPattern = /(\.[a-zA-Z]+)/g;
+    if ((photo && (photo.truncated || !photo.mimetype.startsWith(`image/`)))) {
+        return Service.sendErrorPage(res, 400, `Bad request - invalid post data`);
+    }
+    let photoExt = null;
+    if (photo) {
+        photoExt = photo.name.lastIndexOf('.') < 0 ? "" : photo.name.substr(photo.name.lastIndexOf('.'));
+        if (!photoExt.match(fileRegExPattern)) return sendError(res, 400, `File extenrion is invalid`);
     }
     let arrival = new Date(departure);
     arrival.setDate(arrival.getDate() + daysDelivery);
     arrival = arrival.toISOString();
     const invoice = new Invoice(-1, -1, -1, description, 
-       departure.toISOString(), arrival, location, weight, cost, photoUrl);
+       departure.toISOString(), arrival, location, weight, cost);
     let invoiceModel = null;
     try {
         const registry = await Registry.getByNumber(registryNum);
@@ -178,6 +188,9 @@ router.post('/invoices', authenticate, async (req, res) => {
         invoice.registry = registry.id;
         const id = await Invoice.insert(invoice);
         invoiceModel = await Invoice.getById(id);
+        if (photo) {
+            await invoiceModel.loadFileToStorage(photo.data);
+        }
         if (!invoiceModel) throw new Error('invoice wasn\'t added');
     } catch (err) {
         return sendError(res, 400, `Couldn't add invoice: ${err.message}`);
@@ -203,13 +216,23 @@ router.put('/invoices/:number(\\d+)', authenticate, async(req, res) => {
     const location = req.body.location ? req.body.location.trim() : null;
     const weight = Number.parseFloat(req.body.weight) || null;
     const cost = Number.parseFloat(req.body.cost) || null;
-    const photoUrl = req.body.photoUrl ? req.body.photoUrl.trim() : null;
+    const photo = req.files ? req.files.photo : null;
+    // https://regex101.com/codegen?language=javascript
+    const fileRegExPattern = /(\.[a-zA-Z]+)/g;
+    if ((photo && (photo.truncated || !photo.mimetype.startsWith(`image/`)))) {
+        return Service.sendErrorPage(res, 400, `Bad request - invalid post data`);
+    }
+    let photoExt = null;
+    if (photo) {
+        photoExt = photo.name.lastIndexOf('.') < 0 ? "" : photo.name.substr(photo.name.lastIndexOf('.'));
+        if (!photoExt.match(fileRegExPattern)) return sendError(res, 400, `File extenrion is invalid`);
+    }
     const daysDelivery = 4;
     if (!(Object.prototype.toString.call(departure) === "[object Date]" 
         && !isNaN(departure.getTime()))) {
         departure = null;
     }
-    if (!(description || departure || location || weight > 0 || cost > 0 || photoUrl)) {
+    if (!(description || departure || location || weight > 0 || cost > 0 || photo)) {
         return sendError(res, 400, `Bad request - no data to update`);
     }
     let arrival = departure ? new Date(departure) : null;
@@ -242,12 +265,16 @@ router.put('/invoices/:number(\\d+)', authenticate, async(req, res) => {
     const invoice = new Invoice(invoiceObj.id, -1, recipentID || invoiceObj.recipient, 
         description || invoiceObj.description, departureStr || invoiceObj.departure,
         arrival || invoiceObj.arrival, location || invoiceObj.location, 
-        weight || invoiceObj.weight, cost || invoiceObj.cost, photoUrl || invoiceObj.photoPath, 
+        weight || invoiceObj.weight, cost || invoiceObj.cost, invoiceObj.photoPath, 
         registryID || invoiceObj.registry);
     let newModel = null;
     try {
         await Invoice.update(invoice);
         newModel = await Invoice.getById(invoiceObj.id);
+        if (photo) {
+            await newModel.deleteFileFromStorage();
+            await newModel.loadFileToStorage(photo.data);
+        } 
     } catch (err) {
         return sendError(res, 400, `Couldn't update invoice: ${err.message}`);
     }
@@ -477,9 +504,7 @@ router.delete('/registries/:number(\\d+)', authenticate, async(req, res) => {
 
 // Users
 router.get('/users', authenticate, async (req, res) => {
-    if (req.user.role !== Service.roleAdmin) {
-        return sendError(res, 403, `Forbidden`);
-    }
+    const lossyInfo = req.user.role !== Service.roleAdmin;
     const limitString = req.query.limit;
     const pageString = req.query.page;
     let limit = Number.parseInt(limitString);
@@ -496,10 +521,14 @@ router.get('/users', authenticate, async (req, res) => {
     users.forEach(x => {
         delete x.id;
         delete x.password;
-        x.registries = x.registries.map(y => y.number);
+        x.registries = x.registries.map(y => { return { number: y.number, name:y.name }; });
         x.upcomingInvoices = x.upcomingInvoices.map(y => y.number);
         x.links = [createLink("author", "GET", `${req.baseUrl}/users/${x.login}`)];
     });
+    if (lossyInfo) {
+        const userArr = users.map(user => { return { login: user.login, fullname: user.fullname }; });
+        return res.send(userArr);
+    }
     const responseObject = {};
     const links = [createLink("create user", "POST", `${req.baseUrl}/users`)]; 
     pagination(req, limit, users, requestedPage, responseObject, links);

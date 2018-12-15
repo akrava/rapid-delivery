@@ -11,7 +11,7 @@ class Input extends Component {
     fileInput(props) {
         return (
             <div className="custom-file">
-                <input type="file" style={{width: "257px"}} onChange={props.valueOnChage} className="custom-file-input" accept={props.accept} name={props.name} id={`${props.name}_field`} />
+                <input type="file" style={{width: "257px"}} onChange={props.valueOnChage} className="custom-file-input" accept={props.accept} name={props.name} id={`${props.name}_field`} required={props.required}/>
                 <label ref={props.labelRef} className={`custom-file-label small ${props.formInline ? "mx-sm-3" : null}`} id="file-label" style={{justifyContent: "left"}} htmlFor="customFile">Виберіть фото</label>
             </div>
         );
@@ -25,10 +25,27 @@ class Input extends Component {
 
     selectInput(props) {
         return (
-            <select name={props.name} defaultValue={props.value || "default-type"} className="form-control mx-sm-3 custom-select" id={`${props.name}_field`} required>
+            <select name={props.name} ref={props.refAction || null} onChange={props.valueOnChage} defaultValue={props.value || "default-type"} className="form-control mx-sm-3 custom-select" id={`${props.name}_field`} required>
                 {props.optionNotSelectedText && <option hidden disabled value="default-type">{props.optionNotSelectedText}</option>}
                 {props.options && props.options.map(option => {
                     return <option key={option.selectValue} value={option.selectValue}>{option.name}</option>;
+                })}
+            </select>
+        );
+    }
+
+    selectInputGroup(props) {
+        return (
+            <select name={props.name} ref={props.refAction || null} onChange={props.valueOnChage} defaultValue={props.value || "default-type"} className="form-control mx-sm-3 custom-select" id={`${props.name}_field`} required>
+                {props.optionNotSelectedText && <option hidden disabled value="default-type">{props.optionNotSelectedText}</option>}
+                {props.options && props.options.map((option, index) => {
+                    return (
+                        <optgroup key={index} label={option.label}>
+                        {option.value.map(val => {
+                            return <option key={val.selectValue} value={val.selectValue}>{val.name}</option>;
+                        })}                       
+                        </optgroup>
+                    );
                 })}
             </select>
         );
@@ -44,6 +61,9 @@ class Input extends Component {
             }
             case 'select': {
                 return this.selectInput(props);
+            }
+            case 'select-group': {
+                return this.selectInputGroup(props);
             }
             default: {
                 return this.defaultInput(props);
@@ -68,6 +88,8 @@ class Input extends Component {
                 ref={props.refAction || null}
                 aria-describedby={`${props.name}_helpBlock`}
                 value={props.value}
+                step={props.stepVal || null}
+                min={props.minVal || null}
                 required={props.required}
             />
         );
@@ -118,7 +140,9 @@ Input.propTypes = {
     refAction: PropTypes.object,
     value: PropTypes.any,
     accept: PropTypes.string,
-    rows: PropTypes.number
+    rows: PropTypes.number,
+    stepVal: PropTypes.number,
+    minVal: PropTypes.any
 };
 
 export default Input;

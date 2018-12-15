@@ -61,10 +61,22 @@ nav li.nav-item a.nav-link {
     color: #000;
 }
 
+form#insert-invoice input[type="text"], form#insert-invoice input[type="date"], form#insert-invoice select {
+    min-width: 235px !important;
+}
+
+form#insert-invoice input#photo_field {
+    width: 270px !important;
+}
+
 @media (min-width: 576px) {
     form.form-default div.form-inline label {
         min-width: 28%;
         justify-content: left !important;
+    }
+
+    form#insert-invoice.form-default div.form-inline label {
+        min-width: 41% !important;
     }
 }
 
@@ -73,12 +85,20 @@ nav li.nav-item a.nav-link {
         min-width: 25% !important;
         justify-content: left !important;
     }
+
+    form#insert-invoice.form-default div.form-inline label {
+        min-width: 30% !important;
+    }
 }
 
 @media (min-width: 992px) {
     form.form-default div.form-inline label {
         min-width: 18% !important;
         justify-content: left !important;
+    }
+
+    form#insert-invoice.form-default div.form-inline label {
+        min-width: 25% !important;
     }
 }
 

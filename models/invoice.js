@@ -14,7 +14,7 @@ const InvoiceScheme = new mongoose.Schema({
     location: { type: String, required: true },
     weight: { type: Number, required: true },
     cost: { type: Number, required: true },
-    photoPath: String,
+    photoPath: { type: String, default: '/images/default_box.jpg' },
     registry: { type: mongoose.Schema.Types.ObjectId, ref: 'Registry', required: true }
 });
 
@@ -130,11 +130,11 @@ class Invoice {
         }
         const public_idIndex = this.photoPath.lastIndexOf('/') + 1;
         const public_id = this.photoPath.substr(public_idIndex);  
-        await new Promise((resolve, reject) => {
+        await new Promise((resolve, reject) => {  /* eslint-disable-line */
             cloudinary.v2.uploader.destroy(public_id, {resource_type: 'raw'},
                 async (error, result) => {
-                    if (error) reject(new Error (error));
-                    if (result.result !== "ok") reject(new Error("Couldn't delete image"));
+                    if (error) console.error(error); // reject(new Error (error));
+                    if (result.result !== "ok") console.error(result); // reject(new Error("Couldn't delete image"));
                     resolve();
                 });
         });

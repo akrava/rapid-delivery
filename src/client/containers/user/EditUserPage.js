@@ -167,7 +167,7 @@ class EditUserPage extends Component {
                             required
                         />
                     </div>
-                    <div className="col d-md-inline-flex">
+                    <div className="col d-inline-flex">
                         <button className="btn btn-primary ml-auto mr-4" type="submit" disabled={this.props.user.isFetching}>Оновити</button>
                         <button className="btn btn-secondary mr-auto" onClick={this.props.goBack}>Відмінити</button>
                     </div>
