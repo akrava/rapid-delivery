@@ -55,7 +55,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebPackPlugin({
-      template: path.join(__dirname, "./views/index.html"),
+      template: path.join(__dirname, "./src/client/index.html"),
       // filename: path.join(__dirname, "./dist/index.html")
     }),
     new MiniCssExtractPlugin({

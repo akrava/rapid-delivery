@@ -105,6 +105,9 @@ class UserProfile extends Component {
                 <div className="actions default-form mb-4">
                    { this.props.isMyProfile ? this.editAction() : this.changeRole(this.props.user) }
                 </div>
+                <div className="my-3">
+                <p className="text-center"><Link className="link-style" to="/developer/v1">REST API documentation</Link></p>
+                </div>
             </React.Fragment>
         );
     }

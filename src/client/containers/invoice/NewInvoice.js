@@ -74,7 +74,6 @@ class NewInvoice extends Component {
         const user = this.props.user.userObject;
         const users = this.props.users.usersObject.data;
         const isAdmin = checkAdminRights(user.role);
-        console.log(this.props.invoice.isFetching, new Date, this.props.invoice);
         return <InvoiceForm 
             registriesArr={isAdmin ? this.getGroup(users) : this.myRegistries(user)} 
             isFetching={this.props.invoice.isFetching} 

@@ -1,0 +1,181 @@
+[
+    {
+        "title": "User personal info",
+        "resources": [
+            {
+                "title": "Show information about me",
+                "url": "/me",
+                "method": "GET",
+                "auth": "Authentication requires that the existing user should supply their JWT token",
+                "params": "none",
+                "data": "none",
+                "success": "Code: 200<br/>Content: <pre>{\n\t\"login\": \"jano4ek_thms\",\n\t\"role\": 0,\n\t\"fullname\": \"Jason Thompson\",\n\t\"email\": \"fax@examplle.com\",\n\t\"phone\": \" 380333333333\",\n\t\"registered\": \"2018-05-13T10:25:19.000Z\",\n\t\"avaUrl\": \"https://res.cloudinary.com\",\n\t\"bio\": \"biograph\",\n\t\"isDisabled\": false,\n\t\"registries\": [],\n\t\"upcomingInvoices\": []\n}</pre>",
+                "error": "Without auth: Code: 401<br/>"
+            }
+        ]
+    },
+    {
+        "title": "Invoices",
+        "resources": [
+            {
+                "title": "Show all invoices",
+                "url": "/invoices?limit=:limit&page=:page&query=:query&type=:type&author=:author",
+                "method": "GET",
+                "auth": "Authentication requires that the existing user should supply their JWT token<br><i>Admin can see all invoices, standarts users - only theirs</i>",
+                "params": "You can use some options to filter:<br><b>page</b> - show requested page from request. default: 1. <br><b>limit</b> - how much invoices will view on page. default: 4 <br>search options: <b>type</b> - type of searh (num | description | location), <b>query</b> - search query<br> option for admin: <b>author</b> - login of a user to filter invoices by it",
+                "data": "none",
+                "success": "In success there will be all info in <b>data</b> and requested params. <b>totalCount</b> - number of all invoices, <b>totalPages</b> - number of all pages<b><br>Data:<pre>{     \n\"data\": [        \t\n  {             \n\t\"number\": 528095,             \n\t\"recipient\": \"jano4ek_thms\",             \n\t\"description\": \"furniture\",             \n\t\"departure\": \"2018-10-11T00:00:00.000Z\",             \n\t\"arrival\": \"2018-10-15T00:00:00.000Z\",             \n\t\"location\": \"Kyiv\",             \n\t\"weight\": 37.51,             \n\t\"cost\": 2423.79,             \n\t\"photoPath\": \"https://res.cloudinary.com\",             \n\t\"registry\": 16399,             \n\t\"links\": [  ]        }    ],     \n\t\"limit\": 1,     \n\t\"page\": 1,     \n\t\"totalCount\": 17,     \n\t\"totalPages\": 17,     \n\t\"links\": []   \n}",
+                "error": "Without auth: Code: 401<br/> Without permission: Code: 403. Data: <br><pre>      {\n         \"error\": \"Forbidden\"\n      }<br></pre> Error message will be in <b>error</b>, optionally there could be an <b>errorData</b><br>\n     <pre>     {\n         \"error\": \"No such author\",\n         \"errorData\": {\n             \"login\": \"sdf\"\n         }\n     }\n     </pre>\n Also other codes as 400, 500 with <b>error</b> in body"
+            },
+            {
+                "title": "Show invoice by number",
+                "url": "/invoices/:number",
+                "method": "GET",
+                "auth": "Authentication requires that the existing user should supply their JWT token <br><i>Admin can see all invoices, standarts users - created by them and as a recipient</i>",
+                "params": "<b>number</b> - number of invoice",
+                "data": "none",
+                "success": "In success there will be all info in <b>data</b>. <br>Data:<pre>\n{     \n\t\"data\": {         \n\t\"number\": 528096,         \n\t\"recipient\": \"white_stripes\",         \n\t\"description\": \"cabel\",         \n\t\"departure\": \"2018-11-07T00:00:00.000Z\",         \n\t\"arrival\": \"2018-11-11T00:00:00.000Z\",         \n\t\"location\": \"NYC\",         \n\t\"weight\": 0.643,         \n\t\"cost\": 1245.39,         \n\t\"photoPath\": \"https://res.cloudinary.com/\",         \n\t\"registry\": 16400,         \n\t\"sender\": \"jano4ek_thms\"    },     \n\t\"links\": [        {             \n\t\"rel\": \"udpate self\",             \n\t\"method\": \"PUT\",             \n\t\"href\": \"/api/v1/invoices/528096\"        }    ]}",
+                "error": "Without auth: Code: 401<br/> Without permission: Code: 403. Data: <br><pre>      {\n         \"error\": \"Forbidden\"\n      }<br></pre> Error message will be in <b>error</b>, optionally there could be an <b>errorData</b><br>\n     <pre>     {\n         \"error\": \"No such author\",\n         \"errorData\": {\n             \"login\": \"sdf\"\n         }\n     }\n     </pre>\n Also other codes as 400, 500 with <b>error</b> in body"
+            },
+            {
+                "title": "Create invoice",
+                "url": "/invoices",
+                "method": "POST",
+                "auth": "Authentication requires that the existing user should supply their JWT token <br><i>Admin can create invoice in all registries, standarts users - in their owns</i>",
+                "params": "none",
+                "data": "<pre>{     \n\t\"description\": \"some decsr\",     \n\t\"registryNum\":  16403,     \n\t\"recipientLogin\": \"a_krava\",     \n\t\"departure\": \"12.12.2018\",     \n\t\"location\": \"kyiv\",     \n\t\"weight\": 23.43,     \n\t\"cost\": 345.5,     \n\t\"photoUrl\": \"/some/url/path.png\"}</pre>",
+                "success": "In success there will be code 201, and created invoice in <b>data</b>. <br>Data:<pre>\n {     \n\t\"data\": {         \n\t\"number\": 528162,         \n\t\"recipient\": \"a_krava\",         \n\t\"description\": \"some decsr\",         \n\t\"departure\": \"2018-12-11T22:00:00.000Z\",         \n\t\"arrival\": \"2018-12-15T22:00:00.000Z\",         \n\t\"location\": \"kyiv\",         \n\t\"weight\": 23.43,         \n\t\"cost\": 345.5,         \n\t\"photoPath\": \"/some/url/path.png\"    },     \n\t\"links\": [{         \n\t\"rel\": \"self\",         \n\t\"method\": \"GET\",         \n\t\"href\": \"/api/v1/invoices/528162\"    }]}",
+                "error": "Without auth: Code: 401<br/> Without permission: Code: 403. Data: <br><pre>      {\n         \"error\": \"Forbidden\"\n      }<br></pre> Error message will be in <b>error</b>, optionally there could be an <b>errorData</b><br>\n     <pre>     {\n         \"error\": \"No such author\",\n         \"errorData\": {\n             \"login\": \"sdf\"\n         }\n     }\n     </pre>\n Also other codes as 400, 500 with <b>error</b> in body"
+            },
+            {
+                "title": "Update invoice",
+                "url": "/invoices/:number",
+                "method": "PUT",
+                "auth": "Authentication requires that the existing user should supply their JWT token <br><i>Admin can edit invoice in all registries, standarts users - in their owns</i>",
+                "params": "<b>number</b> - number of invoice",
+                "data": "Some fields, which you want to update in invoice. Example:<br><pre> {     \n\"description\": \"some decsr\",     \n\"cost\": 345.5,     \n\"photoUrl\": \"/some/url/path.png\"}</pre>",
+                "success": "In success there will be code 200 (OK), and updated invoice in <b>data</b>. <br>Data:<pre>\n {     \n\"data\": {         \n\"number\": 528162,         \n\"recipient\": \"a_krava\",         \n\"description\": \"some decsr\",         \n\"departure\": \"2018-12-11T22:00:00.000Z\",         \n\"arrival\": \"2018-12-15T22:00:00.000Z\",         \n\"location\": \"kyiv\",         \n\"weight\": 23.43,         \n\"cost\": 345.5,         \n\"photoPath\": \"/some/url/path.png\"    },     \n\"links\": []}",
+                "error": "Without auth: Code: 401<br/> Without permission: Code: 403. Data: <br><pre>      {\n         \"error\": \"Forbidden\"\n      }<br></pre> Error message will be in <b>error</b>, optionally there could be an <b>errorData</b><br>\n     <pre>     {\n         \"error\": \"No such author\",\n         \"errorData\": {\n             \"login\": \"sdf\"\n         }\n     }\n     </pre>\n Also other codes as 400, 500 with <b>error</b> in body"
+            },
+            {
+                "title": "Delete invoice",
+                "url": "/invoices/:number",
+                "method": "DELETE",
+                "auth": "Authentication requires that the existing user should supply their JWT token <br><i>Admin can delete invoice in all registries, standarts users - in their owns</i>",
+                "params": "<b>number</b> - number of invoice",
+                "data": "none",
+                "success": "In success there will be code 204 and empty body",
+                "error": "Without auth: Code: 401<br/> Without permission: Code: 403. Data: <br><pre>      {\n         \"error\": \"Forbidden\"\n      }<br></pre> Error message will be in <b>error</b>, optionally there could be an <b>errorData</b><br>\n     <pre>     {\n         \"error\": \"No such author\",\n         \"errorData\": {\n             \"login\": \"sdf\"\n         }\n     }\n     </pre>\n Also other codes as 400, 500 with <b>error</b> in body"
+            }
+        ]
+    },
+    {
+        "title": "Registries",
+        "resources": [
+            {
+                "title": "Show all registries",
+                "url": "/registries?limit=:limit&page=:page&query=:query&author=:author",
+                "method": "GET",
+                "auth": "Authentication requires that the existing user should supply their JWT token <br><i>Admin can see all registries, standarts users - only theirs</i> <br><b>limit</b> - how much invoices will view on page. default: 4 <br><b>query</b> - search query<br>option for admin: <b>author</b> - login of a user to filter registries by it",
+                "data": "none",
+                "success": "In success there will be all info in <b>data</b> and requested params. <b>totalCount</b> - number of all registries, <b>totalPages</b> - number of all pages<b><br>Data:<pre> {    \n\"data\": [        \n{            \n\"name\": \"work\",            \n\"number\": 16400,            \n\"description\": \"just for work staff\",            \n\"created\": \"2018-11-02T23:17:42.899Z\",            \n\"user\": \"jano4ek_thms\",            \n\"invoices\": [                528096,                528114            ],            \n\"links\": []        }    ],    \n\"limit\": 4,    \n\"page\": 1,    \n\"totalCount\": 4,    \n\"totalPages\": 1,    \n\"links\": [        \n{            \n\"rel\": \"create registry\",            \n\"method\": \"POST\",            \n\"href\": \"/api/v1/registries/\"        }    ]}",
+                "error": "Without auth: Code: 401<br/> Without permission: Code: 403. Data: <br><pre>      {\n         \"error\": \"Forbidden\"\n      }<br></pre> Error message will be in <b>error</b>, optionally there could be an <b>errorData</b><br>\n     <pre>     {\n         \"error\": \"No such author\",\n         \"errorData\": {\n             \"login\": \"sdf\"\n         }\n     }\n     </pre>\n Also other codes as 400, 500 with <b>error</b> in body"
+            },
+            {
+                "title": "Show registry by number",
+                "url": "/registries/:number",
+                "method": "GET",
+                "auth": "Authentication requires that the existing user should supply their JWT token <br><i>Admin can see all registries, standarts users - created by them</i>",
+                "params": "<b>number</b> - number of registry",
+                "data": "none",
+                "success": "In success there will be all info in <b>data</b>. <br>Data:<pre>\n {    \n\"data\": {        \n\n\"name\": \"cards\",        \n\n\"number\": 16407,        \n\n\"description\": \"just for fan\",        \n\n\"created\": \"2018-11-02T23:56:32.703Z\",        \n\n\"user\": \"jano4ek_thms\",        \n\n\"invoices\": [            528124        ]    },    \"links\": [        {            \n\n\"rel\": \"udpate self\",            \n\n\"method\": \"PUT\",            \n\n\"href\": \"/api/v1/registries/16407\"     \n   }    \n]}",
+                "error": "Without auth: Code: 401<br/> Without permission: Code: 403. Data: <br><pre>      {\n         \"error\": \"Forbidden\"\n      }<br></pre> Error message will be in <b>error</b>, optionally there could be an <b>errorData</b><br>\n     <pre>     {\n         \"error\": \"No such author\",\n         \"errorData\": {\n             \"login\": \"sdf\"\n         }\n     }\n     </pre>\n Also other codes as 400, 500 with <b>error</b> in body"
+            },
+            {
+                "title": "Create registry",
+                "url": "/registries",
+                "method": "POST",
+                "auth": "Authentication requires that the existing user should supply their JWT token <br><i>Admin can create registry for all users, standarts users - for themselves</i>",
+                "params": "none",
+                "data": "<pre>{\n    \"userLogin\": \"jano4ek_thms\",    \n\"description\": \"description\",\n    \"name\": \"Name here\"\n}</pre>",
+                "success": "In success there will be code 201, and created registry in <b>data</b>. <br>Data:<pre>\n {    \n\"data\": {        \n\"name\": \"some\",        \n\"number\": 16445,        \n\"description\": \"hmmmmmm\",        \n\"created\": \"2018-11-16T23:41:20.836Z\",        \n\"user\": \"jano4ek_thms\",        \n\"invoices\": []    },    \"links\": [        {            \n\"rel\": \"self\",            \n\"method\": \"GET\",            \n\"href\": \"/api/v1/registries/16445\"    \n    \n}    ]}",
+                "error": "Without auth: Code: 401<br/> Without permission: Code: 403. Data: <br><pre>      {\n         \"error\": \"Forbidden\"\n      }<br></pre> Error message will be in <b>error</b>, optionally there could be an <b>errorData</b><br>\n     <pre>     {\n         \"error\": \"No such author\",\n         \"errorData\": {\n             \"login\": \"sdf\"\n         }\n     }\n     </pre>\n Also other codes as 400, 500 with <b>error</b> in body"
+            },
+            {
+                "title": "Update registry",
+                "url": "/registries/:number",
+                "method": "PUT",
+                "auth": "Authentication requires that the existing user should supply their JWT token <br><i>Admin can edit registy for all users, standarts users - their owns</i>",
+                "params": "<b>number</b> - number of registry",
+                "data": "Some fields, which you want to update in registry.<br><b>Attention!</b> Standart users are fobirdden to set the field <i>userLogin</i>. Example:<br><pre>\n{    \n\"description\": \"some decsr\"\n}</pre>",
+                "success": "In success there will be code 200 (OK), and updated registry in <b>data</b>. <br>Data:<pre>\n {    \n\"data\": {        \n\"name\": \"SOME NAME\",        \n\"number\": 16400,        \n\"description\": \"some sdata\",        \n\"created\": \"2018-11-02T23:17:42.899Z\",        \n\"user\": \"jano4ek_thms\",        \n\"invoices\": [            528096,            528114        ]    },    \n\"links\": []\n}",
+                "error": "Without auth: Code: 401<br/> Without permission: Code: 403. Data: <br><pre>      {\n         \"error\": \"Forbidden\"\n      }<br></pre> Error message will be in <b>error</b>, optionally there could be an <b>errorData</b><br>\n     <pre>     {\n         \"error\": \"No such author\",\n         \"errorData\": {\n             \"login\": \"sdf\"\n         }\n     }\n     </pre>\n Also other codes as 400, 500 with <b>error</b> in body"
+            },
+            {
+                "title": "Delete registry",
+                "url": "/registries/:number",
+                "method": "DELETE",
+                "auth": "Authentication requires that the existing user should supply their JWT token <br><i>Admin can delete registry of all users, standarts users - their owns</i>",
+                "params": "<b>number</b> - number of registry",
+                "data": "none",
+                "success": "In success there will be code 204 and empty body",
+                "error": "Without auth: Code: 401<br/> Without permission: Code: 403. Data: <br><pre>      {\n         \"error\": \"Forbidden\"\n      }<br></pre> Error message will be in <b>error</b>, optionally there could be an <b>errorData</b><br>\n     <pre>     {\n         \"error\": \"No such author\",\n         \"errorData\": {\n             \"login\": \"sdf\"\n         }\n     }\n     </pre>\n Also other codes as 400, 500 with <b>error</b> in body"
+            }
+        ]
+    },
+    {
+        "title": "Users",
+        "resources": [
+            {
+                "title": "Show all users",
+                "url": "/users?limit=:limit&page=:page",
+                "method": "GET",
+                "auth": "Authentication requires that the existing user should supply their JWT token <br><b>Standart users are fobirdden to see all users</b>",
+                "params": "You can use some options to filter:<br><b>page</b> - show requested page from request. default: 1.<br><b>limit</b> - how much invoices will view on page. default: 4",
+                "data": "none",
+                "success": "In success there will be all info in <b>data</b> and requested params. <b>totalCount</b> - number of all registries, <b>totalPages</b> - number of all pages<b><br>Data:<pre> {\n    \"data\": [\n        {\n            \"login\": \"sevenArmy2013\",\n            \"role\": 1,\n            \"fullname\": \"John Doe\",\n            \"email\": \"hr@startup.org\",\n            \"phone\": \" 380444444444\",\n            \"registered\": \"2018-09-19T10:05:19.000Z\",\n            \"avaUrl\": \"https://res.cloudinary.com\",\n            \"bio\": \"Видатний ....\",\n            \"isDisabled\": false,\n            \"registries\": [\n                16399\n            ],\n            \"upcomingInvoices\": [\n                528097,\n                528124\n            ],\n            \"links\": []\n        }\n    ],\n    \"limit\": 1,\n    \"page\": 1,\n    \"totalCount\": 6,\n    \"totalPages\": 6,\n    \"links\": []}",
+                "error": "Without auth: Code: 401<br/> Without permission: Code: 403. Data: <br><pre>      {\n         \"error\": \"Forbidden\"\n      }<br></pre> Error message will be in <b>error</b>, optionally there could be an <b>errorData</b><br>\n     <pre>     {\n         \"error\": \"No such author\",\n         \"errorData\": {\n             \"login\": \"sdf\"\n         }\n     }\n     </pre>\n Also other codes as 400, 500 with <b>error</b> in body"
+            },
+            {
+                "title": "Show user by login",
+                "url": "/users/:login",
+                "method": "GET",
+                "auth": "Authentication requires that the existing user should supply their JWT token <br><i>Only Admin can see profile of all users</i>",
+                "params": "<b>login</b> - user login",
+                "data": "none",
+                "success": "In success there will be all info in <b>data</b>. <br>Data:<pre>\n {\n     \"data\": {\n         \"login\": \"white_stripes\",\n         \"role\": 1,\n         \"fullname\": \"Meg White\",\n         \"email\": \"sample@site.ua\",\n         \"phone\": \" 380222222222\",\n         \"registered\": \"2016-01-18T14:09:39.000Z\",\n         \"avaUrl\": \"https://res.cloudinary.com/\",\n         \"bio\": \"...\",\n         \"isDisabled\": false,\n         \"registries\": [\n             {\n                 \"name\": \"aliexpress\",\n                 \"number\": 16401,\n                 \"description\": \"orders from online shopping\",\n                 \"created\": \"2018-11-02T23:22:06.509Z\",\n                 \"invoices\": []\n             }\n         ],\n         \"upcomingInvoices\": [\n             {\n                 \"number\": 528102,\n                 \"description\": \"skateX board\",\n                 \"departure\": \"2018-06-06T00:00:00.000Z\",\n                 \"arrival\": \"2018-06-10T00:00:00.000Z\",\n                 \"location\": \"Kyiv\",\n                 \"weight\": 3634,\n                 \"cost\": 463.46,\n                 \"photoPath\": \"https://res.cloudinary.com\"\n             }\n         ]\n     },\n    \"links\": []}",
+                "error": "Without auth: Code: 401<br/> Without permission: Code: 403. Data: <br><pre>      {\n         \"error\": \"Forbidden\"\n      }<br></pre> Error message will be in <b>error</b>, optionally there could be an <b>errorData</b><br>\n     <pre>     {\n         \"error\": \"No such author\",\n         \"errorData\": {\n             \"login\": \"sdf\"\n         }\n     }\n     </pre>\n Also other codes as 400, 500 with <b>error</b> in body"
+            },
+            {
+                "title": "Create user",
+                "url": "/users",
+                "method": "POST",
+                "auth": "none",
+                "params": "none",
+                "data": "<i>Fields <b>avaUrl</b> and <b>bio</b> are not required</i>. User role: standart<pre>{\n    \"login\": \"TUTs\",\n    \"pasw\": \"12345678\",\n    \"fullname\": \"name person\",\n    \"email\": \"tut@true.com\",\n    \"phone\": \" 380000000000\",\n    \"avaUrl\": \"im.png\",\n    \"bio\": \"bios....\"\n}</pre>",
+                "success": "In success there will be code 201, and created user in <b>data</b>. <br>Data:<pre>\n {\n    \"data\": {\n        \"login\": \"some_login\",\n        \"role\": 0,\n        \"fullname\": \"name person\",\n        \"email\": \"tut@true.com\",\n        \"phone\": \" 380000000000\",\n        \"registered\": \"2018-11-17T01:13:01.906Z\",\n        \"avaUrl\": \"/images/userpic.png\",\n        \"bio\": \"text here\",\n        \"isDisabled\": false,\n        \"registries\": [],\n        \"upcomingInvoices\": []\n    },\n    \"links\": [\n        {\n            \"rel\": \"self\",\n            \"method\": \"GET\",\n            \"href\": \"/api/v1/me\"\n        }\n    ]}",
+                "error": "Without auth: Code: 401<br/> Without permission: Code: 403. Data: <br><pre>      {\n         \"error\": \"Forbidden\"\n      }<br></pre> Error message will be in <b>error</b>, optionally there could be an <b>errorData</b><br>\n     <pre>     {\n         \"error\": \"No such author\",\n         \"errorData\": {\n             \"login\": \"sdf\"\n         }\n     }\n     </pre>\n Also other codes as 400, 500 with <b>error</b> in body"
+            },
+            {
+                "title": "Update user",
+                "url": "/users/:login",
+                "method": "PUT",
+                "auth": "Authentication requires that the existing user should supply their JWT token <br>All users can edit only personal profile. <i>Only admin can edit role for all users (except of himself)</i>",
+                "params": "<b>login</b> - user login",
+                "data": "Bio and avaUrl are not required.<br>Login couldn't be changed.<br>Some fields, which you want to update in your profile. Example:<br><pre>\n{\n    \"fullname\": \"A Krava\",\n    \"bio\": \"hmmm\"\n}</pre>",
+                "success": "In success there will be code 200 (OK), and updated profile in <b>data</b>. <br>Data:<pre>\n {\n    \"data\": {\n        \"login\": \"a_krava\",\n        \"role\": 0,\n        \"fullname\": \"A Krava\",\n        \"email\": \"sdfs@sdfsdfsdf.sdfsd\",\n        \"phone\": \" 380000456780\",\n        \"registered\": \"2018-11-12T19:54:12.266Z\",\n        \"avaUrl\": \"https://res.cloudinary.com\",\n        \"bio\": \"hmmm\",\n        \"isDisabled\": false,\n        \"registries\": [],\n        \"upcomingInvoices\": []\n    }}",
+                "error": "Without auth: Code: 401<br/> Without permission: Code: 403. Data: <br><pre>      {\n         \"error\": \"Forbidden\"\n      }<br></pre> Error message will be in <b>error</b>, optionally there could be an <b>errorData</b><br>\n     <pre>     {\n         \"error\": \"No such author\",\n         \"errorData\": {\n             \"login\": \"sdf\"\n         }\n     }\n     </pre>\n Also other codes as 400, 500 with <b>error</b> in body"
+            },
+            {
+                "title": "Delete user",
+                "url": "/users/:login",
+                "method": "DELETE",
+                "auth": "Authentication requires that the existing user should supply their JWT token <br><i>Admin can delete everyone (except of himself), standarts users - only themselves</i>",
+                "params": "<b>login</b> - user login",
+                "data": "none",
+                "success": "In success there will be code 204 and empty body",
+                "error": "Without auth: Code: 401<br/> Without permission: Code: 403. Data: <br><pre>      {\n         \"error\": \"Forbidden\"\n      }<br></pre> Error message will be in <b>error</b>, optionally there could be an <b>errorData</b><br>\n     <pre>     {\n         \"error\": \"No such author\",\n         \"errorData\": {\n             \"login\": \"sdf\"\n         }\n     }\n     </pre>\n Also other codes as 400, 500 with <b>error</b> in body"
+            }
+        ]
+    }
+]

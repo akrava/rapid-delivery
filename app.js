@@ -17,7 +17,7 @@ const express = require('express'),
     // RegistriesRouter = require('./routes/registries'),
     // InvoicesRouter = require('./routes/invoices'),
     ApiRoutes = require('./routes/api'),
-    DeveloperRoutes = require('./routes/developer'),
+    //DeveloperRoutes = require('./routes/developer'),
     User = require('./models/user');
 
 const app = express();
@@ -115,7 +115,7 @@ app.use('/auth', AuthRouter);
 // app.use('/registries', RegistriesRouter);
 // app.use('/invoices', InvoicesRouter);
 app.use('/api/v1', ApiRoutes);
-app.use('/developer/v1', DeveloperRoutes);
+//app.use('/developer/v1', DeveloperRoutes);
 
 app.use(express.static('dist'));
 app.get('*', (req,res) =>{

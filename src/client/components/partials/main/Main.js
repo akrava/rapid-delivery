@@ -21,6 +21,7 @@ import InvoicesTable from '../../../containers/invoices/InvoicesTable';
 import InvoicePage from './../../../containers/invoice/InvoicePage';
 import NewInvoice from './../../../containers/invoice/NewInvoice';
 import EditInvoice from './../../../containers/invoice/EditInvoice';
+import DeveloperPage from './../../developer/DeveloperPage';
 
 class Main extends Component {
   render() {
@@ -45,6 +46,7 @@ class Main extends Component {
                             <Route path='/invoices/new' component={AuthenticatedComponent(NewInvoice, [isAdmin, isDefaultUser])}/>
                         <Route path='/login' component={LoginPage} />
                         <Route path='/register' component={RegisterPage}/>
+                        <Route path='/developer/v1' component={DeveloperPage} />
                         <Route component={PageNotFound}/>
                 </Switch>
             </ErrorBoundary>
