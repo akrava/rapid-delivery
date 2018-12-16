@@ -316,8 +316,10 @@ async function sendTgMessagesOnInvoiceDeleted(registry, invoiceModel, recipient)
         ` was deleted.`;
     const messageSender = `Invoice #\`${invoiceModel.number}\`, that you send to *${recipient.fullname}*` +
         ` was deleted.`;
-    await notifyMessages.sendMessageToUser(recipient.telegramUserId, messageRecipient);
-    await notifyMessages.sendMessageToUser(registry.user.telegramUserId, messageSender);
+    if (config.TelegramBotEnable === "true") {
+        await notifyMessages.sendMessageToUser(recipient.telegramUserId, messageRecipient);
+        await notifyMessages.sendMessageToUser(registry.user.telegramUserId, messageSender);
+    }
 }
 
 // Registries
@@ -771,7 +773,7 @@ router.post('/users/notify', authenticate, async (req, res) => {
         const users = await User.getAllWithTelegram(isImportant);
         if (Array.isArray(users) && users.length > 0) {
             const arrUsersId = users.map(x => x.telegramUserId);
-            await notifyMessages.notifyAll(arrUsersId, message);
+            if (config.TelegramBotEnable === "true") await notifyMessages.notifyAll(arrUsersId, message);
         }
     } catch (err) {
         return sendError(res, 500, `Error while adding registry ${err.message}`);
@@ -846,8 +848,10 @@ async function sendTgMessagesOnInvoiceCreated(registry, invoiceModel, recipient)
         `You can scheck more information [here](https://rapid-delivery.herokuapp.com/invoices/${invoiceModel.number})`;
     const messageSender = `You have just created invoice #\`${invoiceModel.number}\`\n` +
         `You can scheck more information [here](https://rapid-delivery.herokuapp.com/invoices/${invoiceModel.number})`;
-    await notifyMessages.sendMessageToUser(recipient.telegramUserId, messageRecipient);
-    await notifyMessages.sendMessageToUser(registry.user.telegramUserId, messageSender);
+    if (config.TelegramBotEnable === "true") {
+        await notifyMessages.sendMessageToUser(recipient.telegramUserId, messageRecipient);
+        await notifyMessages.sendMessageToUser(registry.user.telegramUserId, messageSender);
+    }
 }
 
 async function sendTgMessagesOnInvoiceUpdated(registry, invoiceModel, recipient) {
@@ -856,8 +860,10 @@ async function sendTgMessagesOnInvoiceUpdated(registry, invoiceModel, recipient)
         ` was updated. Check it status [here](https://rapid-delivery.herokuapp.com/invoices/${invoiceModel.number})`;
     const messageSender = `Invoice #\`${invoiceModel.number}\`, that you send to *${recipient.fullname}*` +
         ` was updated. Check it status [here](https://rapid-delivery.herokuapp.com/invoices/${invoiceModel.number})`;
-    await notifyMessages.sendMessageToUser(recipient.telegramUserId, messageRecipient);
-    await notifyMessages.sendMessageToUser(registry.user.telegramUserId, messageSender);
+    if (config.TelegramBotEnable === "true") {
+        await notifyMessages.sendMessageToUser(recipient.telegramUserId, messageRecipient);
+        await notifyMessages.sendMessageToUser(registry.user.telegramUserId, messageSender);
+    }
 }
 
 function cleanSensetiveUserInfo(user) {

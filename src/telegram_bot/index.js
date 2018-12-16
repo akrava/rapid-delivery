@@ -7,7 +7,9 @@ const telegramBot = new TelegramBotApi({
     updates: { enabled: true }
 });
 
-telegramBot.on('message', onMessage);
+if (config.TelegramBotEnable === "true") {
+    telegramBot.on('message', onMessage);
+}
 
 function onMessage(message) {
     processRequest(message, telegramBot)

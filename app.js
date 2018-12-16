@@ -20,7 +20,8 @@ const express = require('express'),
     //DeveloperRoutes = require('./routes/developer'),
     User = require('./models/user');
 
-if (config.TelegramBotEnable !== "false") {
+if (config.TelegramBotEnable === "true") {
+    console.log("here");
     require('./src/telegram_bot/index'); 
 } 
    
