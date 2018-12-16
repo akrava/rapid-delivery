@@ -10,7 +10,7 @@ class DeveloperPage extends Component {
                 <h1>REST API documentation v1</h1>  
                 {data && data.map((x, index) => {
                     return (
-                        <div key={index}>
+                        <div className="api mb-1" key={index}>
                             <h2 className="api">{x.title}</h2>
                             {x.resources && x.resources.map((y, index) => {
                                 return <ResourceCard 

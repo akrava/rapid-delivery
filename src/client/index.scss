@@ -473,12 +473,16 @@ select#type-search::placeholder {
     border-color: #03090e;
 }
 
-#tg-link {
+#tg-link, .telegram-link {
     background: url(/images/logotype-telegram.png) no-repeat 0/20px;
     padding-left: 24px;
     margin-left: 10px;
     color: #0a6a93;
     border-color: #5faaed;
+}
+
+div.user-info span.small {
+    font-size: 75% !important;
 }
 
 .location {
@@ -602,6 +606,16 @@ table caption {
 /* END TABLE */
 
 /* API TABLE */
+
+div.api {
+    border-top: 3px dotted #481c0b;
+}
+
+div.api:first-of-type {
+    border-top: 0;
+    padding-top: initial;
+    margin-top: initial;
+}
 
 h2.api {
     text-align: center;

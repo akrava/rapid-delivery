@@ -14,6 +14,9 @@ const UserScheme = new mongoose.Schema({
     registered: { type: Date, default: Date.now() },
     avaUrl: { type: String, default: '/images/userpic.png' },
     bio: String,
+    telegramUsername: { type: String, unique: true },
+    telegramUserId: { type: String, unique: true },
+    telegramNotifySilent: { type: Boolean, default: false },
     isDisabled: { type: Boolean, default: false }
 });
 
@@ -27,7 +30,7 @@ cloudinary.config({
 
 class User {
     constructor(id, login, password, role, fullname, email, phone, registeredAt, avaUrl, 
-        bio, isDisabled)
+        bio, isDisabled, telegramUsername, telegramUserId, telegramNotifySilent)
     {
         this.id = id;
         this.password = password;
@@ -40,12 +43,16 @@ class User {
         this.avaUrl = avaUrl;
         this.bio = bio;
         this.isDisabled = isDisabled;
+        this.telegramUsername = telegramUsername;
+        this.telegramUserId = telegramUserId;
+        this.telegramNotifySilent = telegramNotifySilent;
     }
 
     static async getAll() {
         const models = await UserModel.find();
         const users = models.map(x => new User(x._id, x.login, x.password, x.role, 
-            x.fullname, x.email, x.phone, x.registered, x.avaUrl, x.bio, x.isDisabled));
+            x.fullname, x.email, x.phone, x.registered, x.avaUrl, x.bio, x.isDisabled, 
+            x.telegramUsername, x.telegramUserId, x.telegramNotifySilent));
         const promiceRegistries = [];
         const promiceUpcomingInv = [];
         for (const user of users) {
@@ -72,7 +79,8 @@ class User {
         if (!model) return null;
         const user = new User(model._id, model.login, model.password, model.role, 
             model.fullname, model.email, model.phone, model.registered, model.avaUrl, 
-            model.bio, model.isDisabled);
+            model.bio, model.isDisabled, model.telegramUsername, model.telegramUserId,
+            model.telegramNotifySilent);
         const promiceRegistries = await Registry.model().find({user: user.id});
         const promiceUpcomInv = await Invoice.model().find({recipient: user.id});
         const createdInvoices = [];
@@ -124,6 +132,54 @@ class User {
         await UserModel.findByIdAndRemove(id);
     }
 
+    // extended methods
+
+    static async getByTelegramUsername(username) {
+        const model = await UserModel.findOne({ telegramUsername: username });
+        return model ? await this.getById(model._id) : null;
+    }
+
+    static async getByTelegramUserId(userId) {
+        const model = await UserModel.findOne({ telegramUserId: userId });
+        return model ? await this.getById(model._id) : null;
+    }
+
+    static async getAllWithTelegram(all) {
+        const conditions = { telegramUserId: { $ne: null } } ;
+        if (!all) {
+            conditions.telegramNotifySilent = {$eq: false};
+        }
+        const models = await UserModel.find(conditions);
+        const users = models.map(x => new User(x._id, x.login, x.password, x.role, 
+            x.fullname, x.email, x.phone, x.registered, x.avaUrl, x.bio, x.isDisabled, 
+            x.telegramUsername, x.telegramUserId, x.telegramNotifySilent));
+        return users;
+    }
+
+    static async setTelegramUsername(login, telegramUsername) {
+        const model = await UserModel.findOne({ login });
+        return model && UserModel.findByIdAndUpdate(model._id, {$set: { telegramUsername, telegramUserId: null }});
+    }
+
+    static async setTelegramUserId(login, telegramUserId) {
+        const model = await UserModel.findOne({ login });
+        return model && UserModel.findByIdAndUpdate(model._id, {$set: { telegramUserId }});
+    }
+
+    static async getTelegramUserId(login) {
+        const model = await UserModel.findOne({ login });
+        return model ? model.telegramUserId : null;
+    }
+
+    // static async associateTelegramUserIdWithUsername(telegramUsername, telegramUserId) {
+    //     const model = await UserModel.findOne({ telegramUsername });
+    //     if (model) {
+    //         return !!(await UserModel.findByIdAndUpdate(model._id, {$set: { telegramUserId }}));
+    //     } else {
+    //         return false;
+    //     }
+    // }
+    
     async loadAvatarToStorage(fileData) {
         if (!fileData) throw new Error("Uploaded file is not valid");
         const user = this;

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import $ from 'jquery';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { isAdmin, isStaffUser } from './../../utils/service';
@@ -7,6 +8,12 @@ import ModalDialog from './../../components/partials/modals/ModalDialog';
 
 
 class UserProfile extends Component {
+    componentDidMount() {
+        $(function () {
+            $('[data-toggle="popover"]').popover({});
+        });
+    }
+
     viewIconAdmin(role) {
         if (isAdmin(role)) {
             return <span className="def"><i className="far fa-star ml-3"></i></span>;
@@ -69,6 +76,23 @@ class UserProfile extends Component {
         });
         return totalInvoices;
     }
+
+    showTelegramInformation(user) {
+        if (user.telegramUsername) {
+            return (
+                <p>
+                    Телеграм: 
+                        <Link className="telegram-link mr-2" to={`https://t.me/${user.telegramUsername}`}>
+                            @{user.telegramUsername}
+                        </Link>
+                        <span className={`badge badge-pill small badge-${user.telegramUserId ? "success" : "danger"}`} data-toggle="popover" data-content="Напишіть боту @RapidDelivery_bot, щоб розпочати">
+                            {user.telegramUserId ? "Підключено" : "Не підключено"}
+                        </span>
+                </p>);
+        } else {
+            return <p className="mx-1"><i>Ви можете <Link className="link-style" to="/users/me/edit">налаштувати</Link> інтеграцію з Телеграмом!</i></p>;
+        }
+    }
     
     render() {
         const user = this.props.user;
@@ -80,7 +104,8 @@ class UserProfile extends Component {
                     <h1 className="mb-4">{user.fullname}<span className="def">{this.viewIconAdmin(user.role)}</span><span className="def">{this.viewIconStaff(user.role)}</span></h1>
                     <p><Link to="#" className="link-style">{user.login}</Link> <span>{toFormatedString(user.registered)}</span></p>
                     <p>Телефон: <b>{user.phone}</b>, email: <b>{user.email}</b></p>
-                    <div>
+                    {this.showTelegramInformation(user)}
+                    <div className="text-left">
                         {user.bio ? user.bio : <i>Біографія поки що не заповнена</i>}
                     </div>
                 </div>

@@ -660,6 +660,10 @@ router.put('/users/:login(\[A-Za-z_0-9]+)', authenticate, async(req, res) => {
         photoExt = photo.name.lastIndexOf('.') < 0 ? "" : photo.name.substr(photo.name.lastIndexOf('.'));
         if (!photoExt.match(fileRegExPattern)) return sendError(res, 400, `File extenrion is invalid`);
     }
+    let tg_username = req.body.tg_name ? req.body.tg_name.trim() : null;
+    if (tg_username.length < 3 || tg_username.length > 50) {
+        tg_username = null;
+    }
     let user = null;
     if (req.user.role === Service.roleAdmin) {
         if (req.user.id.toString() !== userObj.id.toString()) {
@@ -695,6 +699,9 @@ router.put('/users/:login(\[A-Za-z_0-9]+)', authenticate, async(req, res) => {
         if (photo) {
             await user.deleteAvatarFromStorage();
             await user.loadAvatarToStorage(photo.data);
+        }
+        if (tg_username && tg_username !== userObj.telegramUsername) {
+            await User.setTelegramUsername(loginString, tg_username);
         }
         userModel = await User.getById(userObj.id.toString());
         if (!userModel) throw new Error("Error while updating");

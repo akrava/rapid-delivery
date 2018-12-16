@@ -16,6 +16,7 @@ class EditUserPage extends Component {
             email:  user.userObject ? user.userObject.email : '',
             phone:  user.userObject ? user.userObject.phone : '',
             pasw: '',
+            tg_name:  user.userObject ? user.userObject.telegramUsername : '',
             bio:  user.userObject ? user.userObject.bio : '',
         };
         this.handleFieldChange = this.handleFieldChange.bind(this);
@@ -152,6 +153,20 @@ class EditUserPage extends Component {
                             rows={3}
                             formInline
                             value={this.state.bio}
+                        />
+                    </div>
+                    <div className="form-group form-inline">
+                        <Input 
+                            type="text"
+                            name="tg_name"
+                            label="Tg @username"
+                            pattern="^[^\s]+(\s+[^\s]+)*$"
+                            minLength={3}
+                            maxLength={50}
+                            placeholder="Нікнейм в телеграмі"
+                            valueOnChage={this.handleFieldChange("tg_name")}
+                            formInline
+                            value={this.state.tg_name}
                         />
                     </div>
                     <div className="form-group form-inline">

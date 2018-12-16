@@ -20,6 +20,8 @@ const express = require('express'),
     //DeveloperRoutes = require('./routes/developer'),
     User = require('./models/user');
 
+require('./src/telegram_bot/index');    
+
 const app = express();
 const PORT = config.ServerPort;
 const templatesPath = path.join(__dirname, 'views');
