@@ -2,6 +2,7 @@ const express = require('express'),
     passport = require('passport'),
     url = require('url'),
     User = require('./../models/user'),
+    notifyMessages = require('../src/telegram_bot/actions/notifyMessages'),
     Registry = require('./../models/registry'),
     Invoice = require('./../models/invoice'),
     Service = require('./../scripts/service'),
@@ -192,6 +193,7 @@ router.post('/invoices', authenticate, async (req, res) => {
             await invoiceModel.loadFileToStorage(photo.data);
         }
         if (!invoiceModel) throw new Error('invoice wasn\'t added');
+        await sendTgMessagesOnInvoiceCreated(registry, invoiceModel, recipient);
     } catch (err) {
         return sendError(res, 400, `Couldn't add invoice: ${err.message}`);
     }
@@ -275,6 +277,7 @@ router.put('/invoices/:number(\\d+)', authenticate, async(req, res) => {
             await newModel.deleteFileFromStorage();
             await newModel.loadFileToStorage(photo.data);
         } 
+        await sendTgMessagesOnInvoiceUpdated(registry, newModel, recipient);
     } catch (err) {
         return sendError(res, 400, `Couldn't update invoice: ${err.message}`);
     }
@@ -300,11 +303,22 @@ router.delete('/invoices/:number(\\d+)', authenticate, async(req, res) => {
             }
         }
         await Invoice.delete(invoice.id);
+        await sendTgMessagesOnInvoiceDeleted(invoice.registry, invoice, invoice.recipient);
     } catch (e) {
         return sendError(res, 400, `Couldn't delete invoice: ${e.message}`);
     }
     res.status(204).end();
 });
+
+async function sendTgMessagesOnInvoiceDeleted(registry, invoiceModel, recipient) {
+    if (!registry || !registry.user || !recipient || !invoiceModel) return;
+    const messageRecipient = `Invoice #\`${invoiceModel.number}\`, that was sended by *${registry.user.fullname}*` +
+        ` was deleted.`;
+    const messageSender = `Invoice #\`${invoiceModel.number}\`, that you send to *${recipient.fullname}*` +
+        ` was deleted.`;
+    await notifyMessages.sendMessageToUser(recipient.telegramUserId, messageRecipient);
+    await notifyMessages.sendMessageToUser(registry.user.telegramUserId, messageSender);
+}
 
 // Registries
 router.get('/registries', authenticate, async (req, res) => {
@@ -661,7 +675,7 @@ router.put('/users/:login(\[A-Za-z_0-9]+)', authenticate, async(req, res) => {
         if (!photoExt.match(fileRegExPattern)) return sendError(res, 400, `File extenrion is invalid`);
     }
     let tg_username = req.body.tg_name ? req.body.tg_name.trim() : null;
-    if (tg_username.length < 3 || tg_username.length > 50) {
+    if (tg_username && (tg_username.length < 3 || tg_username.length > 50)) {
         tg_username = null;
     }
     let user = null;
@@ -702,6 +716,13 @@ router.put('/users/:login(\[A-Za-z_0-9]+)', authenticate, async(req, res) => {
         }
         if (tg_username && tg_username !== userObj.telegramUsername) {
             await User.setTelegramUsername(loginString, tg_username);
+        } else if (tg_username === null) {
+            await User.setTelegramUsername(loginString, null);
+        }
+        const option = req.body.telegramNotifySilent === 'true' ? true : req.body.telegramNotifySilent === 'false' ? false : null;
+        if (userObj.telegramUsername === tg_username && tg_username !== null && ((option && !userObj.telegramNotifySilent) 
+            || (!option && userObj.telegramNotifySilent))) {
+                await User.setTelegramNotify(userObj.telegramUsername, option);
         }
         userModel = await User.getById(userObj.id.toString());
         if (!userModel) throw new Error("Error while updating");
@@ -730,6 +751,30 @@ router.delete('/users/:login(\[A-Za-z_0-9]+)', authenticate, async(req, res) => 
         await User.delete(userObj.id.toString());
     } catch (err) {
         return sendError(res, 500, `Couldn't delete user with login ${loginString} from db: ${err.message}`);
+    }
+    res.status(204).end();
+});
+
+// extended
+
+router.post('/users/notify', authenticate, async (req, res) => {
+    if (!req.body) return sendError(res, 400, `Bad request: No data was send in JSON format`);
+    if (req.user.role !== Service.roleAdmin) {         
+        return sendError(res, 403, 'Forbidden'); 
+    }
+    const message = req.body.message ? req.body.message.trim() : null;
+    const isImportant = req.body.isImportant === 'true' ? true : req.body.isImportant === 'false' ? false : null;
+    if (!message || isImportant === null || message.length < 3 ||  message.length > 1000) {
+        return sendError(res, 400, `Bad request - invalid post data`);
+    }
+    try {
+        const users = await User.getAllWithTelegram(isImportant);
+        if (Array.isArray(users) && users.length > 0) {
+            const arrUsersId = users.map(x => x.telegramUserId);
+            await notifyMessages.notifyAll(arrUsersId, message);
+        }
+    } catch (err) {
+        return sendError(res, 500, `Error while adding registry ${err.message}`);
     }
     res.status(204).end();
 });
@@ -773,7 +818,7 @@ function pagination(req, limit, array, requestedPage, responseObject, links) {
         responseObject.links = links;
         return;
     }
-    const elementsPerPage = limit && limit > 0 ? limit : 4;
+    const elementsPerPage = limit && limit > 0 ? limit : 10;
     const totalCount = array.length;
     const totalPages = Math.ceil(totalCount / elementsPerPage);
     let currentPage = requestedPage > 0 && requestedPage <= totalPages ? requestedPage : 1;
@@ -793,6 +838,26 @@ function pagination(req, limit, array, requestedPage, responseObject, links) {
         links.push(createLinkNavObject('next', 'GET', currentPage + 1));
     }
     responseObject.links = links;
+}
+
+async function sendTgMessagesOnInvoiceCreated(registry, invoiceModel, recipient) {
+    if (!registry || !registry.user || !recipient || !invoiceModel) return;
+    const messageRecipient = `User *${registry.user.fullname}* send you invoice #\`${invoiceModel.number}\`\n` +
+        `You can scheck more information [here](https://rapid-delivery.herokuapp.com/invoices/${invoiceModel.number})`;
+    const messageSender = `You have just created invoice #\`${invoiceModel.number}\`\n` +
+        `You can scheck more information [here](https://rapid-delivery.herokuapp.com/invoices/${invoiceModel.number})`;
+    await notifyMessages.sendMessageToUser(recipient.telegramUserId, messageRecipient);
+    await notifyMessages.sendMessageToUser(registry.user.telegramUserId, messageSender);
+}
+
+async function sendTgMessagesOnInvoiceUpdated(registry, invoiceModel, recipient) {
+    if (!registry || !registry.user || !recipient || !invoiceModel) return;
+    const messageRecipient = `Invoice #\`${invoiceModel.number}\`, that was sended by *${registry.user.fullname}*` +
+        ` was updated. Check it status [here](https://rapid-delivery.herokuapp.com/invoices/${invoiceModel.number})`;
+    const messageSender = `Invoice #\`${invoiceModel.number}\`, that you send to *${recipient.fullname}*` +
+        ` was updated. Check it status [here](https://rapid-delivery.herokuapp.com/invoices/${invoiceModel.number})`;
+    await notifyMessages.sendMessageToUser(recipient.telegramUserId, messageRecipient);
+    await notifyMessages.sendMessageToUser(registry.user.telegramUserId, messageSender);
 }
 
 function cleanSensetiveUserInfo(user) {

@@ -18,6 +18,7 @@ class EditUserPage extends Component {
             pasw: '',
             tg_name:  user.userObject ? user.userObject.telegramUsername : '',
             bio:  user.userObject ? user.userObject.bio : '',
+            telegramNotifySilent: user.userObject ? user.userObject.telegramNotifySilent : false
         };
         this.handleFieldChange = this.handleFieldChange.bind(this);
         this.photoInputOnChange = this.photoInputOnChange.bind(this);
@@ -168,6 +169,19 @@ class EditUserPage extends Component {
                             formInline
                             value={this.state.tg_name}
                         />
+                    </div>
+                    <div className="form-group form-inline">
+                        {this.props.user.userObject && this.props.user.userObject.telegramUserId && 
+                            <Input 
+                                type="select"
+                                name="telegramNotifySilent"
+                                label="Типи сповіщень"
+                                formInline
+                                valueOnChage={this.handleFieldChange("telegramNotifySilent")}
+                                options={[{ name: `Усі`, selectValue: false}, { name: `Тільки важливі`, selectValue: true}]}
+                                value={this.state.telegramNotifySilent}
+                            />
+                        }
                     </div>
                     <div className="form-group form-inline">
                         <Input 

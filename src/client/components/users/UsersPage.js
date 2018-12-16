@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import UsersTable from './../../containers/users/UsersTable';
+import NotificationForm from '../../containers/users/NotificationForm';
 
 class UsersPage extends Component {
     render() {
         return (
             <React.Fragment>
                 <h1>Cписок користувачів</h1>
+                <NotificationForm />
                 <p>Нижче в <i>таблиці</i> наведені всі користувачі даного онлайн-сервісу.</p>
                 <p>Також можна переглянути персональну сторінку кожного з користувачів.</p>
                 <UsersTable />

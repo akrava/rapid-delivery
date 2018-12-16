@@ -1,6 +1,6 @@
 const TelegramBotApi = require('telegram-bot-api'),
     config = require('./../../config'),
-    processRequest = require('./actions');
+    processRequest = require('./commands/index');
 
 const telegramBot = new TelegramBotApi({
     token: config.TelegramBotToken,
@@ -13,6 +13,10 @@ function onMessage(message) {
     processRequest(message, telegramBot)
         .catch(err => telegramBot.sendMessage({
             chat_id: message.chat.id,
-            text: `Oops. Something went wrong. Try again later. Error: ${err.toString()}`
+            text: `Oops. Something went wrong. Try again later. Error: ${err.message}`
         }));
 }
+
+module.exports = async function sendMessage(messageObject) {
+    return telegramBot.sendMessage(messageObject);
+};

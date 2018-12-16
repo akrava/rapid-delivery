@@ -6,6 +6,7 @@ import messageReducer from './showMessages';
 import usersReducer from './users';
 import registriesReducer from './registries'; 
 import registryReducer from './registry';
+import notifyReducer from './noyify';
 
 const rootReducer = combineReducers({
     user: userReducer,
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
     registry: registryReducer,
     invoices: invoicesReducer,
     invoice: invoiceReducer,
-    systemMessages: messageReducer
+    systemMessages: messageReducer,
+    notify: notifyReducer
 });
 
 export default rootReducer;

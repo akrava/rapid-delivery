@@ -157,6 +157,10 @@ class User {
     }
 
     static async setTelegramUsername(login, telegramUsername) {
+        if (telegramUsername) {
+            const isExisting = await User.getByTelegramUsername(telegramUsername);
+            if (isExisting !== null) throw new Error("User with such tg alrady exists!");
+        }
         const model = await UserModel.findOne({ login });
         return model && UserModel.findByIdAndUpdate(model._id, {$set: { telegramUsername, telegramUserId: null }});
     }
@@ -171,15 +175,11 @@ class User {
         return model ? model.telegramUserId : null;
     }
 
-    // static async associateTelegramUserIdWithUsername(telegramUsername, telegramUserId) {
-    //     const model = await UserModel.findOne({ telegramUsername });
-    //     if (model) {
-    //         return !!(await UserModel.findByIdAndUpdate(model._id, {$set: { telegramUserId }}));
-    //     } else {
-    //         return false;
-    //     }
-    // }
-    
+    static async setTelegramNotify(telegramUsername, isSilent) {
+        const model = await User.getByTelegramUsername(telegramUsername);
+        return model && UserModel.findByIdAndUpdate(model.id, {$set: { telegramNotifySilent: isSilent }});
+    }
+   
     async loadAvatarToStorage(fileData) {
         if (!fileData) throw new Error("Uploaded file is not valid");
         const user = this;

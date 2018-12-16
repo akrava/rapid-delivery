@@ -82,9 +82,9 @@ class UserProfile extends Component {
             return (
                 <p>
                     Телеграм: 
-                        <Link className="telegram-link mr-2" to={`https://t.me/${user.telegramUsername}`}>
+                        <a className="telegram-link mr-2" href={`https://t.me/${user.telegramUsername}`}>
                             @{user.telegramUsername}
-                        </Link>
+                        </a>
                         <span className={`badge badge-pill small badge-${user.telegramUserId ? "success" : "danger"}`} data-toggle="popover" data-content="Напишіть боту @RapidDelivery_bot, щоб розпочати">
                             {user.telegramUserId ? "Підключено" : "Не підключено"}
                         </span>

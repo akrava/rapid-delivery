@@ -491,6 +491,25 @@ div.user-info span.small {
     font-style: italic;
 }
 
+.send-message-notify {
+    background-color: #ffe1b5;
+    border-radius: 15px;
+}
+
+.send-message-notify textarea {
+    resize: none;
+}
+
+#edit-profile select {
+    width: 225px;
+}
+
+#reset-all {
+    overflow-y: scroll;
+    height: 241px;
+    background-color: #fff;
+}
+
 .fit-image {
     object-fit: cover;
 }

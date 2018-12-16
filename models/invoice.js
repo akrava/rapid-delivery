@@ -141,6 +141,42 @@ class Invoice {
     }
 
     static model() { return InvoiceModel; };
+
+    // extended
+    static async writeIvoiceToDb(array, user, registry, recipient, numberInvoice) {
+        const registryNumStr = array[0].trim();
+        const registryNum = Number.parseInt(registryNumStr);
+        if (!Number.isInteger(registryNum)) return false;
+        const recipientLogin = array[1].trim();       
+        if (recipientLogin === user.login || !user.registries.some(x => x.number === registryNum)) {
+            return false;
+        }
+        const description = array[2].trim();
+        const location = array[3].trim();
+        const weight = Number.parseFloat(array[4].trim());
+        const cost = Number.parseFloat(array[5].trim());
+        if (!(description && location && weight > 0 && cost > 0)) {
+            return false;
+        } 
+        if (!recipient || !registry) return false;
+        let arrival = new Date();
+        arrival.setDate(arrival.getDate() + 4);
+        arrival = arrival.toISOString();
+        if (numberInvoice) {
+            const model = await Invoice.getByNumber(numberInvoice);
+            return await InvoiceModel.findByIdAndUpdate(model.id, {$set: {
+                recipient: recipient.id, description, departure: (new Date()).toISOString(),
+                arrival, location, weight, cost, registry: registry.id
+            }});
+        }
+        const invoice = new Invoice(-1, -1, -1, description, 
+            (new Date()).toISOString(), arrival, location, weight, cost);
+        invoice.recipient = recipient.id;
+        invoice.registry = registry.id;
+        const id = await Invoice.insert(invoice);
+        const invoiceModel = await Invoice.getById(id);
+        return invoiceModel;
+    }
 }
 
 module.exports = Invoice;

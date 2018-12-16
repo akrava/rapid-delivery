@@ -1,8 +1,7 @@
-// @ts-check
-const User = require('./../../models/user');
+const User = require('./../../../models/user');
 
 module.exports = {
-    async startAction(message, commands, telegramBot) {
+    async startCommand(message, commands, telegramBot) {
         const userId = message.from.id;
         const tg_username = message.from.username;
         const user = await registerUser(tg_username, userId);
