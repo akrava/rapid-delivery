@@ -20,7 +20,7 @@ const express = require('express'),
     //DeveloperRoutes = require('./routes/developer'),
     User = require('./models/user');
 
-if (config.TelegramBotEnable) {
+if (config.TelegramBotEnable !== "false") {
     require('./src/telegram_bot/index'); 
 } 
    
