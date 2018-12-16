@@ -11,6 +11,7 @@ module.exports = {
     SecretSession: process.env['SESSION_SECRET'] || crypto.randomBytes(lengthBytes).toString('hex'),
     SaltHash: process.env['SALT_HASH'],
     TelegramBotToken: process.env['TELEGRAM_BOT_TOKEN'],
+    TelegramBotEnable: process.env['ENABLE_TG_BOT'],
     cloudinary : {
         cloud_name: process.env['CLOUDINARY_CLOUD_NAME'],
         api_key: process.env['CLOUDINARY_API_KEY'],
