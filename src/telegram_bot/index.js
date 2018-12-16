@@ -2,7 +2,7 @@ const TelegramBotApi = require('telegram-bot-api'),
     config = require('./../../config'),
     processRequest = require('./commands/index');
 
-const telegramBot = new TelegramBotApi({
+const telegramBot = config.TelegramBotEnable === "true" && new TelegramBotApi({
     token: config.TelegramBotToken,
     updates: { enabled: true }
 });
