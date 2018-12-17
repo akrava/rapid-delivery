@@ -138,7 +138,7 @@ async function invoiceCallback(array, userID, telegramBot, numberInvoice) {
     if (model) {
         return telegramBot.sendMessage({
             chat_id: userID,
-            text: `Ivoice #${model.number} was successfully ${numberInvoice ? "created" : "updated" }`
+            text: `Ivoice #${model.number} was successfully ${numberInvoice ? "updated" :"created"  }`
         });
     } else {
         return telegramBot.sendMessage({
