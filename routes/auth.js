@@ -1,4 +1,5 @@
 const express = require('express'),
+    mongoose = require('mongoose'),
     passport = require('passport'),
     jwt = require('jsonwebtoken'),
     url = require('url'),
@@ -7,14 +8,6 @@ const express = require('express'),
     Service = require('./../scripts/service');
 
 const router = express.Router();
-
-router.get('/register', (req, res) => {
-    res.render('register', {
-        title: "Реєстрація нового користувача",
-        breadcrumbs: [{text: 'Реєстрація'}],
-        error: req.query.error ? decodeURIComponent(req.query.error) : false
-    });
-});
 
 router.post('/register', async (req, res) => {
     const errorRedirect = name => `/auth/register/${url.format({query: {error: encodeURIComponent(name)}})}`;
@@ -51,15 +44,6 @@ router.post('/register', async (req, res) => {
     res.redirect(`/auth/login/${url.format({query: {inform: encodeURIComponent('Успішно створено!')}})}`);
 });
 
-router.get('/login', async (req, res) => {
-    res.render('login', {
-        title: "Вхід на сайт",
-        breadcrumbs: [{text: 'Вхід'}],
-        error: req.query.error ? decodeURIComponent(req.query.error) : false,
-        inform: req.query.inform ? decodeURIComponent(req.query.inform) : false
-    });
-});
-
 router.post('/login', (req, res) => {
     passport.authenticate('local', { session: false }, (err, user) => {
         if (user === false) {
@@ -90,6 +74,9 @@ function cleanSensetiveUserInfo(user) {
     delete user.id;
     delete user.password;
     delete user.isDisabled;
+    delete user.telegramUsername;
+    delete user.telegramUserId;
+    delete user.telegramNotifySilent;
     user.upcomingInvoices.forEach(x => {
         delete x.id;
         delete x.recipient;
@@ -97,4 +84,60 @@ function cleanSensetiveUserInfo(user) {
     user.registries.forEach(x => delete x.id);
 }
 
-module.exports = router;
+async function getUserFromToken(jwtPayload, cb) {
+    if (!jwtPayload || !jwtPayload.id) return cb(new Error("Couldn't get id from tocken"), null);
+    let user = null;
+    try {
+        user = await User.getById(jwtPayload.id);
+    } catch (e) {
+        return cb(e, null);
+    }
+    if (!user) {
+        cb(null, false);
+    } else {
+        cb(null, user);
+    }
+}
+
+async function verifiyUserFunction(username, password, done) {
+    let user = null;
+    try {
+        user = await User.getByLogin(username);
+    } catch (e) {
+        return done(e, null);
+    }
+    if (!user) {
+        done(null, false);
+    } else if (user.password === Service.sha512(password, config.SaltHash)) {
+        done(null, user);
+    } else {
+        done(null, false);
+    }
+}
+
+function serializeUser(user, done) {
+    if (user && user.id && user.id instanceof mongoose.mongo.ObjectID) {
+        done(null, user.id.toString());
+    } else {
+        done(new Error("Couldn't get id of user"), null);
+    }
+}
+
+async function deserializeUser(id, done) {
+    let user = null;
+    try {
+        user = await User.getById(id);
+    } catch (e) {
+        return done(e, null);
+    }
+    if (!user) done(new Error("Such user not found"), null);
+    else done(null, user);
+}
+
+module.exports = {
+    serializeUser,
+    deserializeUser,
+    verifiyUserFunction,
+    getUserFromToken,
+    router
+};

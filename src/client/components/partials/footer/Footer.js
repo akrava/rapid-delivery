@@ -10,7 +10,7 @@ class Footer extends Component {
                         Questions, related to the site, you can ask the author:<br/>
                         <strong>Webmster:</strong> Arkadiy Krava 
                         (<a target="_blank" rel="noopener noreferrer" id="github-link" href="https://github.com/akrava">akrava</a> 
-                        <a target="_blank" rel="noopener noreferrer" id="tg-link" href="https://t.me/a_krava">@a_krava</a>)<br/>
+                        )<br/>
                         {/* <a classNam="link-style" href="/developer/v1">REST API documentation</a> */}
                     </p>
                     <span className="text-monospace">All rights reserved, Rapid delivery (c) 2018</span>
