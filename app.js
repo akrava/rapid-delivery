@@ -1,5 +1,6 @@
 const express = require('express'),
     mongoose = require('mongoose'),
+    morgan = require('morgan'),
     mustache = require('mustache-express'),
     urlencodedBodyParser = require('body-parser'),
     bodyParser = require('busboy-body-parser'),
@@ -27,6 +28,7 @@ const databaseUrl = config.DatabaseUrl;
 const connectionsOptions = { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false };
 
 app.use(express.static('public'));
+app.use(morgan('combined'));
 app.use(bodyParser({ limit: '3mb' }));
 app.use(urlencodedBodyParser.urlencoded({ extended: false }));
 app.use(urlencodedBodyParser.json());
