@@ -17,6 +17,9 @@ RegistryScheme.pre('save', async function (next) {
     let counter;
     try {
         counter = await Counter.findByIdAndUpdate({ _id: MODEL_NAME }, { $inc: { seq: 1 } });
+        if (!counter) {
+            counter = await new Counter({ _id: MODEL_NAME, seq: 1 }).save();
+        }
     } catch(error) {
         next(error);
     };
