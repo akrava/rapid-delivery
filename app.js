@@ -48,7 +48,7 @@ app.set('view engine', 'mst');
 
 mongoose.connect(databaseUrl, connectionsOptions)
     .then(() => console.log(`Opened connection wih db: ${databaseUrl}`))
-    .then(() => app.listen(PORT, () => console.log('Server started at port:', PORT)))
+    .then(() => app.listen(PORT, "0.0.0.0", () => console.log('Server started at port:', PORT)))
     .catch(err => console.error('An error ocurred while startting web-server: ', err.message));
 
 passport.serializeUser((user, done) => {
