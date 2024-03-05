@@ -10,6 +10,7 @@ const express = require('express'),
     LocalStrategy = require('passport-local').Strategy,
     BasicStrategy = require('passport-http').BasicStrategy,
     path = require('path'),
+    fs = require('fs'),
     config = require('./config'),
     Service = require('./scripts/service'),
     AuthRouter = require('./routes/auth'),
@@ -27,7 +28,10 @@ const templatesPath = path.join(__dirname, 'views');
 const databaseUrl = config.DatabaseUrl;
 const connectionsOptions = { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false };
 
+fs.mkdirSync('/tmp/webiste/user-data/', { recursive: true });
+
 app.use(express.static('public'));
+app.use(express.static('/tmp/webiste'));
 app.use(morgan('combined'));
 app.use(bodyParser({ limit: '3mb' }));
 app.use(urlencodedBodyParser.urlencoded({ extended: false }));

@@ -1,6 +1,9 @@
 const mongoose = require('mongoose'),
     cloudinary = require('cloudinary'),
     config = require('../config'),
+    fs = require('fs'),
+    path = require('path'),
+    crypto = require('crypto'),
     Counter = require('./counter');
 
 const MODEL_NAME = 'Invoice';
@@ -23,6 +26,9 @@ InvoiceScheme.pre('save', async function (next) {
     let counter = null;
     try {
         counter = await Counter.findByIdAndUpdate({ _id: MODEL_NAME }, { $inc: { seq: 1 } });
+        if (!counter) {
+            counter = await new Counter({ _id: MODEL_NAME, seq: 1 }).save();
+        }
     } catch (error) {
         next(error);
     }
@@ -113,31 +119,41 @@ class Invoice {
         if (!fileData) throw new Error("Uploaded file is not valid");
         const invoice = this;
         await new Promise((resolve, reject) => {
-            cloudinary.v2.uploader.upload_stream({ resource_type: 'raw' },
-                async (error, result) => {
-                    if (error) reject(new Error (error));
-                    invoice.photoPath = result.secure_url; 
-                    await InvoiceModel.findByIdAndUpdate(invoice.id, {$set: {photoPath: invoice.photoPath}});
-                    resolve();
-                }).end(fileData);
+            const file_name = `${crypto.randomUUID()}.jpg`;
+            const secure_url = "/user-data/" + file_name;
+            fs.writeFile(path.resolve('/tmp/webiste/user-data/', file_name), fileData, async function(err) {
+                if (err) {
+                    return reject(new Error(err));
+                }
+                invoice.photoPath = secure_url;
+                await InvoiceModel.findByIdAndUpdate(invoice.id, {$set: {photoPath: invoice.photoPath}});
+                resolve();
+            });
+            // cloudinary.v2.uploader.upload_stream({ resource_type: 'raw' },
+            //     async (error, result) => {
+            //         if (error) reject(new Error (error));
+            //         invoice.photoPath = result.secure_url; 
+            //         await InvoiceModel.findByIdAndUpdate(invoice.id, {$set: {photoPath: invoice.photoPath}});
+            //         resolve();
+            //     }).end(fileData);
         });
     }
 
     async deleteFileFromStorage() {
-        if (!this.photoPath.startsWith('https://res.cloudinary.com/akrava/raw/upload/')) return;
-        if (!this.photoPath || this.photoPath.lastIndexOf('/') < 0) {
-            throw new Error("File path was not found");
-        }
-        const public_idIndex = this.photoPath.lastIndexOf('/') + 1;
-        const public_id = this.photoPath.substr(public_idIndex);  
-        await new Promise((resolve, reject) => {
-            cloudinary.v2.uploader.destroy(public_id, {resource_type: 'raw'},
-                async (error, result) => {
-                    if (error) reject(new Error (error));
-                    if (result.result !== "ok") reject(new Error("Couldn't delete image"));
-                    resolve();
-                });
-        });
+        // if (!this.photoPath.startsWith('https://res.cloudinary.com/akrava/raw/upload/')) return;
+        // if (!this.photoPath || this.photoPath.lastIndexOf('/') < 0) {
+        //     throw new Error("File path was not found");
+        // }
+        // const public_idIndex = this.photoPath.lastIndexOf('/') + 1;
+        // const public_id = this.photoPath.substr(public_idIndex);  
+        // await new Promise((resolve, reject) => {
+        //     cloudinary.v2.uploader.destroy(public_id, {resource_type: 'raw'},
+        //         async (error, result) => {
+        //             if (error) reject(new Error (error));
+        //             if (result.result !== "ok") reject(new Error("Couldn't delete image"));
+        //             resolve();
+        //         });
+        // });
     }
 
     static model() { return InvoiceModel; };

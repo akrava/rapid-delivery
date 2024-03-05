@@ -2,6 +2,9 @@ const mongoose = require('mongoose'),
     Registry = require('./registry'),
     Invoice = require('./invoice'),
     cloudinary = require('cloudinary'),
+    fs = require('fs'),
+    path = require('path'),
+    crypto = require('crypto'),
     config = require('../config');
 
 const UserScheme = new mongoose.Schema({
@@ -128,32 +131,42 @@ class User {
         if (!fileData) throw new Error("Uploaded file is not valid");
         const user = this;
         await new Promise((resolve, reject) => {
-            cloudinary.v2.uploader.upload_stream({ resource_type: 'raw' },
-                async (error, result) => {
-                    if (error) reject(new Error (error));
-                    user.avaUrl = result.secure_url; 
-                    await UserModel.findByIdAndUpdate(user.id, {$set: {avaUrl: user.avaUrl}});
-                    resolve();
-                }).end(fileData);
+            const file_name = `${crypto.randomUUID()}.jpg`;
+            const secure_url = "/user-data/" + file_name;
+            fs.writeFile(path.resolve('/tmp/webiste/user-data/', file_name), fileData, async function(err) {
+                if (err) {
+                    return reject(new Error(err));
+                }
+                user.avaUrl = secure_url;
+                await UserModel.findByIdAndUpdate(user.id, {$set: {avaUrl: user.avaUrl}});
+                resolve();
+            });
+            // cloudinary.v2.uploader.upload_stream({ resource_type: 'raw' },
+            //     async (error, result) => {
+            //         if (error) reject(new Error (error));
+            //         user.avaUrl = result.secure_url; 
+            //         await UserModel.findByIdAndUpdate(user.id, {$set: {avaUrl: user.avaUrl}});
+            //         resolve();
+            //     }).end(fileData);
         });
     }
 
     async deleteAvatarFromStorage() {
-        if (this.avaUrl === '/images/userpic.png') return;
-        if (!this.avaUrl.startsWith('https://res.cloudinary.com/akrava/raw/upload/')) return;
-        if (!this.avaUrl || this.avaUrl.lastIndexOf('/') < 0) {
-            throw new Error("File path was not found");
-        }
-        const public_idIndex = this.avaUrl.lastIndexOf('/') + 1;
-        const public_id = this.avaUrl.substr(public_idIndex);  
-        await new Promise((resolve, reject) => {
-            cloudinary.v2.uploader.destroy(public_id, {resource_type: 'raw'},
-                async (error, result) => {
-                    if (error) reject(new Error (error));
-                    if (result.result !== "ok") reject(new Error("Couldn't delete image"));
-                    resolve();
-                });
-        });
+        // if (this.avaUrl === '/images/userpic.png') return;
+        // if (!this.avaUrl.startsWith('https://res.cloudinary.com/akrava/raw/upload/')) return;
+        // if (!this.avaUrl || this.avaUrl.lastIndexOf('/') < 0) {
+        //     throw new Error("File path was not found");
+        // }
+        // const public_idIndex = this.avaUrl.lastIndexOf('/') + 1;
+        // const public_id = this.avaUrl.substr(public_idIndex);  
+        // await new Promise((resolve, reject) => {
+        //     cloudinary.v2.uploader.destroy(public_id, {resource_type: 'raw'},
+        //         async (error, result) => {
+        //             if (error) reject(new Error (error));
+        //             if (result.result !== "ok") reject(new Error("Couldn't delete image"));
+        //             resolve();
+        //         });
+        // });
     }
 }
 
